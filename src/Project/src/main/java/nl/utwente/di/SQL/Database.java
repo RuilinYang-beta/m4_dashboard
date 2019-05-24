@@ -8,12 +8,18 @@ import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 import org.json.JSONObject;
+
+import javassist.expr.NewArray;
+
 import org.json.JSONException;
 
 public class Database {
 	public Connection connection;
-	private static final String GET_URL = "https://module4t2-test.cofanostack.com/api/bigbrother/bookings?limit=500&offset=";
+	private static final String GET_URL = "https://module4t2-test.cofanostack.com/api/bigbrother/";
 	private static final String AUTH_CODE = "Basic QmlnQnJvdGhlcjpob3R0ZW50b3R0ZW50ZW50ZW50ZW50b29uc3RlbGxpbmc=";
+	public Database() {
+		connectToDatabase();
+	}
 	
 	public void connectToDatabase() {
 		try {
@@ -35,6 +41,49 @@ public class Database {
 		}
 	}
 	
+	private void makeTable(String path, boolean RESET, int offset) {
+		connectToDatabase();
+		int i = offset;
+		String command = "";
+		String opts = "";
+		if (path.equals("bookings")) {
+			if (RESET) {
+				createDatabase(SQL_BOOK+OPT_BOOK);
+			}
+			command = "INSERT INTO bookings VALUES(";
+			opts = OPT_BOOK;
+			List<JSONObject> total = new ArrayList<JSONObject>();
+			List<JSONObject> temp;
+			while ((temp = getData(GET_URL + path + "?limit=500&offset=" + i)).size() > 0) {
+				total.addAll(temp);
+				i += 500;
+				System.out.println(i);
+				if (total.size() % 10000 == 0) {
+					insertDatabase(total, command, opts);
+					total = new ArrayList<JSONObject>();
+				}
+			}
+			insertDatabase(total, command, opts);
+		} else if (path.equals("locations")) {
+			if (RESET ) {
+				createDatabase(SQL_LOC + OPT_LOC);
+				createDatabase(SQL_ADD + OPT_ADD);
+			}
+			List<JSONObject> total = new ArrayList<JSONObject>();
+			List<JSONObject> temp;
+			temp = getData(GET_URL + path + "?limit=500&offset=" + i);
+			total.addAll(temp);
+			i += 500;
+			System.out.println(i);
+			insertLocation(total);
+		}
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void createDatabase(String command) {
 		Statement statement = null;
 		try {
@@ -51,28 +100,105 @@ public class Database {
 		}
 	}
 	
-	private void insertDatabase(List<JSONObject> data) {
-		String command = "INSERT INTO bookings VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		String[] options = OPT_BOOK.split(",");
+	private void insertLocation(List<JSONObject> data) {
+		String[] options = OPT_LOC.split(",");
+		String[] addOptions = OPT_ADD.split(",");
+		StringBuffer execute = new StringBuffer();
+		PreparedStatement s = null;
 		for (JSONObject item:data) {
-			try {
-				PreparedStatement s = connection.prepareStatement(command);
-				for (int i = 1; i <= options.length; i ++) {
-					String c = options[i-1].split(" ")[0];
+			execute.append("INSERT INTO locations VALUES(");
+			for (int i = 1; i <= options.length; i ++) {
+				String c = options[i-1].split(" ")[0];
+				try {
+					if (item.getString(c).length() == 0) {
+						execute.append("null" + ",");
+					} else {
+						execute.append("'" + item.getString(c) + "'" + ",");
+					}
+				} catch (JSONException z) {
 					try {
-						s.setString(i, item.getString(c));
-					} catch (JSONException z) {
-						try {
-							s.setInt(i, (int) item.getInt(c));
-						} catch (JSONException e) {
-							//System.out.println("error: " + c + " is null");
-							s.setObject(i, null);
-						}
+						execute.append(item.getLong(c) + ",");
+					} catch (JSONException e) {
+						execute.append("null" + ",");
 					}
 				}
-				s.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			}
+			execute.setLength(execute.length()-1);
+			execute.append(");");
+			
+			execute.append("INSERT INTO address VALUES(");
+			execute.append(item.getInt("locationId") + ",");
+			for (int i = 2; i <= addOptions.length; i ++) {
+				String c = addOptions[i-1].split(" ")[0];
+				try {
+					if (item.getJSONObject("address").getString(c).length() == 0) {
+						execute.append("null" + ",");
+					} else {
+						execute.append("'" + item.getJSONObject("address").getString(c) + "'" + ",");
+					}
+				} catch (JSONException z) {
+					try {
+						execute.append(item.getJSONObject("address").getInt(c) + ",");
+					} catch (JSONException e) {
+						execute.append("null" + ",");
+					}
+				}
+			}
+			execute.setLength(execute.length()-1);
+			execute.append(");");
+		}
+		try {
+			System.out.println("Insert into database");
+			s = connection.prepareStatement(execute.toString());
+			s.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("ERROR");
+			e.printStackTrace();
+		} finally {
+			if (s != null) {
+				try {s.close();}catch(SQLException e){}
+			}
+		}
+		System.out.println("finished");
+	}
+	
+	private void insertDatabase(List<JSONObject> data, String command, String opts) {
+		String[] options = opts.split(",");
+		StringBuffer execute = new StringBuffer();
+		PreparedStatement s = null;
+		for (JSONObject item:data) {
+			execute.append(command);
+			for (int i = 1; i <= options.length; i ++) {
+				String c = options[i-1].split(" ")[0];
+				try {
+					execute.append("'" + item.getString(c) + "'" + ",");
+				} catch (JSONException d) {
+					try {
+						if (c.equals("createdOn") || c.equals("referenceDate")) {
+							execute.append("'" + new Timestamp((long) item.get(c)) + "',");
+						} else {
+							execute.append(item.getInt(c) + ",");
+						}
+					} catch (JSONException e) {
+						execute.append("null" + ",");
+					} catch (ClassCastException cce) {
+						execute.append("null" + ",");
+					}
+				}
+			}
+			execute.setLength(execute.length()-1);
+			execute.append(");");
+		}
+		try {
+			System.out.println("Insert into database");
+			s = connection.prepareStatement(execute.toString());
+			s.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("ERROR");
+			e.printStackTrace();
+		} finally {
+			if (s != null) {
+				try {s.close();}catch(SQLException e){}
 			}
 		}
 		System.out.println("finished");
@@ -80,26 +206,39 @@ public class Database {
 	
 	public static void main(String args[]) {
 		Database d = new Database();
-		d.connectToDatabase();
-		//d.createDatabase(SQL_BOOK+OPT_BOOK);
-		List<JSONObject> temp;
-//		int i = 73910;
-//		while ((temp = d.getData(GET_URL+i)).size() != 0) {
-//			d.insertDatabase(temp);
-//			i += 500;
-//			System.out.println(i);
-//		}
-		d.getData(GET_URL+83410);
-		
+		d.update();
+		//d.makeTable("bookings", true, 0);
+	}
+	
+	public void update() {
+		updateBook();
+		updateLoc();
+	}
+	private void updateBook() {
+		connectToDatabase();
+		int offBook = 0;
+		String command = "SELECT COUNT(DISTINCT bookingId) AS c FROM bookings;";
 		try {
-			d.connection.close();
+			Statement s = connection.createStatement();
+			ResultSet rs = s.executeQuery(command);
+			while (rs.next()) {
+				offBook = rs.getInt("c");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			
+		}
+		makeTable("bookings", false, offBook);
+	}
+	private void updateLoc() {
+		makeTable("locations", true, 0);
 	}
 	
-	private List<JSONObject> getData(String path) {
+	public static List<JSONObject> getData(String path) {
 		URL url;
 		List<JSONObject> o = null;
 		try {
@@ -117,7 +256,6 @@ public class Database {
 				}
 				in.close();
 				o = parse(response.toString());
-				System.out.println(o.size());
 			} else {
 				System.err.println("error: connection failed\n" + con.getResponseMessage());
 			}
@@ -130,8 +268,7 @@ public class Database {
 		return o;
 	}
 	//JSON parser, creates list of entities
-	private List<JSONObject> parse(String json) {
-		System.out.print("parsing ");
+	public static List<JSONObject> parse(String json) {
 		List<JSONObject> temp = new ArrayList<JSONObject>();
 		String data = json;
 		int i = 0;
@@ -139,12 +276,10 @@ public class Database {
 			if (data.substring(i,i+1).equals("}")) {
 				if (i == data.length()-2) {
 					//System.out.println(data.substring(1,i+1));
-					System.out.print("/");
 					temp.add(new JSONObject(data.substring(1,i+1)));
 					data = "";
 				} else if (data.substring(i+1,i+3).equals(",{")) {
 					//System.out.println(data.substring(1,i+1));
-					System.out.print("/");
 					temp.add(new JSONObject(data.substring(1,i+1)));
 					data = data.substring(0,1) + data.substring(i+2);
 					i = -1;
@@ -156,14 +291,16 @@ public class Database {
 	}
 	
 	private static final String SQL_BOOK = "DROP TABLE IF EXISTS bookings; CREATE TABLE bookings (";
+	private static final String SQL_LOC = "DROP TABLE IF EXISTS locations; CREATE TABLE locations (";
+	private static final String SQL_ADD = "DROP TABLE IF EXISTS address; CREATE TABLE address (";
 	private static final String OPT_BOOK = "dossierId INT NOT NULL,"
 			+ "bookingId INT,"
 			+ "orderState VARCHAR(10),"
 			+ "bookingIdentifier VARCHAR(20),"
 			+ "containerNumber VARCHAR(20),"
-			+ "createdOn INT,"
+			+ "createdOn TIMESTAMP,"
 			+ "createdBy VARCHAR(63),"
-			+ "referenceDate INT,"
+			+ "referenceDate TIMESTAMP,"
 			+ "containerType VARCHAR(30),"
 			+ "teu FLOAT(3),"
 			+ "shippingCompany VARCHAR(63),"
@@ -172,34 +309,21 @@ public class Database {
 			+ "nettoWeight DECIMAL,"
 			+ "brutoWeight DECIMAL,"
 			+ "customer VARCHAR(63))";
-	private static final String OPT_ACTIONS = "bookingId INT NOT NULL,"
-			+ "bookingIdentifier VARCHAR(20),"
-			+ "actionId INT,"
-			+ "actionType VARCHAR(63),"
-			+ "deleteOn VARCHAR(63),"
-			+ "index INT,"
-			+ "status VARCHAR(63),"
-			+ "sta VARCHAR(63),"
-			+ "std VARCHAR(63),"
-			+ "startLocationId INT,"
-			+ "startLocationType VARCHAR(63),"
-			+ "startLocationName VARCHAR(63),"
-			+ "startLocationAddress VARCHAR(63),"
-			+ "startLocationCity INT,"
-			+ "endLocationId VARCHAR(63),"
-			+ "endLocationType VARCHAR(63),"
-			+ "endLocationName VARCHAR(63),"
-			+ "endocationAddress VARCHAR(63),"
-			+ "endLocationCity VARCHAR(63),"
-			+ "loadLinestopId INT,"
-			+ "unloadLinestopId INT,"
-			+ "shipName VARCHAR(63),"
-			+ "locationId INT,"
-			+ "locationType VARCHAR(63),"
-			+ "locationName VARCHAR(63),"
-			+ "locationAddress VARCHAR(63),"
-			+ "locationCity VARCHAR(63),"
-			+ "gateIn VARCHAR(63),"
-			+ "gateOut VARCHAR(63),"
-			+ "applicationTerminal VARCHAR(6))";
+	private static final String OPT_LOC = "locationId INT NOT NULL,"
+			+ "type VARCHAR(50),"
+			+ "name VARCHAR(50),"
+			+ "longitude REAL,"
+			+ "latitude REAL,"
+			+ "color VARCHAR(50),"
+			+ "globalSearch BOOLEAN,"
+			+ "aliases VARCHAR(50),"
+			+ "terminalCode VARCHAR(50),"
+			+ "unlo VARCHAR(50));";
+	private static final String OPT_ADD = "locationId INT NOT NULL,"
+			+ "street VARCHAR(64),"
+			+ "number INT,"
+			+ "postfix VARCHAR(10),"
+			+ "postalCode VARCHAR(10),"
+			+ "city VARCHAR(20),"
+			+ "country VARCHAR(20));";
 }

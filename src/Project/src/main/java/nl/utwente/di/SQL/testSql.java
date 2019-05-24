@@ -25,15 +25,16 @@ public class testSql {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void maino(String[] args) {
 		testSql d = new testSql();
 		d.connectToDatabase();
-		String command = "SELECT COUNT(dossierId) AS c FROM bookings where bookingId > 0;";
+		String command = "SELECT COUNT(DISTINCT a.locationId) AS c, COUNT(DISTINCT b.locationId) AS d FROM locations a, address b;";
 		try {
 			Statement s = d.connection.createStatement();
 			ResultSet rs = s.executeQuery(command);
 			while (rs.next()) {
 				System.out.println(rs.getInt("c"));
+				System.out.println(rs.getInt("d"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -43,6 +44,41 @@ public class testSql {
 		} catch (SQLException e) {
 			
 		}
+	}
+	
+	public static void main(String[] args) {
+		testSql d = new testSql();
+		d.connectToDatabase();
+		d.createStatisticsTable("name");
+		try {
+			d.connection.close();
+		} catch (SQLException e) {
+			
+		}
+	}
+	
+	public void createStatisticsTable(String name) {
+//		String command = "CREATE TABLE " + name + " (month TIMSTAMP, amount INT)";
+//		try {
+//			Statement s = connection.createStatement();
+//			s.executeQuery(command);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+		
+		String command = "SELECT MIN(createdOn) AS c FROM bookings;";
+		Timestamp date = null;
+		try {
+			Statement s = connection.createStatement();
+			ResultSet rs = s.executeQuery(command);
+			while (rs.next()) {
+				date = (Timestamp) rs.getObject("c");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println(date);
+		
 		
 	}
 }
