@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <!-- Our Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Font Awesome JS -->
+
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"> </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+  <script type="text/javascript" src="chart.js"></script>
+  <script type="text/javascript" src="sidebar_collapse.js"></script>
+
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <img src="cofano.png" alt="Cofano" width="200">
+        </div>
+
+        <div class="profileIcon">
+          <a class="btn" href="mainDashboard.html">
+            <i class="fas fa-user"></i>
+          </a>
+        </div>
+      </div>
+      <ul class="list-unstyled components">
+        <p class="center">Filters</p>
+
+        <li>
+          <a href="Home.html">Home</a>
+        </li>
+        <li>
+          <a href="settings.html">Settings</a>
+        </li>
+      </ul>
+    </nav>
+    <!-- Page Content  -->
+    <div id="content">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+
+          <button type="button" id="sidebarCollapse" class="btn btn-info">
+            <i class="fas fa-align-left"></i>
+
+            <span>Toggle Sidebar</span>
+          </button>
+
+        </div>
+      </nav>
+
+
+      <div class="content-container-fluid">
+        <div class="my-3" style="height:150px">
+          <strong>Booking Filters</strong>
+          <div class="radio">
+            <input id="radio1" type="radio" name="optradio" checked>
+            <label for="radio1">Bookings over Year</label>
+          </div>
+          <div class="radio">
+            <input id="radio2" type="radio" name="optradio">
+            <label for="radio2">Bookings over Customers</label>
+          </div>
+          <div class="radio">
+            <input id="radio3" type="radio" name="optradio">
+            <label for="radio3">Bookings over others</label>
+          </div>
+          <div>
+            <input type="button" value="Generate Statistics" id="generate">
+          </div>
+        </div>
+
+        <div class="cols-sample-area">
+          <div class="row">
+            <div class="col">
+              <canvas id="container"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    //$(stackedArea());
+    //$(pieChart());
+    //$(stackedArea());
+    //$(chart1());
+  </script>
+
+  <script>
+  </script>
+
+
+</body>
+
+</html>

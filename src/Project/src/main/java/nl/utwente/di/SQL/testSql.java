@@ -1,6 +1,10 @@
 package nl.utwente.di.SQL;
 
 import java.sql.*;
+import java.io.IOException;
+import java.net.*;
+import java.io.*;
+import java.time.Instant;
 
 public class testSql {
 	public Connection connection;
@@ -66,18 +70,46 @@ public class testSql {
 //			e.printStackTrace();
 //		}
 		
-		String command = "SELECT MIN(createdOn) AS c FROM bookings;";
-		Timestamp date = null;
+//		String command = "SELECT MIN(createdOn) AS c FROM bookings;";
+//		Timestamp date = null;
+//		try {
+//			Statement s = connection.createStatement();
+//			ResultSet rs = s.executeQuery(command);
+//			while (rs.next()) {
+//				date = (Timestamp) rs.getObject("c");
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(date);
+		
+		URL url;
+		HttpURLConnection con = null;
 		try {
-			Statement s = connection.createStatement();
-			ResultSet rs = s.executeQuery(command);
-			while (rs.next()) {
-				date = (Timestamp) rs.getObject("c");
+			Instant instant = Instant.now();
+			long timeStampMillis = instant.toEpochMilli();
+			url = new URL("http://localhost:8080/Project/rest/sql/bookings?from=1253788820&to=1503788820" + "&dosId=0");
+			con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
+			System.out.println(con.getResponseCode());
+			BufferedReader in = new BufferedReader(
+			new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer content = new StringBuffer();
+			while ((inputLine = in.readLine()) != null) {
+			    content.append(inputLine);
 			}
-		} catch (SQLException e) {
+			in.close();
+			System.out.println(content.toString());
+		} catch (ProtocolException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(date);
+		
+		
 		
 		
 	}

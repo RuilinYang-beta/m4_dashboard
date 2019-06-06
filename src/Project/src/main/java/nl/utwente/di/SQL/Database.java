@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.ArrayList;
 import org.json.JSONObject;
 
-import javassist.expr.NewArray;
-
 import org.json.JSONException;
 
 public class Database {
@@ -41,20 +39,29 @@ public class Database {
 		}
 	}
 	
-	private void makeTable(String path, boolean RESET, int offset) {
+	
+	private void makeTable(String path, boolean RESET, Object offset) {
 		connectToDatabase();
-		int i = offset;
+		int i = 0;
+		try {
+			i = (int) offset;
+		} catch (ClassCastException e) {
+		}
 		String command = "";
+		String arg = "?";
 		String opts = "";
 		if (path.equals("bookings")) {
 			if (RESET) {
 				createDatabase(SQL_BOOK+OPT_BOOK);
+			} else {
+				arg = "?createdAfter=" + offset + "&";
+				i = 0;
 			}
 			command = "INSERT INTO bookings VALUES(";
 			opts = OPT_BOOK;
 			List<JSONObject> total = new ArrayList<JSONObject>();
 			List<JSONObject> temp;
-			while ((temp = getData(GET_URL + path + "?limit=500&offset=" + i)).size() > 0) {
+			while ((temp = getData(GET_URL + path + arg + "limit=500&offset=" + i)).size() > 0) {
 				total.addAll(temp);
 				i += 500;
 				System.out.println(i);
@@ -206,33 +213,34 @@ public class Database {
 	
 	public static void main(String args[]) {
 		Database d = new Database();
-		d.update();
-		//d.makeTable("bookings", true, 0);
+		d.update(false);
 	}
 	
-	public void update() {
-		updateBook();
+	public void update(boolean RESET) {
+		updateBook(RESET);
 		updateLoc();
 	}
-	private void updateBook() {
+	private void updateBook(boolean RESET) {
 		connectToDatabase();
-		int offBook = 0;
-		String command = "SELECT COUNT(DISTINCT bookingId) AS c FROM bookings;";
+		Long offBook = null;
+		String command = "SELECT MAX(createdOn) AS c FROM bookings";
+		Timestamp x = null;
 		try {
 			Statement s = connection.createStatement();
 			ResultSet rs = s.executeQuery(command);
 			while (rs.next()) {
-				offBook = rs.getInt("c");
+				x = (Timestamp)rs.getObject("c");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		};
 		try {
 			connection.close();
 		} catch (SQLException e) {
 			
 		}
-		makeTable("bookings", false, offBook);
+		offBook = x.getTime();
+		makeTable("bookings", RESET, offBook/1000+1);
 	}
 	private void updateLoc() {
 		makeTable("locations", true, 0);

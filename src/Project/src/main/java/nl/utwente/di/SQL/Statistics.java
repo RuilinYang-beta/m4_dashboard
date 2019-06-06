@@ -28,18 +28,35 @@ public class Statistics {
 	public static void main(String[] args) {
 		Statistics s = new Statistics();
 		s.connectToDatabase();
-		s.fillBookingDate();
+		ResultSet rs = s.execute("Select COUNT(bookingId) AS c FROM bookings WHERE orderState = 'READY' OR orderState = 'FINISHED' OR orderState = 'PLANNED'");
 		try {
-			ResultSet rs = s.execute("SELECT SUM(counter) AS c FROM st_book");
 			while (rs.next()) {
-				System.out.println(rs.getInt("c"));
+				System.out.println(rs.getString("c"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		};
+//		ResultSet rs = s.execute("SELECT COUNT(bookingId) AS c FROM bookings WHERE createdOn IS NULL");
+//		try {
+//			while (rs.next()) {
+//				System.out.println(rs.getInt("c"));
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		};
+//		String command = "SELECT * FROM st_book;";
+//		ResultSet rs = s.execute(command);
+//		try {
+//			while (rs.next()) {
+//				System.out.println(rs.getString(1) + " || " + rs.getInt(2));
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
 	}
 	
-	public void fillBookingDate() {
+	//Create table counting amount of bookings per month (createdOn date)
+	public void fillBooking_to_Date() {
 		execute(SQL_BOOK + SQL_BOOK_FILL);
 	}
 	
@@ -54,12 +71,24 @@ public class Statistics {
 		
 	}
 	
+	public int getCount() {
+		ResultSet temp = execute("SELECT COUNT(*) AS a FROM bookings");
+		try {
+			while  (temp.next()) {
+				return temp.getInt("a");
+			}
+		} catch (SQLException e) {
+			return -1;
+		}
+		return -1;
+	}
+	
 	private static final String SQL_BOOK = "DROP TABLE IF EXISTS st_book; CREATE TABLE st_book ("
 			+ "date VARCHAR(7),"
 			+ "counter INT);";
 	private static final String SQL_BOOK_FILL = "INSERT INTO st_book (date, counter)"
-				+ "SELECT CONCAT(cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))"
-				+ ",'_', cast(EXTRACT(year FROM createdOn) AS VARCHAR(4))) AS m_y, COUNT(bookingId) "
+				+ "SELECT CONCAT(cast(EXTRACT(year FROM createdOn) AS VARCHAR(4))"
+				+ ",'_', cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))) AS m_y, COUNT(bookingId) " //format YYYY_MM
 				+ "FROM bookings "
 				+ "GROUP BY m_y;";
 }
