@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Filters</title>
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+	<!-- navbar -->
+	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+		<a class="navbar-brand" href="#">
+			<img src="logo.png" height="35" margin=0>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    	<span class="navbar-toggler-icon"></span>
+	  	</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active">
+					<a class="nav-link" href="#">About</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="#">Contact</a>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="nav-item active">
+					<a class="nav-link" href="#">Inbox</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="#">Settings</a>
+				</li>
+			</ul>	
+		</div>
+	</nav>
+
+  <!-- sidebar and content -->
+	<div class="container-fluid">
+		<div class="row">
+			<!-- sidebar -->
+			<nav class="col-md-2 d-none d-md-inline bg-light sidebar flex-column justify-content-between" style="border:1px solid lightgrey">
+				<ul class="nav flex-column">
+					<li class="nav-item">
+						<a class="nav-link active" href="new-fancy.html">Overview</a>
+					</li>
+				</ul>
+				<ul class="nav flex-column">
+					<li class="nav-item">
+						<a class="nav-link" href="new-basics.html">Basics</a>
+					</li>
+				</ul>
+				<ul class="nav flex-column">
+					<li class="nav-item">
+						<a class="nav-link" href="">Filters</a>
+					</li>
+				</ul>
+			</nav>
+      		<!-- content -->
+			<main role="main" class="col-md-10 mx-sm-auto px-4" class>
+				<div class="d-flex flex-row container-fluid" style="border:1px solid lightgrey; height: 600px;">
+					<!-- filters container -->
+					<div class="d-flex flex-column col-4 my-3" style="border:1px solid lightgrey;"> 
+
+						<div class="my-3" style="border:1px solid lightgrey;height:150px">
+							<strong>filter group 1</strong>  <br>
+							choose an KPI: <br>
+						  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						    click me
+						  </button>
+						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						    <a class="dropdown-item" href="#">thing 1</a>
+						    <a class="dropdown-item" href="#">thing 2</a>
+						    <a class="dropdown-item" href="#">thing 3</a>
+						  </div>
+						</div>
+						<div  style="border:1px solid lightgrey;height:150px">
+							<strong>filter group 2</strong> <br>
+							choose multiple:
+							<div class="checkbox-inline">
+							  <label><input type="checkbox" value="">Option 1</label>
+							</div>
+							<div class="checkbox-inline">
+							  <label><input type="checkbox" value="">Option 2</label>
+							</div>
+							<div class="checkbox-inline disabled">
+							  <label><input type="checkbox" value="">Option 3</label>
+							</div>
+						</div>
+						<div class="my-3" style="border:1px solid lightgrey;height:150px">
+							<strong>filter group 3</strong>
+							<div class="radio">
+							  <label><input type="radio" name="optradio" checked> movie count by genre</label>
+							</div>
+							<div class="radio">
+							  <label><input type="radio" name="optradio">Option 2</label>
+							</div>
+							<div class="radio">
+							  <label><input type="radio" name="optradio">Option 3</label>
+							</div>
+						</div>
+
+						<button class="btn btn-primary">ok, show me the chart</button>
+
+
+					</div>
+					<!-- chart container -->
+					<div class="d-flex container-fluid col-8 my-3" style="border:1px solid lightgrey;">
+						
+						<div id="container" style="width: 100%; height: 100%"></div>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<!-- bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<!-- any chart library -->
+    <script src="https://cdn.anychart.com/js/8.0.1/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>
+	<!-- my JS -->
+	<script type="text/javascript" src="script.js"></script>
+</body>
+</html>
