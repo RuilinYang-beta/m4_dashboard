@@ -8,15 +8,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+  <script src="sql_counter.js"></script>
+
   <script type="text/javascript" src="chart.js"></script>
-  <script type="text/javascript" src="sql_counter.js"></script>
 </head>
 
 <body id='mainDashboard'>
 
-  <a class="btn" href="Home.html">
+  <a class="btn" href="filterPage.html">
 
     <div class=row>
+
       <div class="counter">
 
         <div class="logo">
@@ -24,19 +26,18 @@
         </div>
 
         <div class="counting-sec">
-          <div id="numcount" class="num"></div>
+          <div class="num">86020</div>
         </div>
 
         <div class=#>
-          <div class=row>
-            <div class='col'>
+          <div class="mapGraph">
+            <div class="map">
               <div id="map-responsive">
-                <iframe
-                src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d1251637.9986128206!2d4.644316619238018!3d52.21421683082925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sgoogle+map!5e0!3m2!1sen!2snl!4v1559119034500!5m2!1sen!2snl"
-                width="800" height="500" frameborder="0" style="border:0" allowfullscreen></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d1251637.9986128206!2d4.644316619238018!3d52.21421683082925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sgoogle+map!5e0!3m2!1sen!2snl!4v1559119034500!5m2!1sen!2snl"
+                  width="800" height="500" frameborder="0" style="border:0" allowfullscreen></iframe>
               </div>
             </div>
-            <div class='col'>
+            <div class="slideShow">
 
               <div class="slidershow middle">
                 <div class=slides>
@@ -56,6 +57,7 @@
                   <label for="r2" class="bar"></label>
                 </div>
               </div>
+
 
             </div>
 
@@ -77,9 +79,6 @@
 	};
   $(getCount());
   $(chart1());
-  $(document).onload(function() {
-	  alert("done");
-  });
 
   $(document).ready(function() {
     $("#r1").click(function() {
@@ -91,10 +90,12 @@
   $(document).ready(function() {
     $("#r2").click(function() {
       $('#contain').replaceWith('<canvas id="contain"></canvas>');
-      chart2();
+      //chart2();
+      getYear();
     })
   });
 	
 </script>
 <script src="sql_counter.js"></script>
+
 </html>

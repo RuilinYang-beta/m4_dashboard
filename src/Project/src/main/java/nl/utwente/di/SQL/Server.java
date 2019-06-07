@@ -24,11 +24,11 @@ public class Server{
 	public String getYears() {
 		Statistics a = new Statistics();
 		a.connectToDatabase();
-		ResultSet x = a.execute("SELECT date, counter FROM st_book LIMIT 5;");
-		return parseToJSON(x);
+		ResultSet x = a.execute("SELECT date, counter FROM st_book WHERE date <> '_' ORDER BY date DESC LIMIT 10;");
+		return parseToStringarray(x);
 	}
 	
-	public static String parseToJSON(ResultSet set) {
+	public static String parseToStringarray(ResultSet set) {
 		StringBuffer res1 = new StringBuffer();
 		StringBuffer res2 = new StringBuffer();
 		String res = "";
@@ -47,7 +47,7 @@ public class Server{
 	}
 	
 	@GET
-	@Path("/bookings")
+	@Path("/select")
 	public String bookingsPerDate(@QueryParam("from") Long dateLow,
 									@QueryParam("to") Long dateHigh, 
 									@QueryParam("dosId") int dosId) {

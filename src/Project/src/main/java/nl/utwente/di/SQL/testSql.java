@@ -88,7 +88,7 @@ public class testSql {
 		try {
 			Instant instant = Instant.now();
 			long timeStampMillis = instant.toEpochMilli();
-			url = new URL("http://localhost:8080/Project/rest/sql/bookings?from=1253788820&to=1503788820" + "&dosId=0");
+			url = new URL("http://localhost:8080/Project/rest/sql/select?from=1253788820&to=1503788820&dosId=0");
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 			System.out.println(con.getResponseCode());

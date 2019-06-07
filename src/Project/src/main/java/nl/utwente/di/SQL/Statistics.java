@@ -28,7 +28,7 @@ public class Statistics {
 	public static void main(String[] args) {
 		Statistics s = new Statistics();
 		s.connectToDatabase();
-		ResultSet rs = s.execute("Select COUNT(bookingId) AS c FROM bookings WHERE orderState = 'READY' OR orderState = 'FINISHED' OR orderState = 'PLANNED'");
+		ResultSet rs = s.execute("Select CONCAT(substring(date, 1, 5), '0', substring(date, 6, 1)) AS c FROM st_book WHERE LENGTH(date) = 7;");
 		try {
 			while (rs.next()) {
 				System.out.println(rs.getString("c"));
@@ -36,28 +36,13 @@ public class Statistics {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		};
-//		ResultSet rs = s.execute("SELECT COUNT(bookingId) AS c FROM bookings WHERE createdOn IS NULL");
-//		try {
-//			while (rs.next()) {
-//				System.out.println(rs.getInt("c"));
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		};
-//		String command = "SELECT * FROM st_book;";
-//		ResultSet rs = s.execute(command);
-//		try {
-//			while (rs.next()) {
-//				System.out.println(rs.getString(1) + " || " + rs.getInt(2));
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
+		//s.fillBooking_to_Date();
 	}
 	
 	//Create table counting amount of bookings per month (createdOn date)
 	public void fillBooking_to_Date() {
 		execute(SQL_BOOK + SQL_BOOK_FILL);
+		execute(SQL_BOOK_UPDATE);
 	}
 	
 	public ResultSet execute(String command) {
@@ -66,6 +51,7 @@ public class Statistics {
 			ResultSet res =  s.executeQuery();
 			return res;
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return null;
 		}
 		
@@ -91,4 +77,5 @@ public class Statistics {
 				+ ",'_', cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))) AS m_y, COUNT(bookingId) " //format YYYY_MM
 				+ "FROM bookings "
 				+ "GROUP BY m_y;";
+	private static final String SQL_BOOK_UPDATE = "UPDATE st_book SET date = CONCAT(substring(date, 1, 5), '0', substring(date, 6, 1)) WHERE LENGTH(date) = 6;";
 }
