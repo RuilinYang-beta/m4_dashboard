@@ -1,4 +1,4 @@
 1. install xampp
 2. once installed, start apache (first option)
 3. move the folder 'Cofano' to 'htdocs' in 'xampp' folder
-4. go to browser and type http://localhost/Cofano/logIn
+4. go to browser and type http://localhost/Cofano/logIn.html
