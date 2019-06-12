@@ -65,7 +65,8 @@ public class Server{
 		int i = -1;
 		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false};
 		try {
-			String command = "WHERE 0=0";
+			String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'\"\n" + 
+					"+ \"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
 			if (dateLow != null) {
 				command += " AND createdOn > ?";
 				inserts[0] = true;
