@@ -48,13 +48,22 @@ public class Server{
 	
 	@GET
 	@Path("/select")
-	public String bookingsPerDate(@QueryParam("from") Long dateLow,
-									@QueryParam("to") Long dateHigh, 
-									@QueryParam("dosId") int dosId) {
+	public String bookingsPerDate(@QueryParam("fromD") Long dateLow,
+									@QueryParam("toD") Long dateHigh, 
+									@QueryParam("dosId") int dosId,
+									@QueryParam("OrderState") String OrdState,
+									@QueryParam("fromN") int nettoLow,
+									@QueryParam("toN") int nettoHigh,
+									@QueryParam("fromB") int bruttoLow,
+									@QueryParam("toB") int bruttoHigh,
+									@QueryParam("teu") int teu,
+									@QueryParam("shipComp") String company,
+									@QueryParam("shipCompId") int compId,
+									@QueryParam("shipCompScac") String compScac) {
 		Statistics a = new Statistics();
 		a.connectToDatabase();
 		int i = -1;
-		boolean[] inserts = new boolean[]{false, false, false};
+		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false};
 		try {
 			String command = "WHERE 0=0";
 			if (dateLow != null) {
@@ -69,6 +78,42 @@ public class Server{
 				command += " AND dossierId = ?";
 				inserts[2] = true;
 			}
+			if (OrdState != null) {
+				command += " AND orderState = ?";
+				inserts[3] = true;
+			}
+			if (nettoLow != 0) {
+				command += " AND nettoWeight >= ?";
+				inserts[4] = true;
+			}
+			if (nettoHigh != 0) {
+				command += " AND nettoWeight <= ?";
+				inserts[5] = true;
+			}
+			if (bruttoLow != 0) {
+				command += " AND bruttoWeight >= ?";
+				inserts[6] = true;
+			}
+			if (bruttoHigh != 0) {
+				command += " AND bruttoWeight <= ?";
+				inserts[7] = true;
+			}
+			if (teu != 0) {
+				command += " AND teu = ?";
+				inserts[8] = true;
+			}
+			if (teu != 0) {
+				command += " AND shippingCompany = ?";
+				inserts[9] = true;
+			}
+			if (teu != 0) {
+				command += " AND shippingCompanyId = ?";
+				inserts[10] = true;
+			}
+			if (teu != 0) {
+				command += " AND shippingCompanyScac = ?";
+				inserts[11] = true;
+			}
 			PreparedStatement stm = a.connection.prepareStatement("SELECT COUNT(*) FROM bookings " + command);
 			int col = 1;
 			if (inserts[0]) {
@@ -79,6 +124,33 @@ public class Server{
 				col += 1;
 			} if (inserts[2]) {
 				stm.setObject(col, (int) dosId);
+				col += 1;
+			} if (inserts[3]) {
+				stm.setObject(col, (String) OrdState);
+				col += 1;
+			} if (inserts[4]) {
+				stm.setObject(col, (int) nettoLow);
+				col += 1;
+			} if (inserts[5]) {
+				stm.setObject(col, (int) nettoHigh);
+				col += 1;
+			} if (inserts[6]) {
+				stm.setObject(col, (int) bruttoLow);
+				col += 1;
+			} if (inserts[7]) {
+				stm.setObject(col, (int) bruttoHigh);
+				col += 1;
+			} if (inserts[8]) {
+				stm.setObject(col, (int) teu);
+				col += 1;
+			} if (inserts[9]) {
+				stm.setObject(col, (String) company);
+				col += 1;
+			} if (inserts[10]) {
+				stm.setObject(col, (int) compId);
+				col += 1;
+			} if (inserts[11]) {
+				stm.setObject(col, (String) compScac);
 				col += 1;
 			}
 			ResultSet x = stm.executeQuery();
