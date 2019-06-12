@@ -113,9 +113,8 @@
             </label>
             <datalist id="orderStateList">
               <option value="READY">
-              <option value="INPLANNING">
-              <option value="PLANNED">
               <option value="FINISHED">
+              <option value="PLANNED">
             </datalist>
           </div>
           <div>
@@ -148,18 +147,18 @@
           </div>
         </div>
         <div class="filters">
-          <p> Search by: </p>
+          <p> Container Counter: (not ticking any checkbox will return all containers) </p>
           <div class="fillIns">
-            <input type="checkbox" name="dossier" id="dossierCheck">
-            <label for="dossierCheck">Dossier Id</label>
+            <input type="checkbox" id="identificationCheck" > Dossier ID
           </div>
           <div class="fillIns">
-            <input type="checkbox" name="company" id="companyCheck">
-            <label for="companyCheck">Company</label>
-          </div>
-          <div class="fillIns">
-            <input type="checkbox" name="yesno" id="customerCheck">
-            <label for="customerCheck">Customer</label>
+            <input type="checkbox" name="company" id="companyCheck" onclick="companyCheck()">
+            <label for="companyCheck">Shipping Company</label>
+            <div class="companyChoice" style="display:none; margin-left:20px;">
+              <input id="companyNameCheck" type="radio" name="optradio1" > Name <br>
+              <input id="companyIdCheck" type="radio" name="optradio1" > ID <br>
+              <input id="companyScacCheck" type="radio" name="optradio1" > SCAC <br>
+            </div>
           </div>
           <div class="fillIns">
             <input type="checkbox" name="yesno" id="locationCheck">
@@ -174,36 +173,95 @@
             <label for="transportCheck">Transport Mode</label>
           </div>
           <div class="fillIns">
+            <input type="checkbox" name="yesno" id="teuCheck">
+            <label for="teuCheck">TEU</label>
+          </div>
+          <div class="fillIns">
+            <input type="checkbox" id="weightCheck" onclick="weightCheck()">
+            <label for="weightCheck">Weight</label>
+            <div class="weightChoice" style="display:none; margin-left:20px;">
+              <input id="bruttoCheck" type="radio" name="optradio2" > Brutto <br>
+              <input id="nettoCheck" type="radio" name="optradio2" > Netto <br>
+            </div>
+          </div>
+          <div class="fillIns">
+            <input type="checkbox" name="yesno" id="dateCheck">
+            <label for="dateCheck">Insert Date?</label>
+          </div>
+
+          <div class="fillIns">
             <input type="button" value="Add" id="add">
           </div>
 
 
           <div class="fillIns">
-            <input id="dossierId" placeholder="Dossier Id" style="display:none"/>
-            <button id="dossierIdButton" style="display:none;margin-top:5px;">remove</button>
+            <label id="identification" style="display:none"> Dossier ID:
+              <input id="identificationFill" placeholder="insert num" />
+            </label>
+            <button id="identificationButton" style="display:none;margin-top:5px;">remove</button>
           </div>
           <div class="fillIns">
-            <input id="company" placeholder="Company(Optional)" style="display:none" />
+            <label id="companyName" style="display:none">Name:
+              <input id="companyNameFill" placeholder="Company Name" />
+            </label>
+            <label id="companyId" style="display:none">ID:
+              <input id="companyIdFill" placeholder="Company ID" />
+            </label>
+            <label id="companyScac" style="display:none">SCAC:
+              <input id="companyScacFill" placeholder="Company SCAC" />
+            </label>
             <button id="companyButton" style="display:none;margin-top:5px;">remove</button>
           </div>
           <div class="fillIns">
-            <input id="customer" placeholder="Customer(Optional)" size="25" style="display:none" />
-            <button id="customerButton" style="display:none;margin-top:5px;">remove</button>
-          </div>
-          <div class="fillIns">
-            <input id="location" placeholder="Location(Optional)" style="display:none" />
+            <label id="location" style="display:none">Order State:
+              <input id="locationFill" placeholder="Location" />
+            </label>
             <button id="locationButton" style="display:none;margin-top:5px;">remove</button>
           </div>
           <div class="fillIns">
-            <input id="orderState" placeholder="Order State" size="25" style="display:none" />
+            <label id="orderState" style="display:none">Order State:
+              <input id="orderStateFill" list="orderStateList" placeholder="Order State" name="orderState" />
+            </label>
             <button id="orderStateButton" style="display:none;margin-top:5px;">remove</button>
           </div>
           <div class="fillIns">
-            <input id="transport" placeholder="Transport Mode" size="25" style="display:none" />
+            <label id="transport" style="display:none">Transport Mode:
+              <input id="transportFill" placeholder="Transport Mode" size="25" />
+            </label>
             <button id="transportButton" style="display:none;margin-top:5px;">remove</button>
           </div>
 
+          <div class="fillIns">
+            <label id="teu" style="display:none">TEU:
+              <input id="teuFill" placeholder="teu number" size="25" />
+            </label>
+            <button id="teuButton" style="display:none;margin-top:5px;">remove</button>
+          </div>
 
+          <div class="fillIns">
+            <label id="brutto" style="display:none">Insert Brutto:
+              <input id="bruttofromFill" placeholder="From" size="25" />
+              <input id="bruttotoFill" placeholder="To" size="25" />
+            </label>
+            <label id="netto" style="display:none">Insert Netto:
+              <input id="nettofromFill" placeholder="From" size="25" />
+              <input id="nettotoFill" placeholder="To" size="25" />
+            </label>
+            <button id="weightButton" style="display:none;margin-top:5px;">remove</button>
+          </div>
+          <div class="fillIns">
+            <div>
+              <label id="dateFrom" style="display:none">From:
+                <input id="dateFromFill" type="date">
+              </label>
+              <label id="dateTo" style="display:none">To:
+                <input id="dateToFill" type="date">
+              </label>
+            </div>
+            <div>
+              <button id="dateButton" style="display:none;margin-top:5px;">remove</button>
+            </div>
+          </div>
           <div class="fillIns">
             <input type="button" value="Search" id="search" style="width:100px;height:30px;">
           </div>
