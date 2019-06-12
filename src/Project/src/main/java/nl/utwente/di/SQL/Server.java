@@ -51,7 +51,7 @@ public class Server{
 	public String bookingsPerDate(@QueryParam("fromD") Long dateLow,
 									@QueryParam("toD") Long dateHigh, 
 									@QueryParam("dosId") int dosId,
-									@QueryParam("OrderState") String OrdState,
+									@QueryParam("ordState") String OrdState,
 									@QueryParam("fromN") int nettoLow,
 									@QueryParam("toN") int nettoHigh,
 									@QueryParam("fromB") int bruttoLow,
@@ -65,8 +65,8 @@ public class Server{
 		int i = -1;
 		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false};
 		try {
-			String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'\"\n" + 
-					"+ \"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
+			String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
+					"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
 			if (dateLow != null) {
 				command += " AND createdOn > ?";
 				inserts[0] = true;
@@ -92,26 +92,26 @@ public class Server{
 				inserts[5] = true;
 			}
 			if (bruttoLow != 0) {
-				command += " AND bruttoWeight >= ?";
+				command += " AND brutoWeight >= ?";
 				inserts[6] = true;
 			}
 			if (bruttoHigh != 0) {
-				command += " AND bruttoWeight <= ?";
+				command += " AND brutoWeight <= ?";
 				inserts[7] = true;
 			}
 			if (teu != 0) {
 				command += " AND teu = ?";
 				inserts[8] = true;
 			}
-			if (teu != 0) {
+			if (company != null) {
 				command += " AND shippingCompany = ?";
 				inserts[9] = true;
 			}
-			if (teu != 0) {
+			if (compId != 0) {
 				command += " AND shippingCompanyId = ?";
 				inserts[10] = true;
 			}
-			if (teu != 0) {
+			if (compScac != null) {
 				command += " AND shippingCompanyScac = ?";
 				inserts[11] = true;
 			}
