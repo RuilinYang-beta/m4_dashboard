@@ -52,10 +52,6 @@ public class Server{
 									@QueryParam("toD") Long dateHigh, 
 									@QueryParam("dosId") int dosId,
 									@QueryParam("ordState") String OrdState,
-									@QueryParam("fromN") int nettoLow,
-									@QueryParam("toN") int nettoHigh,
-									@QueryParam("fromB") int bruttoLow,
-									@QueryParam("toB") int bruttoHigh,
 									@QueryParam("teu") int teu,
 									@QueryParam("shipComp") String company,
 									@QueryParam("shipCompId") int compId,
@@ -63,7 +59,7 @@ public class Server{
 		Statistics a = new Statistics();
 		a.connectToDatabase();
 		int i = -1;
-		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false};
+		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false};
 		try {
 			String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
 					"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
@@ -83,37 +79,21 @@ public class Server{
 				command += " AND orderState = ?";
 				inserts[3] = true;
 			}
-			if (nettoLow != 0) {
-				command += " AND nettoWeight >= ?";
-				inserts[4] = true;
-			}
-			if (nettoHigh != 0) {
-				command += " AND nettoWeight <= ?";
-				inserts[5] = true;
-			}
-			if (bruttoLow != 0) {
-				command += " AND brutoWeight >= ?";
-				inserts[6] = true;
-			}
-			if (bruttoHigh != 0) {
-				command += " AND brutoWeight <= ?";
-				inserts[7] = true;
-			}
 			if (teu != 0) {
 				command += " AND teu = ?";
-				inserts[8] = true;
+				inserts[4] = true;
 			}
 			if (company != null) {
 				command += " AND shippingCompany = ?";
-				inserts[9] = true;
+				inserts[5] = true;
 			}
 			if (compId != 0) {
 				command += " AND shippingCompanyId = ?";
-				inserts[10] = true;
+				inserts[6] = true;
 			}
 			if (compScac != null) {
 				command += " AND shippingCompanyScac = ?";
-				inserts[11] = true;
+				inserts[7] = true;
 			}
 			PreparedStatement stm = a.connection.prepareStatement("SELECT COUNT(*) FROM bookings " + command);
 			int col = 1;
@@ -130,27 +110,15 @@ public class Server{
 				stm.setObject(col, (String) OrdState);
 				col += 1;
 			} if (inserts[4]) {
-				stm.setObject(col, (int) nettoLow);
-				col += 1;
-			} if (inserts[5]) {
-				stm.setObject(col, (int) nettoHigh);
-				col += 1;
-			} if (inserts[6]) {
-				stm.setObject(col, (int) bruttoLow);
-				col += 1;
-			} if (inserts[7]) {
-				stm.setObject(col, (int) bruttoHigh);
-				col += 1;
-			} if (inserts[8]) {
 				stm.setObject(col, (int) teu);
 				col += 1;
-			} if (inserts[9]) {
+			} if (inserts[5]) {
 				stm.setObject(col, (String) company);
 				col += 1;
-			} if (inserts[10]) {
+			} if (inserts[6]) {
 				stm.setObject(col, (int) compId);
 				col += 1;
-			} if (inserts[11]) {
+			} if (inserts[7]) {
 				stm.setObject(col, (String) compScac);
 				col += 1;
 			}
