@@ -22,13 +22,8 @@ public class Database {
 		connectToDatabase();
 	}
 	
-	public JSONArray parseJson(String data) {
-		//JSONParser parser = new JSONParser();
-		//JSONObject json = null;
-		JSONArray jsonArr = new JSONArray(data);
-		return jsonArr;
-	}
-	
+	//Standard connection: execute this to open the public variable connection
+	//connects to the SQL database
 	public void connectToDatabase() {
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -49,6 +44,12 @@ public class Database {
 		}
 	}
 	
+	//Instantiates HTTP request and SQL insertion for the database
+	//requires 3 variables:
+	//path=table, so either "locations", "bookings", "linestops", or "actions"
+	//reset=reset the table, ergo creates a new one
+	//offset=start value, if you dont reset table, we dont need all new info
+	//offset can be either int or Long
 	public void makeTable(String path, boolean RESET, Object offset) {
 		connectToDatabase();
 		int i = 0;
@@ -120,9 +121,15 @@ public class Database {
 			if (RESET) {
 				createDatabase(SQL_LINE + OPT_LINE);
 			}
-			long time = 1507784399;
+			
+			Long lower = (Long) offset;
+			if (lower == 0) {
+				lower = new Long(1500000000);
+			}
+			Date date = new Date();
+			long time = date.getTime()/1000;
 			List<JSONObject> temp;
-			temp = (List<JSONObject>) getData(GET_URL + path + "?modality=BARGE&lowerBound=" + 1160762044 + "&upperBound=" + time, false);
+			temp = (List<JSONObject>) getData(GET_URL + path + "?modality=BARGE&lowerBound=" + lower + "&upperBound=" + time, false);
 			if (temp.size() != 1) {
 				insertLinestops(temp);
 			}
@@ -131,9 +138,13 @@ public class Database {
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (NullPointerException z) {
+			z.printStackTrace();
 		}
 	}
 	
+	//Executes sql command.
+	//var command is full SQL create query
 	private void createDatabase(String command) {
 		Statement statement = null;
 		try {
@@ -149,6 +160,8 @@ public class Database {
 			System.out.println("error");
 		}
 	}
+	
+	//insertion of actions into SQL
 	private void insertAction(List<String> data) {
 		StringBuffer execute = new StringBuffer();
 		Statement s = null;
@@ -164,6 +177,7 @@ public class Database {
 		
 	}
 	
+	//insertion of locations in SQL
 	private void insertLocation(List<JSONObject> data, String act) {
 		String[] options = OPT_LOC.split(",");
 		String[] addOptions = OPT_ADD.split(",");
@@ -282,6 +296,7 @@ public class Database {
 		System.out.println("finished");
 		}
 	
+	//insertion of linestops in SQL
 	private void insertLinestops(List<JSONObject> data) {
 		String[] options = OPT_LINE.split(",");
 		StringBuffer execute = new StringBuffer();
@@ -324,6 +339,7 @@ public class Database {
 		System.out.println("finished Linestops");
 	}
 	
+	//insertion of bookings in SQL
 	private void insertDatabase(List<JSONObject> data, String command, String opts) {
 		String[] options = opts.split(",");
 		StringBuffer execute = new StringBuffer();
@@ -367,19 +383,20 @@ public class Database {
 	}
 	
 	public static void main(String args[]) {
-		//d.update(false);
 		Database d = new Database();
-		//d.makeTable("actions", false, 225646);
-		d.makeTable("linestops", true, 0);
-//		String path = "https://module4t2-test.cofanostack.com/api/bigbrother/actions";
-//		List<String> temp = (List<String>) getData(path, true);
-//		System.out.println(temp.get(0));
+		//set to true if database needs to be reset
+		d.update(false);
 	}
 	
+	//initiates all updates.
+	//locations get reset every time
+	//bookings and linestops only get updated normally
 	public void update(boolean RESET) {
 		updateBook(RESET);
 		updateLoc();
+		updateLines(RESET);
 	}
+	
 	private void updateBook(boolean RESET) {
 		connectToDatabase();
 		Long offBook = null;
@@ -405,7 +422,33 @@ public class Database {
 	private void updateLoc() {
 		makeTable("locations", true, 0);
 	}
-	
+	private void updateLines(boolean RESET) {
+		String command = "SELECT MAX(sta) AS c FROM linestops";
+		Timestamp x = null;
+		try {
+			connectToDatabase();
+			Statement s = connection.createStatement();
+			ResultSet rs = s.executeQuery(command);
+			while (rs.next()) {
+				x = (Timestamp)rs.getObject("c");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		};
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			
+		}
+		if (RESET) {
+			makeTable("linestops", RESET, 0);
+		} else {
+			makeTable("linestops", RESET, (x.getTime())/1000);
+		}
+		
+	}
+
+	//execute HTTP request and return either Array of JSON objects or String objects
 	public static Object getData(String path, boolean action) {
 		URL url;
 		List<JSONObject> o = null;
@@ -463,7 +506,7 @@ public class Database {
 		}
 		return temp;
 	}
-	
+	//JSON parser, creates list of entities for ACTIONS
 	public static List<String> parseActions(String json) {
 		System.out.println(json.substring(2,3));
 		List<String> temp = new ArrayList<String>();
