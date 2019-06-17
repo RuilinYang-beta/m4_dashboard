@@ -1,10 +1,6 @@
 package nl.utwente.di.SQL;
 
 import java.sql.*;
-import java.io.IOException;
-import java.net.*;
-import java.io.*;
-import java.time.Instant;
 
 public class testSql {
 	public Connection connection;
@@ -29,31 +25,11 @@ public class testSql {
 		}
 	}
 	
-	public static void maino(String[] args) {
-		testSql d = new testSql();
-		d.connectToDatabase();
-		String command = "SELECT COUNT(DISTINCT a.locationId) AS c, COUNT(DISTINCT b.locationId) AS d FROM locations a, address b;";
-		try {
-			Statement s = d.connection.createStatement();
-			ResultSet rs = s.executeQuery(command);
-			while (rs.next()) {
-				System.out.println(rs.getInt("c"));
-				System.out.println(rs.getInt("d"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		try {
-			d.connection.close();
-		} catch (SQLException e) {
-			
-		}
-	}
-	
 	public static void main(String[] args) {
 		testSql d = new testSql();
 		d.connectToDatabase();
-		d.createStatisticsTable("name");
+		d.Test();
+		
 		try {
 			d.connection.close();
 		} catch (SQLException e) {
@@ -61,56 +37,16 @@ public class testSql {
 		}
 	}
 	
-	public void createStatisticsTable(String name) {
-//		String command = "CREATE TABLE " + name + " (month TIMSTAMP, amount INT)";
-//		try {
-//			Statement s = connection.createStatement();
-//			s.executeQuery(command);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-		
-//		String command = "SELECT MIN(createdOn) AS c FROM bookings;";
-//		Timestamp date = null;
-//		try {
-//			Statement s = connection.createStatement();
-//			ResultSet rs = s.executeQuery(command);
-//			while (rs.next()) {
-//				date = (Timestamp) rs.getObject("c");
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		System.out.println(date);
-		
-		URL url;
-		HttpURLConnection con = null;
+	public void Test() {
+		String command = "SELECT COUNT(*) AS c FROM linestops LIMIT 1;";
 		try {
-			Instant instant = Instant.now();
-			long timeStampMillis = instant.toEpochMilli();
-			url = new URL("http://localhost:8080/Project/rest/sql/select?from=1253788820&to=1503788820&dosId=0");
-			con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("GET");
-			System.out.println(con.getResponseCode());
-			BufferedReader in = new BufferedReader(
-			new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer content = new StringBuffer();
-			while ((inputLine = in.readLine()) != null) {
-			    content.append(inputLine);
+			Statement s = connection.createStatement();
+			ResultSet rs = s.executeQuery(command);
+			while (rs.next()) {
+				System.out.println(rs.getInt("c"));
 			}
-			in.close();
-			System.out.println(content.toString());
-		} catch (ProtocolException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-		
 	}
 }

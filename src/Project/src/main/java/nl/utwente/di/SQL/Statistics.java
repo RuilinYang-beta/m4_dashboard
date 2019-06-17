@@ -28,7 +28,7 @@ public class Statistics {
 	public static void main(String[] args) {
 		Statistics s = new Statistics();
 		s.connectToDatabase();
-		ResultSet rs = s.execute("Select CONCAT(substring(date, 1, 5), '0', substring(date, 6, 1)) AS c FROM st_book WHERE LENGTH(date) = 7;");
+		ResultSet rs = s.execute("SELECT DISTINCT(orderState) as c FROM bookings;");
 		try {
 			while (rs.next()) {
 				System.out.println(rs.getString("c"));
