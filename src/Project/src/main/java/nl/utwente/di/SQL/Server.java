@@ -165,6 +165,182 @@ public class Server{
 		return i + "";
 	}
 	
+	@GET
+	@Path("/brutoWeight")
+	public String brutoWeight(@QueryParam("fromD") Long dateLow,
+									@QueryParam("toD") Long dateHigh, 
+									@QueryParam("dosId") int dosId,
+									@QueryParam("ordState") String OrdState,
+									@QueryParam("teu") int teu,
+									@QueryParam("shipComp") String company,
+									@QueryParam("shipCompId") int compId,
+									@QueryParam("shipCompScac") String compScac) {
+		Statistics a = new Statistics();
+		a.connectToDatabase();
+		int i = -1;
+		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false};
+		try {
+			String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
+					"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
+			if (dateLow != null) {
+				command += " AND createdOn > ?";
+				inserts[0] = true;
+			}
+			if (dateHigh != null) {
+				command += " AND createdOn < ?";
+				inserts[1] = true;
+			}
+			if (dosId != 0) {
+				command += " AND dossierId = ?";
+				inserts[2] = true;
+			}
+			if (OrdState != null) {
+				command += " AND orderState = ?";
+				inserts[3] = true;
+			}
+			if (teu != 0) {
+				command += " AND teu = ?";
+				inserts[4] = true;
+			}
+			if (company != null) {
+				command += " AND shippingCompany = ?";
+				inserts[5] = true;
+			}
+			if (compId != 0) {
+				command += " AND shippingCompanyId = ?";
+				inserts[6] = true;
+			}
+			if (compScac != null) {
+				command += " AND shippingCompanyScac = ?";
+				inserts[7] = true;
+			}
+			PreparedStatement stm = a.connection.prepareStatement("SELECT SUM(brutoWeight) FROM bookings " + command);
+			int col = 1;
+			if (inserts[0]) {
+				stm.setObject(col,  new Timestamp(dateLow * 1000));
+				col += 1;
+			} if (inserts[1]) {
+				stm.setObject(col,  new Timestamp(dateHigh * 1000));
+				col += 1;
+			} if (inserts[2]) {
+				stm.setObject(col, (int) dosId);
+				col += 1;
+			} if (inserts[3]) {
+				stm.setObject(col, (String) OrdState);
+				col += 1;
+			} if (inserts[4]) {
+				stm.setObject(col, (int) teu);
+				col += 1;
+			} if (inserts[5]) {
+				stm.setObject(col, (String) company);
+				col += 1;
+			} if (inserts[6]) {
+				stm.setObject(col, (int) compId);
+				col += 1;
+			} if (inserts[7]) {
+				stm.setObject(col, (String) compScac);
+				col += 1;
+			}
+			ResultSet x = stm.executeQuery();
+			while (x.next()) {
+				i = x.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println("SQL error");
+			e.printStackTrace();
+		}
+		return i + "";
+	}
+	
+	@GET
+	@Path("/nettoWeight")
+	public String nettoWeight(@QueryParam("fromD") Long dateLow,
+									@QueryParam("toD") Long dateHigh, 
+									@QueryParam("dosId") int dosId,
+									@QueryParam("ordState") String OrdState,
+									@QueryParam("teu") int teu,
+									@QueryParam("shipComp") String company,
+									@QueryParam("shipCompId") int compId,
+									@QueryParam("shipCompScac") String compScac) {
+		Statistics a = new Statistics();
+		a.connectToDatabase();
+		int i = -1;
+		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false};
+		try {
+			String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
+					"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
+			if (dateLow != null) {
+				command += " AND createdOn > ?";
+				inserts[0] = true;
+			}
+			if (dateHigh != null) {
+				command += " AND createdOn < ?";
+				inserts[1] = true;
+			}
+			if (dosId != 0) {
+				command += " AND dossierId = ?";
+				inserts[2] = true;
+			}
+			if (OrdState != null) {
+				command += " AND orderState = ?";
+				inserts[3] = true;
+			}
+			if (teu != 0) {
+				command += " AND teu = ?";
+				inserts[4] = true;
+			}
+			if (company != null) {
+				command += " AND shippingCompany = ?";
+				inserts[5] = true;
+			}
+			if (compId != 0) {
+				command += " AND shippingCompanyId = ?";
+				inserts[6] = true;
+			}
+			if (compScac != null) {
+				command += " AND shippingCompanyScac = ?";
+				inserts[7] = true;
+			}
+			PreparedStatement stm = a.connection.prepareStatement("SELECT SUM(nettoWeight) FROM bookings " + command);
+			int col = 1;
+			if (inserts[0]) {
+				stm.setObject(col,  new Timestamp(dateLow * 1000));
+				col += 1;
+			} if (inserts[1]) {
+				stm.setObject(col,  new Timestamp(dateHigh * 1000));
+				col += 1;
+			} if (inserts[2]) {
+				stm.setObject(col, (int) dosId);
+				col += 1;
+			} if (inserts[3]) {
+				stm.setObject(col, (String) OrdState);
+				col += 1;
+			} if (inserts[4]) {
+				stm.setObject(col, (int) teu);
+				col += 1;
+			} if (inserts[5]) {
+				stm.setObject(col, (String) company);
+				col += 1;
+			} if (inserts[6]) {
+				stm.setObject(col, (int) compId);
+				col += 1;
+			} if (inserts[7]) {
+				stm.setObject(col, (String) compScac);
+				col += 1;
+			}
+			ResultSet x = stm.executeQuery();
+			while (x.next()) {
+				i = x.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println("SQL error");
+			e.printStackTrace();
+		}
+		return i + "";
+	}
+	
+	
+	
 	public static JSONArray parseJSON(ResultSet rs) {
 		JSONArray json = new JSONArray();
 		try {
