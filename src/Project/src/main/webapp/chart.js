@@ -404,6 +404,88 @@ function getBookFilter(){
 
 };
 
+function getBrutoFilter(){
+	var http = new XMLHttpRequest();
+	var dateFrom = new Date($('#dateFromFill').val());
+	var dateTo = new Date($('#dateToFill').val());
+	var fromD = "";
+	var toD = "";
+	if(dateFrom != "Invalid Date" && dateTo != "Invalid Date") {
+		fromD = dateFrom.getTime() / 1000;
+		toD = dateTo.getTime() / 1000;	
+	}
+	var dosId = $('#identificationFill').val();
+	var ordState = $('#orderStateFill').val();
+	var teu = $('#teuFill').val();
+	var shipComp= $('#companyNameFill').val();
+	var shipCompId = $('#companyIdFill').val();
+	var shipCompScac = $('#companyScacFill').val();
+	var list = {fromD, toD, dosId, ordState, fromN, toN, fromB, toB, teu, shipComp, shipCompId, shipCompScac};
+	var url = "http://localhost:8080/Project/rest/sql/brutoWeight?";
+	var x
+	for(x in list ){
+		if(list[x] != ""){
+			url += x + "=" + list[x];
+			if(url[url.length - 1] != "&"){
+				url += "&";
+			}
+		}
+		var newUrl = url.substring(0, url.length - 1);
+	}
+	alert(newUrl);
+	http.onreadystatechange = function(){
+		  if (this.readyState == 4 && this.status == 200) {
+			  var text = this.responseText;
+			  alert(text);
+		  }
+	};
+
+	http.open("GET", url);
+	http.send();
+
+};
+
+function getNettoFilter(){
+	var http = new XMLHttpRequest();
+	var dateFrom = new Date($('#dateFromFill').val());
+	var dateTo = new Date($('#dateToFill').val());
+	var fromD = "";
+	var toD = "";
+	if(dateFrom != "Invalid Date" && dateTo != "Invalid Date") {
+		fromD = dateFrom.getTime() / 1000;
+		toD = dateTo.getTime() / 1000;	
+	}
+	var dosId = $('#identificationFill').val();
+	var ordState = $('#orderStateFill').val();
+	var teu = $('#teuFill').val();
+	var shipComp= $('#companyNameFill').val();
+	var shipCompId = $('#companyIdFill').val();
+	var shipCompScac = $('#companyScacFill').val();
+	var list = {fromD, toD, dosId, ordState, fromN, toN, fromB, toB, teu, shipComp, shipCompId, shipCompScac};
+	var url = "http://localhost:8080/Project/rest/sql/nettoWeight?";
+	var x
+	for(x in list ){
+		if(list[x] != ""){
+			url += x + "=" + list[x];
+			if(url[url.length - 1] != "&"){
+				url += "&";
+			}
+		}
+		var newUrl = url.substring(0, url.length - 1);
+	}
+	alert(newUrl);
+	http.onreadystatechange = function(){
+		  if (this.readyState == 4 && this.status == 200) {
+			  var text = this.responseText;
+			  alert(text);
+		  }
+	};
+
+	http.open("GET", url);
+	http.send();
+
+};
+
 $(document).ready(function() {
   $("#search").click(function() {
     getBookFilter();
