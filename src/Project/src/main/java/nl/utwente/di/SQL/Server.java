@@ -24,7 +24,7 @@ public class Server{
 	public String getYears() {
 		Statistics a = new Statistics();
 		a.connectToDatabase();
-		ResultSet x = a.execute("SELECT date, counter FROM st_book WHERE date <> '_' ORDER BY date DESC LIMIT 10;");
+		ResultSet x = a.execute("SELECT date, counter FROM st_book WHERE date <> '_' ORDER BY date DESC;");
 		return parseToStringarray(x);
 	}
 	
