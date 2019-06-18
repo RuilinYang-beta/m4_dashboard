@@ -1,1 +1,73 @@
-<a href="mainDashboard.html">hello</a>
+<html lang = "en" dir = "ltr"> <!--ltr == left to right-->
+  <head>
+    <meta charset = "utf-8">
+    <title> Cofano </title>
+    <link rel = "stylesheet" href= "style.css">
+    <meta name="google-signin-client_id" content="1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <style>
+    .btn {
+      display: none;
+      margin: 300px 600px;
+    }
+
+    .g-signin2{
+      margin: 300px 600px;
+    }
+
+    .btn2 {
+      display: none;
+      margin: 300px 600px
+    }
+
+    </style>
+
+
+  </head>
+  <body>
+<form class="img">
+  <img src ="cofano.png" width="500">
+</form>
+
+<div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
+
+<script>
+
+function onSignIn(googleUser){
+var profile=googleUser.getBasicProfile();
+$(".btn").css("display","block");
+$(".g-signin2").css("display","none");
+$(".btn2").css("display","block");
+
+var id_token = googleUser.getAuthResponse().id_token;
+
+var xhr = new XMLHttpRequest();
+xhr.open('POST', 'https://localhost/tokensignin');
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.onload = function() {
+  console.log('Signed in as: ' + xhr.responseText);
+};
+xhr.send('idtoken=' + id_token);
+}
+
+</script>
+
+<a href="mainDashboard.html" class="btn btn-default">Continue</a>
+
+<a href="#" onclick="signOut();" class="btn2 btn-secondary text-center">Sign out</a>
+<script>
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      $(".btn2").css("display","none");
+      $(".btn").css("display","none");
+      $(".g-signin2").css("display","block");
+      alert('User signed out.');
+    });
+  }
+</script>
+
+  </body>
+</html>
