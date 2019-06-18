@@ -272,31 +272,42 @@ body {
     FILTERPAGE
 ----------------------------------------------------- */
 .filters {
-  margin-top: 40px;
+  margin: 50px 0 50px 50px;
+  border: 1px solid #dddddd;
+  width: 40%;
+  display:inline-block;
+  vertical-align: top;
+  background-color: #F9E7D0;
+  border-radius: 25px;
+  box-shadow: 2px 2px 1px grey;
+  
 }
 
 .fillIns {
   margin-top: 10px;
+  padding-left: 30px;
 }
 
-.underlineButton {
-  overflow: visible;
-  /* Shrinkwrap the text in IE7- */
-  margin: 0;
-  padding: 0;
-  border: 0;
-  color: #8f1f08;
-  /* Match your link colour */
-  background: transparent;
-  font: inherit;
-  /* Inherit font settings (doesn’t work in IE7-) */
-  line-height: normal;
-  /* Override line-height to avoid spacing issues */
-  text-decoration: underline;
-  /* Make it look linky */
-  cursor: pointer;
-  /* Buttons don’t make the cursor change in all browsers */
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 15px;
+  margin-bottom:20px;
 }
+
+td, th {
+  border: 1px solid black;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
 
 /* ---------------------------------------------------
     SETTINGS
@@ -402,18 +413,4 @@ input[name="r"] {
   margin-left: -20%;
 }
 
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
 
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
