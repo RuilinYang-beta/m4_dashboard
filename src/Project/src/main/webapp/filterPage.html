@@ -38,11 +38,12 @@
     <nav id="sidebar">
       <div class="sidebar-header">
         <div class="logo">
-          <img src="cofano.png" alt="Cofano" width="200">
+          <a href="mainDashboard.html"><img src="cofano.png" alt="Cofano" width="200"></a>
+          
         </div>
 
         <div class="profileIcon">
-          <a class="btn" href="mainDashboard.html">
+          <a class="btn" href="index.html">
             <i class="fas fa-user"></i>
           </a>
         </div>
@@ -74,90 +75,36 @@
         </div>
       </nav>
       <div class="content-container-fluid">
-        <p> Some pre-made filters </p>
-        <div class="my-3" style="height:150px">
-          <strong>Booking Filters</strong>
-          <div class="radio">
-            <input id="radio1" type="radio" name="optradio" checked>
-            <label for="radio1">Bookings over Year</label>
-          </div>
-          <div class="radio">
-            <input id="radio2" type="radio" name="optradio">
-            <label for="radio2">Bookings over Customers</label>
-          </div>
-          <div class="radio">
-            <input id="radio3" type="radio" name="optradio">
-            <label for="radio3">Bookings over others</label>
-          </div>
-          <div class="radio">
-            <input id="radio4" type="radio" name="optradio">
-            <label for="radio4">Bookings per Modes of transport</label>
-          </div>
-          <div>
-            <input type="button" value="Generate Statistics" id="generate">
-          </div>
-        </div>
-
-        <div class="cols-sample-area" style="padding-top: 30px;">
-          <div class="row">
-            <div class="col">
-              <canvas id="container"></canvas>
-            </div>
-          </div>
-        </div>
         <div class="filters">
-          <p> Generate Charts </p>
-          <div>
-            <label>Order State:
-              <input list="orderStateList" name="orderState" id="orderState1" />
-            </label>
-            <datalist id="orderStateList">
-              <option value="READY">
-              <option value="FINISHED">
-              <option value="PLANNED">
-            </datalist>
+          <p style="padding-left:30px; padding-top:30px;"> Filters:  </p>
+          <div class ="fillIns">
+          	<div>
+	          <label id="dateFrom">From:
+	            <input id="dateFromFill" type="date">*
+	          </label>
+	          <label id="dateTo">To:
+	            <input id="dateToFill" type="date">*
+	          </label>
+	        </div>
+	        <div>
+	          *Must be filled.
+	        </div>
           </div>
-          <div>
-            <!--
-            <label>Amount of Booking per:
-              <input list="bookingsperList" name="bookingsper" id="bookingsper" />
-            </label>
-            <datalist id="bookingsperList">
-              <option value="Company">
-              <option value="Mode of Transport">
-              <option value="Customer">
-              <option value="Weight">
-              <option value="Area">
-              <option value="Etc">
-            </datalist>
-          -->
-          </div>
-          <div>
-            <label>From:
-              <input type="date" name="from" id="from">
-            </label>
-            <label>To:
-              <input type="date" name="to" id="to">
-            </label>
-          </div>
-          <div>
-            <input type="button" value="Generate" id="generate1">
-          </div>
-          <div id="testField">
-          </div>
-        </div>
-        <div class="filters">
-          <p> Container Counter: (not ticking any checkbox will return all containers) </p>
+          
           <div class="fillIns">
-            <input type="checkbox" id="identificationCheck" > Dossier ID
+            <input type="checkbox" id="identificationCheck" >
+            <label for="identificationCheck"> Dossier ID</label>
           </div>
           <div class="fillIns">
             <input type="checkbox" name="company" id="companyCheck" onclick="companyCheck()">
             <label for="companyCheck">Shipping Company</label>
             <div class="companyChoice" style="display:none; margin-left:20px;">
-              <input id="companyNameCheck" type="radio" name="optradio1" > Name <br>
-              <input id="companyIdCheck" type="radio" name="optradio1" > ID <br>
-              <input id="companyScacCheck" type="radio" name="optradio1" > SCAC <br>
+              <input id="companyNameCheck" type="radio" name="optradio1" > 
+              <label for="companyNameCheck"> Name</label>
+              <input id="companyIdCheck" type="radio" name="optradio1" >
+              <label for="companyIdCheck"> ID </label>
+              <input id="companyScacCheck" type="radio" name="optradio1" >
+              <label for="companyScacCheck"> SCAC</label>
             </div>
           </div>
           <div class="fillIns">
@@ -175,18 +122,6 @@
           <div class="fillIns">
             <input type="checkbox" name="yesno" id="teuCheck">
             <label for="teuCheck">TEU</label>
-          </div>
-          <div class="fillIns">
-            <input type="checkbox" id="weightCheck" onclick="weightCheck()">
-            <label for="weightCheck">Weight</label>
-            <div class="weightChoice" style="display:none; margin-left:20px;">
-              <input id="bruttoCheck" type="radio" name="optradio2" > Brutto <br>
-              <input id="nettoCheck" type="radio" name="optradio2" > Netto <br>
-            </div>
-          </div>
-          <div class="fillIns">
-            <input type="checkbox" name="yesno" id="dateCheck">
-            <label for="dateCheck">Insert Date?</label>
           </div>
 
           <div class="fillIns">
@@ -213,7 +148,7 @@
             <button id="companyButton" style="display:none;margin-top:5px;">remove</button>
           </div>
           <div class="fillIns">
-            <label id="location" style="display:none">Order State:
+            <label id="location" style="display:none">Location:
               <input id="locationFill" placeholder="Location" />
             </label>
             <button id="locationButton" style="display:none;margin-top:5px;">remove</button>
@@ -221,6 +156,11 @@
           <div class="fillIns">
             <label id="orderState" style="display:none">Order State:
               <input id="orderStateFill" list="orderStateList" placeholder="Order State" name="orderState" />
+              <datalist id="orderStateList">
+              <option value="READY">
+              <option value="FINISHED">
+              <option value="PLANNED">
+            </datalist>
             </label>
             <button id="orderStateButton" style="display:none;margin-top:5px;">remove</button>
           </div>
@@ -238,49 +178,17 @@
             <button id="teuButton" style="display:none;margin-top:5px;">remove</button>
           </div>
 
-          <div class="fillIns">
-            <label id="brutto" style="display:none">Insert Brutto:
-              <input id="bruttofromFill" placeholder="From" size="25" />
-              <input id="bruttotoFill" placeholder="To" size="25" />
-            </label>
-            <label id="netto" style="display:none">Insert Netto:
-              <input id="nettofromFill" placeholder="From" size="25" />
-              <input id="nettotoFill" placeholder="To" size="25" />
-            </label>
-            <button id="weightButton" style="display:none;margin-top:5px;">remove</button>
-          </div>
-          <div class="fillIns">
-            <div>
-              <label id="dateFrom" style="display:none">From:
-                <input id="dateFromFill" type="date">
-              </label>
-              <label id="dateTo" style="display:none">To:
-                <input id="dateToFill" type="date">
-              </label>
-            </div>
-            <div>
-              <button id="dateButton" style="display:none;margin-top:5px;">remove</button>
-            </div>
-          </div>
-          <div class="fillIns">
+          <div style="padding-left:30px; padding-top:15px; padding-bottom: 30px;">
             <input type="button" value="Search" id="search" style="width:100px;height:30px;">
           </div>
-
+        </div>
+        <div class="filters">
+          <div class="fillIns" id="result">Results:</div>
+          <table class ="resultTable" id="resultTab" ></table>
         </div>
       </div>
     </div>
-
-
-
-
-
   </div>
-  </div>
-  </div>
-  <script>
-    $(chart1());
-    createEditableSelect(document.forms[0].myText);
-  </script>
 
 
 
