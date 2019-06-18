@@ -159,8 +159,6 @@ function chart4() {
 }
 
 $(document).ready(function() {
-  $('#weightfromFill').val("");
-  $('#weighttoFill').val("");
   $('#orderStateFill').val("");
   $('#companyFill').val("");
   $('#locationFill').val("");
@@ -227,26 +225,6 @@ function chooseCheckBox() {
     document.getElementById("teu").style.display = "block";
     document.getElementById("teuButton").style.display = "inline";
   }
-  if ($("#weightCheck").is(":checked")) {
-    if($("#bruttoCheck").is(":checked")) {
-        document.getElementById("brutto").style.display = "block";
-        document.getElementById("netto").style.display = "none";
-    } else {
-        document.getElementById("brutto").style.display = "none";
-        document.getElementById("netto").style.display = "block";
-    }
-    $('#bruttofromFill').val('');
-    $('#bruttotoFill').val('');
-    $('#nettofromFill').val('');
-    $('#nettotoFill').val('');
-    document.getElementById("weightButton").style.display = "inline";
-  }
-  if ($("#dateCheck").is(":checked")) {
-    document.getElementById("dateFrom").style.display = "inline";
-    document.getElementById("dateTo").style.display = "inline";
-    document.getElementById("dateButton").style.display = "inline";
-  }
-
 }
 
 $(document).ready(function() {
@@ -259,16 +237,6 @@ function companyCheck() {
   var buttons = document.querySelector('.companyChoice');
   document.getElementById("companyNameCheck").checked = true;
   if (document.getElementById("companyCheck").checked == true) {
-    buttons.style.display = 'block';
-  } else {
-    buttons.style.display = 'none';
-  }
-};
-
-function weightCheck() {
-  var buttons = document.querySelector('.weightChoice');
-  document.getElementById("brutto").checked = true;
-  if (document.getElementById("weightCheck").checked == true) {
     buttons.style.display = 'block';
   } else {
     buttons.style.display = 'none';
@@ -313,51 +281,8 @@ $(document).ready(function() {
     document.getElementById("teu").style.display = "none";
     document.getElementById("teuButton").style.display = "none";
   });
-  $("#weightButton").click(function() {
-    $('#bruttofromFill').val('');
-    $('#bruttotoFill').val('');
-    $('#nettofromFill').val('');
-    $('#nettotoFill').val('');
-    document.getElementById("brutto").style.display = "none";
-    document.getElementById("netto").style.display = "none";
-    document.getElementById("weightButton").style.display = "none";
-  });
-  $("#dateButton").click(function() {
-    $('#dateFromFill').val('');
-    document.getElementById("dateFrom").style.display = "none";
-    $('#dateToFill').val('');
-    document.getElementById("dateTo").style.display = "none";
-    document.getElementById("dateButton").style.display = "none";
-  });
 });
 
-
-function getSearchByValues() {
-  var booking = $('#identificationFill').val();;
-  var dossier = $('#identification1Fill').val();;
-  var bruttoFrom;
-  var bruttoTo;
-  var nettoFrom;
-  var nettoTo;
-  if (document.getElementById("brutto").checked == true) {
-    bruttoFrom = $('#weightfromFill').val();
-    bruttoTo = $('#weighttoFill').val();
-    netto = "empty";
-  } else {
-    brutto = "empty";
-    nettoFrom = $('#weightfromFill').val();
-    nettoTo = $('#weighttoFill').val();
-  }
-  var order = $('#orderStateFill').val();
-  var company = $('#companyFill').val();
-  var location = $('#locationFill').val();
-  var dateFrom = new Date($('#dateFromFill').val());
-  var fromD = dateFrom.getTime() / 1000;
-  var dateTo = new Date($('#dateToFill').val());
-  var toD = dateTo.getTime() / 1000;
-  var result = "ID: " + booking + " " + dossier + "Weight: From: " + bruttoFrom + " To: " + bruttoTo + " Company: " + company + " Location: " + location + "Order State: " + order + " From Date: " + fromD + " To Date: " + toD;
-  document.getElementById("testField").innerHTML = result;
-};
 
 function getBookFilter(){
 	var http = new XMLHttpRequest();
@@ -370,16 +295,12 @@ function getBookFilter(){
 		toD = dateTo.getTime() / 1000;	
 	}
 	var dosId = $('#identificationFill').val();
-	var fromN = $('#nettofromFill').val();
-	var toN = $('#nettotoFill').val();
-	var fromB = $('#bruttofromFill').val();
-	var toB = $('#bruttotoFill').val();
 	var ordState = $('#orderStateFill').val();
 	var teu = $('#teuFill').val();
 	var shipComp= $('#companyNameFill').val();
 	var shipCompId = $('#companyIdFill').val();
 	var shipCompScac = $('#companyScacFill').val();
-	var list = {fromD, toD, dosId, ordState, fromN, toN, fromB, toB, teu, shipComp, shipCompId, shipCompScac};
+	var list = {fromD, toD, dosId, ordState, teu, shipComp, shipCompId, shipCompScac};
 	var url = "http://localhost:8080/Project/rest/sql/select?";
 	var x
 	for(x in list ){
@@ -420,7 +341,7 @@ function getBrutoFilter(){
 	var shipComp= $('#companyNameFill').val();
 	var shipCompId = $('#companyIdFill').val();
 	var shipCompScac = $('#companyScacFill').val();
-	var list = {fromD, toD, dosId, ordState, fromN, toN, fromB, toB, teu, shipComp, shipCompId, shipCompScac};
+	var list = {fromD, toD, dosId, ordState, teu, shipComp, shipCompId, shipCompScac};
 	var url = "http://localhost:8080/Project/rest/sql/brutoWeight?";
 	var x
 	for(x in list ){
@@ -461,7 +382,7 @@ function getNettoFilter(){
 	var shipComp= $('#companyNameFill').val();
 	var shipCompId = $('#companyIdFill').val();
 	var shipCompScac = $('#companyScacFill').val();
-	var list = {fromD, toD, dosId, ordState, fromN, toN, fromB, toB, teu, shipComp, shipCompId, shipCompScac};
+	var list = {fromD, toD, dosId, ordState, teu, shipComp, shipCompId, shipCompScac};
 	var url = "http://localhost:8080/Project/rest/sql/nettoWeight?";
 	var x
 	for(x in list ){
@@ -489,8 +410,6 @@ function getNettoFilter(){
 $(document).ready(function() {
   $("#search").click(function() {
     getBookFilter();
+    //getBrutoFilter();
   })
 });
-
-
-
