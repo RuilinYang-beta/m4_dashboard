@@ -34,8 +34,8 @@ public class Server{
 		String res = "";
 		try {
 			while (set.next()) {
-				res1.append(set.getString("date")+";");
-				res2.append(set.getInt("counter")+";"); 
+				res1.append(set.getObject(1)+";");
+				res2.append(set.getObject(2)+";"); 
 			}
 			res1.setLength(res1.length()-1);
 			res2.setLength(res2.length()-1);
@@ -51,263 +51,101 @@ public class Server{
 	public String bookingsPerDate(@QueryParam("fromD") Long dateLow,
 									@QueryParam("toD") Long dateHigh, 
 									@QueryParam("dosId") int dosId,
-									@QueryParam("ordState") String OrdState,
+									@QueryParam("ordState") String ordState,
 									@QueryParam("teu") int teu,
 									@QueryParam("shipComp") String company,
 									@QueryParam("shipCompId") int compId,
-									@QueryParam("shipCompScac") String compScac) {
+									@QueryParam("shipCompScac") String compScac,
+									@QueryParam("goal") String goal) {
+		Object[] inserts = new Object[]{null, null, null, null, null, null, null, null};
+		String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
+				"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
+		if (dateLow != null) {
+			command += " AND createdOn > ?";
+			inserts[0] = dateLow;
+		}
+		if (dateHigh != null) {
+			command += " AND createdOn < ?";
+			inserts[1] = dateHigh;
+		}
+		if (dosId != 0) {
+			command += " AND dossierId = ?";
+			inserts[2] = dosId;
+		}
+		if (ordState != null) {
+			command += " AND orderState = ?";
+			inserts[3] = ordState;
+		}
+		if (teu != 0) {
+			command += " AND teu = ?";
+			inserts[4] = teu;
+		}
+		if (company != null) {
+			command += " AND shippingCompany = ?";
+			inserts[5] = company;
+		}
+		if (compId != 0) {
+			command += " AND shippingCompanyId = ?";
+			inserts[6] = compId;
+		}
+		if (compScac != null) {
+			command += " AND shippingCompanyScac = ?";
+			inserts[7] = compScac;
+		}
+		return getValue(command, inserts, goal);	
+	}
+	
+	private String getValue(String command, Object[] inserts, String goal) {
 		Statistics a = new Statistics();
 		a.connectToDatabase();
 		int i = -1;
-		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false};
 		try {
-			String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
-					"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
-			if (dateLow != null) {
-				command += " AND createdOn > ?";
-				inserts[0] = true;
+			PreparedStatement stm = null;
+			if (goal == null) {
+				return -2 + "";
+			} else if (((String) goal).equals("bookings")) {
+				stm = a.connection.prepareStatement(SORT_MONTH + "COUNT(*) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
+			} else if (((String) goal).equals("nettoWeight")) {
+				stm = a.connection.prepareStatement(SORT_MONTH + "SUM(nettoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
+			} else if (((String) goal).equals("brutoWeight")) { 
+				stm = a.connection.prepareStatement(SORT_MONTH + "SUM(brutoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
+			} else {
+				return -2 + ""; 
 			}
-			if (dateHigh != null) {
-				command += " AND createdOn < ?";
-				inserts[1] = true;
-			}
-			if (dosId != 0) {
-				command += " AND dossierId = ?";
-				inserts[2] = true;
-			}
-			if (OrdState != null) {
-				command += " AND orderState = ?";
-				inserts[3] = true;
-			}
-			if (teu != 0) {
-				command += " AND teu = ?";
-				inserts[4] = true;
-			}
-			if (company != null) {
-				command += " AND shippingCompany = ?";
-				inserts[5] = true;
-			}
-			if (compId != 0) {
-				command += " AND shippingCompanyId = ?";
-				inserts[6] = true;
-			}
-			if (compScac != null) {
-				command += " AND shippingCompanyScac = ?";
-				inserts[7] = true;
-			}
-			PreparedStatement stm = a.connection.prepareStatement("SELECT COUNT(*) FROM bookings " + command);
 			int col = 1;
-			if (inserts[0]) {
-				stm.setObject(col,  new Timestamp(dateLow * 1000));
+			if (inserts[0] != null) {
+				stm.setObject(col,  new Timestamp((Long) inserts[0] * 1000));
 				col += 1;
-			} if (inserts[1]) {
-				stm.setObject(col,  new Timestamp(dateHigh * 1000));
+			} if (inserts[1] != null) {
+				stm.setObject(col,  new Timestamp((Long) inserts[1] * 1000));
 				col += 1;
-			} if (inserts[2]) {
-				stm.setObject(col, (int) dosId);
+			} if (inserts[2] != null) {
+				stm.setObject(col, (int) inserts[2]);
 				col += 1;
-			} if (inserts[3]) {
-				stm.setObject(col, (String) OrdState);
+			} if (inserts[3] != null) {
+				stm.setObject(col, (String) inserts[3]);
 				col += 1;
-			} if (inserts[4]) {
-				stm.setObject(col, (int) teu);
+			} if (inserts[4] != null) {
+				stm.setObject(col, (int) inserts[4]);
 				col += 1;
-			} if (inserts[5]) {
-				stm.setObject(col, (String) company);
+			} if (inserts[5] != null) {
+				stm.setObject(col, (String) inserts[5]);
 				col += 1;
-			} if (inserts[6]) {
-				stm.setObject(col, (int) compId);
+			} if (inserts[6] != null) {
+				stm.setObject(col, (int) inserts[6]);
 				col += 1;
-			} if (inserts[7]) {
-				stm.setObject(col, (String) compScac);
+			} if (inserts[7] != null) {
+				stm.setObject(col, (String) inserts[7]);
 				col += 1;
 			}
 			ResultSet x = stm.executeQuery();
-			while (x.next()) {
-				i = x.getInt(1);
-			}
+			return parseToStringarray(x);
 		} catch (SQLException e) {
 			System.out.println("SQL error");
 			e.printStackTrace();
 		}
 		return i + "";
 	}
-	
-	@GET
-	@Path("/brutoWeight")
-	public String brutoWeight(@QueryParam("fromD") Long dateLow,
-									@QueryParam("toD") Long dateHigh, 
-									@QueryParam("dosId") int dosId,
-									@QueryParam("ordState") String OrdState,
-									@QueryParam("teu") int teu,
-									@QueryParam("shipComp") String company,
-									@QueryParam("shipCompId") int compId,
-									@QueryParam("shipCompScac") String compScac) {
-		Statistics a = new Statistics();
-		a.connectToDatabase();
-		int i = -1;
-		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false};
-		try {
-			String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
-					"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
-			if (dateLow != null) {
-				command += " AND createdOn > ?";
-				inserts[0] = true;
-			}
-			if (dateHigh != null) {
-				command += " AND createdOn < ?";
-				inserts[1] = true;
-			}
-			if (dosId != 0) {
-				command += " AND dossierId = ?";
-				inserts[2] = true;
-			}
-			if (OrdState != null) {
-				command += " AND orderState = ?";
-				inserts[3] = true;
-			}
-			if (teu != 0) {
-				command += " AND teu = ?";
-				inserts[4] = true;
-			}
-			if (company != null) {
-				command += " AND shippingCompany = ?";
-				inserts[5] = true;
-			}
-			if (compId != 0) {
-				command += " AND shippingCompanyId = ?";
-				inserts[6] = true;
-			}
-			if (compScac != null) {
-				command += " AND shippingCompanyScac = ?";
-				inserts[7] = true;
-			}
-			PreparedStatement stm = a.connection.prepareStatement("SELECT SUM(brutoWeight) FROM bookings " + command);
-			int col = 1;
-			if (inserts[0]) {
-				stm.setObject(col,  new Timestamp(dateLow * 1000));
-				col += 1;
-			} if (inserts[1]) {
-				stm.setObject(col,  new Timestamp(dateHigh * 1000));
-				col += 1;
-			} if (inserts[2]) {
-				stm.setObject(col, (int) dosId);
-				col += 1;
-			} if (inserts[3]) {
-				stm.setObject(col, (String) OrdState);
-				col += 1;
-			} if (inserts[4]) {
-				stm.setObject(col, (int) teu);
-				col += 1;
-			} if (inserts[5]) {
-				stm.setObject(col, (String) company);
-				col += 1;
-			} if (inserts[6]) {
-				stm.setObject(col, (int) compId);
-				col += 1;
-			} if (inserts[7]) {
-				stm.setObject(col, (String) compScac);
-				col += 1;
-			}
-			ResultSet x = stm.executeQuery();
-			while (x.next()) {
-				i = x.getInt(1);
-			}
-		} catch (SQLException e) {
-			System.out.println("SQL error");
-			e.printStackTrace();
-		}
-		return i + "";
-	}
-	
-	@GET
-	@Path("/nettoWeight")
-	public String nettoWeight(@QueryParam("fromD") Long dateLow,
-									@QueryParam("toD") Long dateHigh, 
-									@QueryParam("dosId") int dosId,
-									@QueryParam("ordState") String OrdState,
-									@QueryParam("teu") int teu,
-									@QueryParam("shipComp") String company,
-									@QueryParam("shipCompId") int compId,
-									@QueryParam("shipCompScac") String compScac) {
-		Statistics a = new Statistics();
-		a.connectToDatabase();
-		int i = -1;
-		boolean[] inserts = new boolean[]{false, false, false, false, false, false, false, false};
-		try {
-			String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
-					"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
-			if (dateLow != null) {
-				command += " AND createdOn > ?";
-				inserts[0] = true;
-			}
-			if (dateHigh != null) {
-				command += " AND createdOn < ?";
-				inserts[1] = true;
-			}
-			if (dosId != 0) {
-				command += " AND dossierId = ?";
-				inserts[2] = true;
-			}
-			if (OrdState != null) {
-				command += " AND orderState = ?";
-				inserts[3] = true;
-			}
-			if (teu != 0) {
-				command += " AND teu = ?";
-				inserts[4] = true;
-			}
-			if (company != null) {
-				command += " AND shippingCompany = ?";
-				inserts[5] = true;
-			}
-			if (compId != 0) {
-				command += " AND shippingCompanyId = ?";
-				inserts[6] = true;
-			}
-			if (compScac != null) {
-				command += " AND shippingCompanyScac = ?";
-				inserts[7] = true;
-			}
-			PreparedStatement stm = a.connection.prepareStatement("SELECT SUM(nettoWeight) FROM bookings " + command);
-			int col = 1;
-			if (inserts[0]) {
-				stm.setObject(col,  new Timestamp(dateLow * 1000));
-				col += 1;
-			} if (inserts[1]) {
-				stm.setObject(col,  new Timestamp(dateHigh * 1000));
-				col += 1;
-			} if (inserts[2]) {
-				stm.setObject(col, (int) dosId);
-				col += 1;
-			} if (inserts[3]) {
-				stm.setObject(col, (String) OrdState);
-				col += 1;
-			} if (inserts[4]) {
-				stm.setObject(col, (int) teu);
-				col += 1;
-			} if (inserts[5]) {
-				stm.setObject(col, (String) company);
-				col += 1;
-			} if (inserts[6]) {
-				stm.setObject(col, (int) compId);
-				col += 1;
-			} if (inserts[7]) {
-				stm.setObject(col, (String) compScac);
-				col += 1;
-			}
-			ResultSet x = stm.executeQuery();
-			while (x.next()) {
-				i = x.getInt(1);
-			}
-		} catch (SQLException e) {
-			System.out.println("SQL error");
-			e.printStackTrace();
-		}
-		return i + "";
-	}
-	
-	
 	
 	public static JSONArray parseJSON(ResultSet rs) {
 		JSONArray json = new JSONArray();
@@ -327,5 +165,6 @@ public class Server{
 		}
 		return json;
 	}
-	
+	private static final String SORT_MONTH = "SELECT CONCAT(cast(EXTRACT(year FROM createdOn) AS VARCHAR(4))"
+			+ ",'_', RIGHT(CONCAT('0',cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))), 2)) AS m_y, ";
 }
