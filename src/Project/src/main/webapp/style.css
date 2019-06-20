@@ -272,10 +272,10 @@ body {
     FILTERPAGE
 ----------------------------------------------------- */
 .filters {
-  margin: 50px 0 50px 50px;
+  margin: 50px 0 50px 30px;
   border: 1px solid #dddddd;
-  width: 40%;
-  display:inline-block;
+  width: 80%;
+  display:block;
   vertical-align: top;
   background-color: #F9E7D0;
   border-radius: 25px;
@@ -292,7 +292,7 @@ body {
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 70%;
+  width: 60%;
   margin: 0 auto;
   margin-top: 15px;
   margin-bottom:20px;
@@ -306,6 +306,11 @@ td, th {
 
 tr:nth-child(even) {
   background-color: #dddddd;
+}
+
+
+#icon:hover ~ #info{
+    visibility: inline;
 }
 
 
