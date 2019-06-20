@@ -103,13 +103,13 @@ function getBookFilter(a){
 		fromD = dateFrom.getTime() / 1000;
 		toD = dateTo.getTime() / 1000;	
 	}
-	var dosId = $('#customFill').val();
+	var customer = $('#customFill').val();
 	var ordState = $('#orderStateFill').val();
 	var teu = $('#teuFill').val();
 	var shipComp= $('#companyNameFill').val();
 	var shipCompId = "";
 	var shipCompScac = "";
-	var list = {fromD, toD, dosId, ordState, teu, shipComp, shipCompId, shipCompScac};
+	var list = {fromD, toD, customer, ordState, teu, shipComp, shipCompId, shipCompScac};
 	var url = "http://localhost:8080/Project/rest/sql/select?goal=bookings&";
 	var x;
 	if(a == "table"){
@@ -145,10 +145,14 @@ function getBookFilter(a){
 			  if (this.readyState == 4 && this.status == 200) {
 				  var temp = this.responseText.split("|");
 				  a = temp[0].split(";");
-				  b = temp[1].split(";");
-				  alert(a);
-				  alert(b);
-				  lineChart(a,b,"container");
+				  b = temp[1].split(";").map(function(item) {
+					    return parseInt(item, 10);
+				  });
+				  var i;
+				  for(i = 1; i<b.length ; i++){
+					  b[i] = b[i] + b[i-1];
+				  };
+				  lineChart(a,b,"container", '# of Containers');
 			  }
 		};
 	}
@@ -167,38 +171,60 @@ function getBrutoFilter(a){
 		fromD = dateFrom.getTime() / 1000;
 		toD = dateTo.getTime() / 1000;	
 	}
-	var dosId = $('#customFill').val();
+	var customer = $('#customFill').val();
 	var ordState = $('#orderStateFill').val();
 	var teu = $('#teuFill').val();
 	var shipComp= $('#companyNameFill').val();
 	var shipCompId = "";
 	var shipCompScac = "";
-	var list = {fromD, toD, dosId, ordState, teu, shipComp, shipCompId, shipCompScac};
+	var list = {fromD, toD, customer, ordState, teu, shipComp, shipCompId, shipCompScac};
 	var url = "http://localhost:8080/Project/rest/sql/select?goal=brutoWeight&";
 	var x
+	var x;
 	if(a == "table"){
 		url += "table=true&";
-	}else{
-		url;
-	}
-	for(x in list ){
-		if(list[x] != ""){
-			if(x != list[list.length-1]){
-				url += x + "=" + list[x] + "&";
-			} 
+		for(x in list ){
+			if(list[x] != ""){
+				if(x != list[list.length - 1]){
+					url += x + "=" + list[x] + "&";
+				}
+			}
+			var newUrl = url.substring(0, url.length - 1);
 		}
-	
-		var newUrl = url.substring(0, url.length - 1);
 		
+		http.onreadystatechange = function(){
+			  if (this.readyState == 4 && this.status == 200) {
+				  weight = this.responseText;
+				  
+				  document.getElementById('resultTab').innerHTML = createTable(book,weight);  
+			  }
+		};
+		
+	}else{
+		for(x in list ){
+			if(list[x] != ""){
+				if(x != list[list.length - 1]){
+					url += x + "=" + list[x] + "&";
+				}
+			}
+			var newUrl = url.substring(0, url.length - 1);
+		}
+		
+		http.onreadystatechange = function(){
+			  if (this.readyState == 4 && this.status == 200) {
+				  var temp = this.responseText.split("|");
+				  a = temp[0].split(";");
+				  b = temp[1].split(";").map(function(item) {
+					    return parseInt(item, 10);
+				  });
+				  var i;
+				  for(i = 1; i<b.length ; i++){
+					  b[i] = b[i] + b[i-1];
+				  };
+				  lineChart(a,b,"container1",'Total Brutto Weight');
+			  }
+		};
 	}
-	
-	
-	http.onreadystatechange = function(){
-		  if (this.readyState == 4 && this.status == 200) {
-			  weight = this.responseText;
-			  document.getElementById('resultTab').innerHTML = createTable(book,weight);  
-		  }
-	};
 	
 	http.open("GET", newUrl);
 	http.send();
@@ -215,33 +241,32 @@ function createResult(containTotal, weightTotal) {
 	return x;
 }
 
-function combine(){
-	getBrutoFilter();
-	getBookFilter();
-	getBookFilter("table");
+function combine(choice){
+	getBrutoFilter(choice);
+	getBookFilter(choice);
 
 }
 
 $(document).ready(function() {
   $("#search").click(function() { 
-	  combine();
+	  combine($('#resultFill').val());
 	  $('#container').replaceWith('<canvas id="container"></canvas>');
+	  $('#container1').replaceWith('<canvas id="container1"></canvas>');
   })
-  
 });
 
 
 ////// Create Charts
 
 
-function lineChart(year, total, canvas) {
+function lineChart(year, total, canvas, chartName) {
 	  var ctx = document.getElementById(canvas).getContext('2d');
 	  var myChart = new Chart(ctx, {
 	    type: 'line',
 	    data: {
 	        labels: year,
 	        datasets: [{
-	            label: '# of Containers',
+	            label: chartName,
 	            data: total,
 	            backgroundColor: [
 	                'rgba(255, 99, 132, 0.2)',
