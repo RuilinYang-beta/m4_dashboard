@@ -103,7 +103,7 @@
             <label for="customCheck"> Customer of Customer</label>
             <div class="customChoice" style="display:none">
               <label id="custom" > Name:
-              <input onkeypress="validate(event)" oninput="maxLengthCheck(this, 10)"  id="customFill" placeholder="insert num" size="8"/>
+              <input oninput="maxLengthCheck(this, 10)"  id="customFill"/>
               </label>
             </div>
           </div>
@@ -214,6 +214,14 @@
               <div id="info" style="display:none">1 or 2</div>
             </div>
           </div>
+          <div class="fillIns">          
+              <label id="result">Result Type:
+              <select id='resultFill'>
+              	<option value="" selected>Graph</option>
+			  	<option value="table">Table</option>
+			  </select>
+              </label>
+          </div>
 
 
           <div style="padding-left:30px; padding-top:15px; padding-bottom: 30px;">
@@ -227,6 +235,9 @@
           	</div>
           	<div>
           	  <canvas id="container"></canvas>
+          	</div>
+          	<div>
+          	  <canvas id="container1"></canvas>
           	</div>
           </div>
         </div>
