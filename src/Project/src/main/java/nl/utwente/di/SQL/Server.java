@@ -46,17 +46,21 @@ public class Server{
 		return res;
 	}
 	
+	
+	
 	@GET
 	@Path("/select")
 	public String bookingsPerDate(@QueryParam("fromD") Long dateLow,
 									@QueryParam("toD") Long dateHigh, 
-									@QueryParam("dosId") int dosId,
 									@QueryParam("ordState") String ordState,
+									@QueryParam("customer") String customer,
 									@QueryParam("teu") int teu,
 									@QueryParam("shipComp") String company,
 									@QueryParam("shipCompId") int compId,
 									@QueryParam("shipCompScac") String compScac,
-									@QueryParam("goal") String goal) {
+									@QueryParam("goal") String goal,
+									@QueryParam("table") String  table
+									) {
 		Object[] inserts = new Object[]{null, null, null, null, null, null, null, null};
 		String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
 				"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
@@ -68,9 +72,9 @@ public class Server{
 			command += " AND createdOn < ?";
 			inserts[1] = dateHigh;
 		}
-		if (dosId != 0) {
-			command += " AND dossierId = ?";
-			inserts[2] = dosId;
+		if (customer != null) {
+			command += " AND customer = ?";
+			inserts[2] = customer;
 		}
 		if (ordState != null) {
 			command += " AND orderState = ?";
@@ -92,10 +96,15 @@ public class Server{
 			command += " AND shippingCompanyScac = ?";
 			inserts[7] = compScac;
 		}
-		return getValue(command, inserts, goal);	
+		if (table != null) {
+			if(table.equals("true")) {
+				return getValue(command, inserts, goal, true);
+			}
+		}
+		return getValue(command, inserts, goal, false);	
 	}
 	
-	private String getValue(String command, Object[] inserts, String goal) {
+	private String getValue(String command, Object[] inserts, String goal, boolean query) {
 		Statistics a = new Statistics();
 		a.connectToDatabase();
 		int i = -1;
@@ -120,7 +129,7 @@ public class Server{
 				stm.setObject(col,  new Timestamp((Long) inserts[1] * 1000));
 				col += 1;
 			} if (inserts[2] != null) {
-				stm.setObject(col, (int) inserts[2]);
+				stm.setObject(col, (String) inserts[2]);
 				col += 1;
 			} if (inserts[3] != null) {
 				stm.setObject(col, (String) inserts[3]);
@@ -139,6 +148,13 @@ public class Server{
 				col += 1;
 			}
 			ResultSet x = stm.executeQuery();
+			if (query) {
+				int tot = 0;
+				while (x.next()) {
+					tot += x.getInt(2);
+				}
+				return tot + "";
+			}
 			return parseToStringarray(x);
 		} catch (SQLException e) {
 			System.out.println("SQL error");
