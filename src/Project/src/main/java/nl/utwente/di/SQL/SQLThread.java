@@ -48,14 +48,13 @@ public class SQLThread extends Thread {
 		}
 		if (goal.equals("actions")) {
 			data.addAll(Database.parseActions(json + "]"));
-			d.insertAction(data);
+			d.insertAction(data, customer);
 		} else if (goal.equals("bookings")) {
 			dataJson.addAll(Database.parse(json + "]"));
 			String command = "INSERT INTO bookings (id,"+ getLabels(Database.OPT_BOOK) + ") VALUES(" + customer + ",";
 			String opts = Database.OPT_BOOK;
 			d.insertDatabase(dataJson, command, opts);
-			System.out.println("done");
 		}
-		
+		System.out.println("done");
 	}
 }

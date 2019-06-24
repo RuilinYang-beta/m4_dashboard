@@ -7,7 +7,20 @@ import org.json.*;
 
 @Path("/sql")
 public class Server{
+	
+	@GET
+	@Path("/autoupdate")
+	public String setTimer(@QueryParam("time") int time) {
+		int t = 0;
+		if (time <= 0) {
+			t = 360; //1 hr
+		}
 		
+		autoUpdate aU = new autoUpdate(this, t+(time*time)/time);
+		aU.start();
+		return "started";
+	}
+	
 	@GET
 	@Path("/count")
 	@Produces(MediaType.TEXT_HTML)
@@ -15,6 +28,7 @@ public class Server{
 		Statistics a = new Statistics();
 		a.connectToDatabase();
 		String message = a.getCount()+ "";
+		try {a.connection.close();}catch(SQLException e) {}
 		return message;
 	}
 	
@@ -46,7 +60,43 @@ public class Server{
 		return res;
 	}
 	
+	//Add entire environment
+	@POST
+	@Path("/update")
+	public String addEnvironment(@QueryParam("name") String name,
+									@QueryParam("link") String link) {
+		Database d = new Database();
+		d.insertCustomer(name, link);
+		d.update(true, name);
+		return "";
+	}
 	
+	//update database values
+	@GET
+	@Path("/update")
+	public String updateDatabase() {
+		Database d = new Database();
+		d.connectToDatabase();
+		try {
+			Statement s = d.connection.createStatement();
+			ResultSet rs = s.executeQuery("SELECT name, id FROM customers");
+			System.out.println("pulling customers");
+			while (rs.next()) {
+				System.out.println(rs.getString(1) + " " + rs.getInt(2));
+				d.update(false, rs.getString("name"));
+			}
+		} catch (SQLException e) {
+			System.err.println("error getting stuff");
+			e.printStackTrace();
+		} finally {
+			try {
+				d.connection.close();
+			} catch (SQLException e) {
+				
+			}
+		}
+		return "";
+	}
 	
 	@GET
 	@Path("/select")
@@ -183,4 +233,28 @@ public class Server{
 	}
 	private static final String SORT_MONTH = "SELECT CONCAT(cast(EXTRACT(year FROM createdOn) AS VARCHAR(4))"
 			+ ",'_', RIGHT(CONCAT('0',cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))), 2)) AS m_y, ";
+	
+	private class autoUpdate extends Thread {
+		private Server s;
+		private int frequency;
+		
+		//give frequency in seconds/10 between updates
+		public autoUpdate(Server s, int frequency) {
+			this.frequency = frequency;
+			this.s = s; 
+		}
+		
+		public void run() {
+			int i = frequency-1;
+			
+			while (true) {
+				while (i < frequency) {
+					i += 1;
+					try{Thread.sleep(10000);}catch(InterruptedException e) { System.out.println("error thread timer");}
+				}
+				s.updateDatabase();
+				i = 0;
+			}
+		}
+	}
 }

@@ -2,9 +2,6 @@ package nl.utwente.di.SQL;
 
 import java.sql.*;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class Statistics {
 	public Connection connection;
 	
@@ -32,7 +29,7 @@ public class Statistics {
 		Statistics s = new Statistics();
 		s.connectToDatabase();
 		//ResultSet rs = s.execute("SELECT DISTINCT(orderState) as c FROM bookings;");
-		s.parseActions(true);
+		s.parseActions(true, 1);
 		try {
 			s.connection.close();
 		} catch (SQLException e) {
@@ -40,24 +37,18 @@ public class Statistics {
 		}
 		//s.fillBooking_to_Date();
 	}
-	
-	//Create table counting amount of bookings per month (createdOn date)
-	public void fillBooking_to_Date() {
-		execute(SQL_BOOK + SQL_BOOK_FILL);
-		execute(SQL_BOOK_UPDATE);
-	}
-	
-	public void parseActions(boolean RESET) {
+		
+	public void parseActions(boolean RESET, int customer) {
 		if (RESET) {
 			System.out.println("reset");
-			execute(SQL_ACTIONS_PARSE + Database.OPT_ACT);
+			//execute(SQL_ACTIONS_PARSE + Database.OPT_ACT);
+			execute("DELETE FROM st_actions WHERE id=" + customer);
 		}
 		StringBuffer execute = new StringBuffer();
 		StringBuffer command = new StringBuffer();
-		command.append("INSERT INTO st_actions (");
-		execute.append("SELECT ");
+		command.append("INSERT INTO st_actions (id, ");
+		execute.append("SELECT id, ");
 		String[] options = Database.OPT_ACT.split(",");
-		PreparedStatement s = null;
 		for (int i = 0; i < options.length; i ++) {
 			String temp = options[i].split(" ")[0];
 			command.append(temp + ", ");
@@ -66,16 +57,26 @@ public class Statistics {
 				val = "VARCHAR(10)";
 			}
 			System.out.println(temp);
-			execute.append("CAST(action::json->>'" + temp + "' AS " + val + ") AS " + temp + ", ");
+			if (val.equals("TIMESTAMP")) {
+				val = "BIGINT";
+				execute.append("TO_TIMESTAMP(CAST(action::json->>'" + temp + "' AS " + val + ")/1000) AS " + temp + ", ");
+			} else {
+				execute.append("CAST(action::json->>'" + temp + "' AS " + val + ") AS " + temp + ", ");
+			}
+			
 			
 		}
 		String res = command.substring(0, command.length()-2) + ") ";
 		res += execute.substring(0, execute.length()-2);
-		res += " FROM actions";
+		res += " FROM actions WHERE id=" + customer;
 		System.out.println(res);
 		execute(res);
 	}
 	
+	public void parseTasks(boolean RESET, int customer) {
+		
+	}
+
 	public ResultSet execute(String command) {
 		try {
 			PreparedStatement s = connection.prepareStatement(command);

@@ -15,9 +15,6 @@ public class Database {
 	public Connection connection;
 	private static final String GET_URL = "https://module4t2-test.cofanostack.com/api/bigbrother/";
 	private static final String AUTH_CODE = "Basic QmlnQnJvdGhlcjpob3R0ZW50b3R0ZW50ZW50ZW50ZW50b29uc3RlbGxpbmc=";
-	public Database() {
-		connectToDatabase();
-	}
 	
 	//Standard connection: execute this to open the public variable connection
 	//connects to the SQL database
@@ -47,18 +44,20 @@ public class Database {
 	//reset=reset the table, ergo creates a new one
 	//offset=start value, if you dont reset table, we dont need all new info
 	//offset can be either int or Long
-	public void makeTable(String path, boolean RESET, Object offset, String link, int customer) {
+	public void makeTable(String path, boolean RESET, Object offset, int customer) {
 		connectToDatabase();
 		int i = 0;
+		String link = Database.getCustLink(customer, connection);
 		try {
 			i = (int) offset;
+			System.out.println(i);
 		} catch (ClassCastException e) {
 		}
 		String arg = "?";
 		if (path.equals("bookings")) {
 			if (RESET) {
 				//createDatabase(SQL_BOOK+OPT_BOOK);
-				createDatabase("DELETE FROM bookings");
+				createDatabase("DELETE FROM bookings WHERE id=" + customer);
 			} else {
 				arg = "?createdAfter=" + offset + "&";
 				i = 0;
@@ -94,21 +93,20 @@ public class Database {
 			insertLocation(total, "add");
 		} else if (path.equals("actions")) {
 			if (RESET) {
-				createDatabase(SQL_ACTIONS_JSON);
+				createDatabase("DELETE FROM st_actions WHERE id=" + customer);
+				createDatabase("DELETE FROM actions WHERE id=" + customer);
 			}
 			
-			SQLThread t = new SQLThread(this, path, -1);
+			SQLThread t = new SQLThread(this, path, customer);
 			
-			List<String> total = new ArrayList<String>();
-			int temp;
 			int counter = 0;
-			while ((temp = (int) getData(link + path + "?limit=500&offset=" + i, t)) > 0) {
+			while ((int) getData(link + path + "?limit=500&offset=" + i, t) > 0) {
 				i += 500;
 				counter += 1;
 				System.out.println(i);
 				if (counter % 7 == 0) {
 					t.start();
-					t = new SQLThread(this, path, -1);
+					t = new SQLThread(this, path, customer);
 				}
 			}
 			if (counter % 7 != 0) {
@@ -134,6 +132,33 @@ public class Database {
 		}
 	}
 	
+	public static String getCustLink(int customer, Connection c) {
+		try {
+			Statement s = c.createStatement();
+			ResultSet rs = s.executeQuery("SELECT link FROM customers WHERE id=" + customer);
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+		} catch (SQLException e) {
+			return "doesn't exists";
+		}
+		
+		return "";
+	}
+	
+	public static int getCustId(String customer, Connection c) {
+		try {
+			Statement s = c.createStatement();
+			ResultSet rs = s.executeQuery("SELECT id FROM customers WHERE name=" + customer);
+			while (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			return -1;
+		}
+		return -1;
+	}
+	
 	//Executes sql command.
 	//var command is full SQL create query
 	private void createDatabase(String command) {
@@ -153,12 +178,11 @@ public class Database {
 	}
 	
 	//insertion of actions into SQL
-	public void insertAction(List<String> data) {
+	public void insertAction(List<String> data, int customer) {
 		StringBuffer execute = new StringBuffer();
 		Statement s = null;
-		System.out.println(data.size());
 		for (String key:data) {
-			execute.append("INSERT INTO actions VALUES('" + key + "');");
+			execute.append("INSERT INTO actions (id, action) VALUES(" + customer + ", '" + key + "');");
 		}
 		try {
 			s = connection.createStatement();
@@ -178,7 +202,6 @@ public class Database {
 		if (act.contentEquals("loc")) {
 			for (JSONObject item:data) {
 			execute.append("INSERT INTO locations VALUES(");
-			int temp = execute.length();
 			for (int i = 1; i <= options.length; i ++) {
 				boolean done = false;
 				String c = options[i-1].split(" ")[0];
@@ -362,11 +385,29 @@ public class Database {
 		}
 	}
 	
+	public String insertCustomer(String name, String link) {
+		PreparedStatement stm = null;
+		try {
+			String command = "INSERT INTO customers (name, link) VALUES (?, ?)";
+			stm = connection.prepareStatement(command);
+			stm.setString(1, name);
+			stm.setString(2, link);
+		} catch (SQLException e) {
+			return "value error";
+		}
+		try {
+			stm.executeQuery();
+			return "WORKS";
+		} catch (SQLException e) {
+			return e.toString();
+		}
+		
+		
+	}
+	
 	public static void main(String args[]) {
 		Database d = new Database();
-		d.update(false, "module4t1");
-		//d.makeTable("actions", false, 269589);
-		//d.updateBook(true);
+		d.makeTable("actions",false, 479500, 1);
 		//d.createDatabase(SQL_CUST+PUT_CUST1+PUT_CUST2);
 	}
 	
@@ -374,27 +415,20 @@ public class Database {
 	//locations get reset every time
 	//bookings and linestops only get updated normally
 	public void update(boolean RESET, String customer) {
-		String path = "";
-		int custId = -1;
-		try {
-			Statement c = connection.createStatement();
-			String cmd = "SELECT link, id FROM customers WHERE name = '" + customer + "';";
-			ResultSet link = c.executeQuery(cmd);
-			while (link.next()) {
-				path = (String) link.getObject(1);
-				custId = link.getInt(2);
-			}
-		} catch (SQLException sqle) {
-			System.err.println("error");
+		int i = 0;
+		if (i > 0) {
+			int custId = Database.getCustId(customer, connection);
+			updateBook(RESET, custId);
+			updateLoc(custId);
+			updateLines(RESET, custId);
+			updateActions(true, custId);
+		} else {
+			System.out.println("Dummy Procedure to check if update works");
 		}
-		System.out.println(path);
-		System.out.println(custId);
-		updateBook(RESET, path, custId);
-		updateLoc(path);
-		updateLines(RESET, path);
+		
 	}
 	
-	private void updateBook(boolean RESET, String link, int customer) {
+	private void updateBook(boolean RESET, int customer) {
 		if (!RESET) {
 			connectToDatabase();
 			Long offBook = null;
@@ -408,26 +442,28 @@ public class Database {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					
+				}
 			}
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				
-			}
+			
 			if (x != null) {
 				offBook = x.getTime();
-				makeTable("bookings", RESET, offBook/1000+1, link, customer);
+				makeTable("bookings", RESET, offBook/1000+1,  customer);
 			} else {
-				makeTable("bookings", RESET, 0, link, customer);
+				makeTable("bookings", RESET, 0, customer);
 			}
 		} else {
-			makeTable("bookings", RESET, 0, link, customer);
+			makeTable("bookings", RESET, 0, customer);
 		}
 	}
-	private void updateLoc(String path) {
-		makeTable("locations", true, 0, path, -1);
+	private void updateLoc(int customer) {
+		makeTable("locations", true, 0, customer);
 	}
-	private void updateLines(boolean RESET, String path) {
+	private void updateLines(boolean RESET, int customer) {
 		if (!RESET) {
 			String command = "SELECT MAX(sta) AS c FROM linestops";
 			Timestamp x = null;
@@ -440,19 +476,27 @@ public class Database {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					
+				}
 			}
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				
-			}
-			makeTable("linestops", RESET, (x.getTime())/1000, path, -1);	
+			
+			makeTable("linestops", RESET, (x.getTime())/1000, customer);	
 		} else {
-			makeTable("linestops", RESET, 0, path, -1);
+			makeTable("linestops", RESET, 0, customer);
 		}
 		
 	}
-
+	private void updateActions(boolean RESET, int customer) {
+		makeTable("actions", RESET, 0, customer);
+		Statistics s = new Statistics();
+		s.connectToDatabase();
+		s.parseActions(true, customer);
+		try {s.connection.close();} catch (SQLException e) {}
+	}
 	//execute HTTP request and return either Array of JSON objects or String objects
 	public static Object getData(String path, SQLThread t) {
 		URL url;
@@ -527,7 +571,6 @@ public class Database {
 		data.replace("`", "inch");
 		int i = 0;
 		int open = 0;
-		int count = 0;
 		while (data.length() > 6) {
 			if (data.substring(i,i+1).equals("}")) {
 				//System.out.print("}" + open);
@@ -542,6 +585,9 @@ public class Database {
 					data = data.substring(0,1) + data.substring(i+2);
 					i = -1;
 				}
+			} else if (i == data.length() -2) { 
+				temp.add(data.substring(1,i));
+				data = "";
 			} else if (data.substring(i,i+1).equals("{")) {
 				//System.out.print("{"+ (open + 1));
 				open += 1;
@@ -550,7 +596,6 @@ public class Database {
 			}
 			i += 1;
 		}
-		System.out.println(temp.size());
 		try {Thread.sleep(1000);}catch(InterruptedException e) {}
 		return temp;
 	}
@@ -566,7 +611,6 @@ public class Database {
 	private static final String SQL_LOC = "DROP TABLE IF EXISTS locations; CREATE TABLE locations (";
 	private static final String SQL_ADD = "DROP TABLE IF EXISTS address; CREATE TABLE address (";
 	private static final String SQL_ACTIONS_JSON = "DROP TABLE IF EXISTS actions; CREATE TABLE actions (action json);";
-	private static final String SQL_ACT = "DROP TABLE IF EXISTS actions; CREATE TABLE actions (";
 	private static final String SQL_TASK = "DROP TABLE IF EXISTS tasks; CREATE TABLE tasks (";
 	private static final String SQL_LINE = "DROP TABLE IF EXISTS linestops; CREATE TABLE linestops (";
 	private static final String OPT_LINE = "linestopId INT,"
