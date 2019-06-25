@@ -22,6 +22,42 @@ public class Server{
 	}
 	
 	@GET
+	@Path("/auth")
+	public boolean checkEmployee(@QueryParam("mail") String mail) {
+		Statistics s = new Statistics();
+		return s.checkEmployee(mail);
+	}
+	@POST
+	@Path("/auth")
+	public String addEmployee(@QueryParam("name") String name,
+							@QueryParam("id") int id, 
+							@QueryParam("mail") String mail) {
+		Statistics s = new Statistics();
+		return s.addEmployee(name, id, mail);
+	}
+	@DELETE
+	@Path("/auth")
+	public String deleteEmployee(@QueryParam("name") String name,
+								@QueryParam("id") int id,
+								@QueryParam("mail") String mail) {
+		Statistics s = new Statistics();
+		if (name != null) {
+			if (id != 0) {
+				System.out.println("id given");
+				return s.deleteEmployee(name, id);
+			} else if (mail != null) {
+				System.out.println("mail given");
+				return s.deleteEmployee(name, mail);
+			} else {
+				System.out.println("error: nothing given");
+				return "give id or mail plix";
+			}
+		} else {
+			return "give name plix";
+		}
+	}
+	
+	@GET
 	@Path("/count")
 	@Produces(MediaType.TEXT_HTML)
 	public String getCount() {
@@ -252,7 +288,7 @@ public class Server{
 		}
 		
 		public void run() {
-			int i = frequency-1;
+			int i = 0;
 			
 			while (true) {
 				while (i < frequency) {
