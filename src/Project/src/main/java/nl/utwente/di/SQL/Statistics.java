@@ -1,6 +1,7 @@
 package nl.utwente.di.SQL;
 
 import java.sql.*;
+import org.apache.commons.codec.digest.DigestUtils;
 
 public class Statistics {
 	public Connection connection;
@@ -25,6 +26,113 @@ public class Statistics {
 		}
 	}
 	
+	//hash function for email address
+	public static String hashString(String message) {
+		return DigestUtils.sha256Hex(message);
+	}
+	
+	//all Employee-functions require email as string, NOT hashed
+	//returns "success" if successful, else returns error code
+	public String addEmployee(String name, int id, String mail) {
+		connectToDatabase();
+		String z = "";
+		try {
+			PreparedStatement s = connection.prepareStatement("INSERT INTO employees(empId, name, email) VALUES(?,?,?);");
+			s.setInt(1, id);
+			s.setString(2, name);
+			s.setString(3, hashString(mail));
+			s.executeQuery();
+			z = "success";
+		} catch (SQLException e) {
+			System.err.println("error inserting");
+			e.printStackTrace();
+			if (e.getMessage().equals("No results were returned by the query.")) {
+				return "success";
+			}
+			return (e.getMessage());
+		} finally {
+			try{connection.close();}catch(SQLException e){}
+		}
+		return z;
+	}
+	//returns true if email is in database
+	public boolean checkEmployee(String mail) {
+		connectToDatabase();
+		try {
+			PreparedStatement s = connection.prepareStatement("SELECT COUNT(*) AS c FROM employees WHERE email=?;");
+			s.setString(1,  hashString(mail));
+			ResultSet rs = s.executeQuery();
+			while (rs.next()) {
+				System.out.println(rs.getInt(1));
+				if (rs.getInt("c") > 0) {
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try{connection.close();}catch(SQLException e){}
+		}
+		return false;
+	}
+	//either have to know name and mail or name and id to delete
+	public String deleteEmployee(String name, int id) {
+		connectToDatabase();
+		try {
+			PreparedStatement st = connection.prepareStatement("SELECT COUNT(*) AS c FROM employees WHERE name=? AND empId=?;");
+			st.setString(1,  name);
+			st.setInt(2,  id);
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				if (rs.getInt(1) == 0) {
+					return "not success";
+				}
+			}
+			PreparedStatement s = connection.prepareStatement("DELETE FROM employees WHERE name=? AND empId=?;");
+			s.setString(1,  name);
+			s.setInt(2,  id);
+			s.executeQuery();
+		} catch (SQLException e) {
+			System.err.println("error inserting");
+			e.printStackTrace();
+			if (e.getMessage().equals("No results were returned by the query.")) {
+				return "success";
+			}
+			return (e.getMessage());
+		} finally {
+			try{connection.close();}catch(SQLException e){}
+		}
+		return "success";
+	}
+	public String deleteEmployee(String name, String mail) {
+		connectToDatabase();
+		try {
+			PreparedStatement st = connection.prepareStatement("SELECT COUNT(*) AS c FROM employees WHERE name=? AND email=?;");
+			st.setString(1,  name);
+			st.setString(2,  hashString(mail));
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				if (rs.getInt(1) == 0) {
+					return "not success";
+				}
+			}
+			PreparedStatement s = connection.prepareStatement("DELETE FROM employees WHERE name=? AND email=?;");
+			s.setString(1,  name);
+			s.setString(2,  hashString(mail));
+			s.executeQuery();
+		} catch (SQLException e) {
+			System.err.println("error inserting");
+			e.printStackTrace();
+			if (e.getMessage().equals("No results were returned by the query.")) {
+				return "success";
+			}
+			return (e.getMessage());
+		} finally {
+			try{connection.close();}catch(SQLException e){}
+		}
+		return "success";
+	}
+
 	public static void main(String[] args) {
 		Statistics s = new Statistics();
 		s.connectToDatabase();
@@ -110,5 +218,10 @@ public class Statistics {
 				+ ",'_', RIGHT(CONCAT('0',cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))), 2)) AS m_y, COUNT(bookingId) " //format YYYY_MM
 				+ "FROM bookings "
 				+ "GROUP BY m_y;";
-	public static final String SQL_BOOK_UPDATE = "UPDATE st_book SET date = CONCAT(substring(date, 1, 5), '0', substring(date, 6, 1)) WHERE LENGTH(date) = 6;";
+	public static final String SQL_BOOK_UPDATE = "UPDATE st_book SET date = CONCAT(substring(date, 1, 5), '0',"
+			+ " substring(date, 6, 1)) WHERE LENGTH(date) = 6;";
+	public static final String SQL_COFANO_USERS = "DROP TABLE IF EXISTS employees; CREATE TABLE employees ("
+			+ "name VARCHAR(100),"
+			+ "empId INT NOT NULL PRIMARY KEY,"
+			+ "email VARCHAR(100) NOT NULL UNIQUE);";
 }

@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 
 import javax.servlet.*;
 
+
+//This code executes when the apache server starts
 public class OnStartup implements javax.servlet.ServletContextListener {
 	private static final int UPDATE_WAIT_TIME = 3600; //time in seconds between updates
 	public void contextInitialized(final ServletContextEvent event) {

@@ -7,7 +7,7 @@ import org.json.*;
 
 @Path("/sql")
 public class Server{
-	
+	public static final String LINK = "http://localhost:8080";
 	@GET
 	@Path("/autoupdate")
 	public String setTimer(@QueryParam("time") int time) {
@@ -245,7 +245,7 @@ public class Server{
 		private Server s;
 		private int frequency;
 		
-		//give frequency in seconds/10 between updates
+		//give frequency in seconds between updates
 		public autoUpdate(Server s, int frequency) {
 			this.frequency = frequency;
 			this.s = s; 
@@ -257,7 +257,7 @@ public class Server{
 			while (true) {
 				while (i < frequency) {
 					i += 1;
-					try{Thread.sleep(10000);}catch(InterruptedException e) { System.out.println("error thread timer");}
+					try{Thread.sleep(1000);}catch(InterruptedException e) { System.out.println("error thread timer");}
 				}
 				s.updateDatabase();
 				i = 0;
