@@ -8,7 +8,8 @@
     <meta name="google-signin-client_id" content="1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-
+    <script type="text/javascript" src="chart.js"></script>
+    <script type="text/javascript" src="sidebar_collapse.js"></script>
     <title>Cofano</title>
 
     <!-- Bootstrap CSS CDN -->
@@ -27,6 +28,16 @@
   .pic {
    border-radius: 50%;
   }
+  
+  .data2 {
+   display: none;
+  }
+  
+  .verify {
+   display: block;
+  }
+  
+  
  
     </style>
 </head>
@@ -99,7 +110,19 @@ gapi.load('auth2', function() {
             <div class="col">
               <br>
               <p class="title">Admin settings</p><br>
+              <div class="verify">
+              <form>
+                Email: <br>
+                <input type="text" name="mail" id="mail" required><br>
+                <p></p>
+
+                <input type="button" value="Log In" id="login" onclick="checkEmployee()"><br>
+
+                </form>
+                <br>
+              </div>
               
+              <div class="data2">
                 <form>
                 Customer Name: <br>
                 <input type="text" name="custname"><br>
@@ -112,7 +135,7 @@ gapi.load('auth2', function() {
              <br><br>
                 <form>
                 Employee name: <br>
-                <input type="text" name="name" id ="name" required><br>
+                <input type="text" name="name" id="name" required><br>
                 Employee id: <br>
                 <input type="text" name="id" id="id"><br>
                 Employee email: <br>
@@ -120,7 +143,7 @@ gapi.load('auth2', function() {
                 <button onclick="addEmployee()" class="btn btn-primary text-center">Authorize Employee</button>
                 <button onclick="removeEmployee()" class="btn btn-danger text-center">Revoke Access</button>
                 </form>
-              
+              </div>
             </div>
             
             
