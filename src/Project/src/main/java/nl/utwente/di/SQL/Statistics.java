@@ -28,7 +28,16 @@ public class Statistics {
 	
 	//hash function for email address
 	public static String hashString(String message) {
-		return DigestUtils.sha256Hex(message);
+		String res = "";
+		try {
+			res = DigestUtils.sha256Hex(message);
+		} catch (NullPointerException e) {
+			
+			DigestUtils du = new DigestUtils();
+			res=du.sha256Hex(message);
+			System.out.println("NULLPOINT " + res);
+		}
+		return res;
 	}
 	
 	//all Employee-functions require email as string, NOT hashed

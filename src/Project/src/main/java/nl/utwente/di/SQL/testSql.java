@@ -26,23 +26,22 @@ public class testSql {
 	}
 	
 	public static void main(String[] args) {
-//		testSql d = new testSql();
-//		d.connectToDatabase();
-//		d.Test();
-//		try {
-//			d.connection.close();
-//		} catch (SQLException e) {
-//			
-//		}
-		Statistics s = new Statistics();
-		s.connectToDatabase();
-		System.out.println(s.addEmployee("jan", 5, "janneman1997@gmail.com"));
-		try {s.connection.close();}catch(SQLException e) {}
+		testSql d = new testSql();
+		d.connectToDatabase();
+		d.Test();
+		try {
+			d.connection.close();
+		} catch (SQLException e) {
+			
+		}
+//		Statistics s = new Statistics();
+//		s.connectToDatabase();
+//		System.out.println(s.addEmployee("jan", 5, "janneman1997@gmail.com"));
+//		try {s.connection.close();}catch(SQLException e) {}
 	}
 	
 	public void Test() {
-		//String command = "SELECT * FROM employees;";
-		String command = Statistics.SQL_COFANO_USERS;
+		String command = "DELETE FROM employees;";
 		try {
 			Statement s = connection.createStatement();
 			ResultSet rs = s.executeQuery(command);
