@@ -26,6 +26,7 @@ public class testSql {
 	}
 	
 	public static void main(String[] args) {
+		
 		testSql d = new testSql();
 		d.connectToDatabase();
 		d.Test();
@@ -43,7 +44,7 @@ public class testSql {
 //		String command = "CREATE TABLE customers (name VARCHAR(50), id INT);"
 //				+ "INSERT INTO customers VALUES('customer1', 1);"
 //				+ "INSERT INTO customers VALUES('customer2', 2);";
-		String command = "SELECT id, c.* FROM actions a, json_array_elements(a.action -> 'tasks') AS c LIMIT 1 ;";
+		String command = "SELECT * FROM actions WHERE id=1 LIMIT 1;";
 		try {
 			Statement s = connection.createStatement();
 			ResultSet rs = s.executeQuery(command);

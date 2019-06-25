@@ -102,13 +102,13 @@ public class Statistics {
 	}
 	
 	private static final String SQL_ACTIONS_PARSE = "DROP TABLE IF EXISTS st_actions; CREATE TABLE st_actions (";
-	private static final String SQL_BOOK = "DROP TABLE IF EXISTS st_book; CREATE TABLE st_book ("
+	public static final String SQL_BOOK = "DROP TABLE IF EXISTS st_book; CREATE TABLE st_book ("
 			+ "date VARCHAR(7),"
 			+ "counter INT);";
-	private static final String SQL_BOOK_FILL = "INSERT INTO st_book (date, counter)"
+	public static final String SQL_BOOK_FILL = "INSERT INTO st_book (date, counter)"
 				+ "SELECT CONCAT(cast(EXTRACT(year FROM createdOn) AS VARCHAR(4))"
 				+ ",'_', RIGHT(CONCAT('0',cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))), 2)) AS m_y, COUNT(bookingId) " //format YYYY_MM
 				+ "FROM bookings "
 				+ "GROUP BY m_y;";
-	private static final String SQL_BOOK_UPDATE = "UPDATE st_book SET date = CONCAT(substring(date, 1, 5), '0', substring(date, 6, 1)) WHERE LENGTH(date) = 6;";
+	public static final String SQL_BOOK_UPDATE = "UPDATE st_book SET date = CONCAT(substring(date, 1, 5), '0', substring(date, 6, 1)) WHERE LENGTH(date) = 6;";
 }

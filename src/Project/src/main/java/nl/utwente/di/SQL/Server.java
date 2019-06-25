@@ -48,8 +48,13 @@ public class Server{
 		String res = "";
 		try {
 			while (set.next()) {
-				res1.append(set.getObject(1)+";");
-				res2.append(set.getObject(2)+";"); 
+				if (((String)set.getObject(1)).equals("_0")) {
+					//System.out.println("Found IT");
+				} else {
+					res1.append(set.getObject(1)+";");
+					res2.append(set.getObject(2)+";"); 
+				}
+				
 			}
 			res1.setLength(res1.length()-1);
 			res2.setLength(res2.length()-1);
@@ -64,10 +69,12 @@ public class Server{
 	@POST
 	@Path("/update")
 	public String addEnvironment(@QueryParam("name") String name,
-									@QueryParam("link") String link) {
+									@QueryParam("link") String link,
+									@QueryParam("B_L_A_S") String bools) { //b=bookings, L=locations, A=actions, S=linestops t for true
+									//example: bookings and actions: t_f_t_f   every option: t_t_t_t 
 		Database d = new Database();
 		d.insertCustomer(name, link);
-		d.update(true, name);
+		d.update(true, name, bools);
 		return "";
 	}
 	

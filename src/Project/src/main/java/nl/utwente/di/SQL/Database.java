@@ -39,11 +39,12 @@ public class Database {
 	}
 	
 	//Instantiates HTTP request and SQL insertion for the database
-	//requires 3 variables:
+	//requires 4 variables:
 	//path=table, so either "locations", "bookings", "linestops", or "actions"
 	//reset=reset the table, ergo creates a new one
 	//offset=start value, if you dont reset table, we dont need all new info
 	//offset can be either int or Long
+	//customer=customer id to keep table unique
 	public void makeTable(String path, boolean RESET, Object offset, int customer) {
 		connectToDatabase();
 		int i = 0;
@@ -386,6 +387,7 @@ public class Database {
 	}
 	
 	public String insertCustomer(String name, String link) {
+		connectToDatabase();
 		PreparedStatement stm = null;
 		try {
 			String command = "INSERT INTO customers (name, link) VALUES (?, ?)";
@@ -397,10 +399,13 @@ public class Database {
 		}
 		try {
 			stm.executeQuery();
+			try {this.connection.close();} catch(SQLException e) {}
 			return "WORKS";
 		} catch (SQLException e) {
+			try {this.connection.close();} catch(SQLException f) {}
 			return e.toString();
 		}
+		
 		
 		
 	}
@@ -426,6 +431,31 @@ public class Database {
 			System.out.println("Dummy Procedure to check if update works");
 		}
 		
+	}
+	
+	public void update(boolean RESET, String customer, String B_L_A_S) {
+		if (B_L_A_S == null) {
+			update(RESET, customer);
+		} else {
+			int custId = Database.getCustId(customer, connection);
+			String[] temp = B_L_A_S.split("_");
+			if (temp.length == 4) {
+				if (temp[0].equals("t")) {
+					updateBook(RESET, custId);
+				}
+				if (temp[1].equals("t")) {
+					updateLoc(custId);
+				}
+				if (temp[2].contentEquals("t")) {
+					updateActions(RESET, custId);
+				}
+				if (temp[3].equals("t")) {
+					updateLines(RESET, custId);
+				}
+			} else {
+				System.out.println(B_L_A_S + " :: " + temp);
+			}
+		}
 	}
 	
 	private void updateBook(boolean RESET, int customer) {
@@ -542,6 +572,9 @@ public class Database {
 		String data = json;
 		int i = 0;
 		while (data.length() > 6){
+			if (!data.substring(1,2).equals("{"))  {
+				return null;
+			}
 			if (data.substring(i,i+1).equals("}")) {
 				if (i == data.length()-2) {
 					//System.out.println(data.substring(1,i+1));
@@ -550,6 +583,7 @@ public class Database {
 					i = -1;
 				} else if (data.substring(i+1,i+3).equals(",{")) {
 					//System.out.println(data.substring(1,i+1));
+					System.out.println(data);
 					temp.add(new JSONObject(data.substring(1,i+1)));
 					data = data.substring(0,1) + data.substring(i+2);
 					i = -1;
@@ -572,6 +606,9 @@ public class Database {
 		int i = 0;
 		int open = 0;
 		while (data.length() > 6) {
+			if (!data.substring(1,2).equals("{")) {
+				return null;
+			}
 			if (data.substring(i,i+1).equals("}")) {
 				//System.out.print("}" + open);
 				open -= 1;
