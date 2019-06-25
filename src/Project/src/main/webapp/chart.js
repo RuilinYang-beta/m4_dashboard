@@ -494,3 +494,70 @@ function random_rgba() {
   var o = Math.round, r = Math.random, s = 255;
   return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
 }
+
+//add employees to authorization database
+function addEmployee() {
+	var http = new XMLHttpRequest();
+	var url = "http://localhost:8080/Project/rest/sql/auth?";
+	var name = $('#name').val();
+	var mail = $('#mail').val();
+	var id = $('#id').val();
+	//http://localhost:8080/Project/rest/sql/auth?name=""&id=""&mail=""
+	var list = {name, mail, id};
+	var x 
+	for (x in list){
+		if (x != list[list.length-1]){
+		url += x + "=" + list[x] + "&";
+		} else { 
+		url += x + "=" + list[x];
+		}
+	}
+	http.onreadystatechange = function() {
+		if(this.readyState == 4 & this.status == 200) {
+		
+		}
+	};
+	http.open("POST", url);
+	http.send();
+};
+
+//check if employee is in database
+function checkEmployee() {
+	var http = new XMLHttpRequest();
+	var url = "http://localhost:8080/Project/rest/sql/auth?mail=";
+	var mail = $('#mail').val();
+	url += mail;
+	http.onreadystatechange = function() {
+		if(this.readyState == 4 & this.status == 200) {
+		
+		}
+	};
+	http.open("GET", url);
+	http.send();
+};
+
+//remove said employees
+function removeEmployee() {
+	var http = new XMLHttpRequest();
+	var url = "http://localhost:8080/Project/rest/sql/auth?";
+	var name = $('#name').val();
+	var mail = $('#mail').val();
+	var id = $('#id').val();
+	//http://localhost:8080/Project/rest/sql/auth?name=""&id=""&mail=""
+	var list = {name, mail, id};
+	var x 
+	for (x in list){
+		if (x != list[list.length-1]){
+		url += x + "=" + list[x] + "&";
+		} else { 
+		url += x + "=" + list[x];
+		}
+	}
+	http.onreadystatechange = function() {
+		if(this.readyState == 4 & this.status == 200) {
+		
+		}
+	};
+	http.open("DELETE", url);
+	http.send();
+};
