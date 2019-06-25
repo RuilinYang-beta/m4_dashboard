@@ -10,26 +10,82 @@
     <style>
     .btn {
       display: none;
-      margin: 300px 600px;
-    }
-
-    .g-signin2{
-      margin: 300px 600px;
+      position: absolute;
+      margin-top: 150px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     .btn2 {
       display: none;
-      margin: 300px 600px
+      position: absolute;
+      margin-top: 200px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 8px;
+      margin-bottom: 5px;
     }
 
+    .g-signin2{
+      width: 100%;
+      position: absolute;
+      margin-top: 25px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .g-signin2 > div{
+      margin: 0 auto;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url(container7.png);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-attachment: fixed;
+    }
+    
+    .data {
+      display: none;
+      position: absolute;
+      margin-top: 0px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 8px;
+    }
+    
+    .warn {
+       display: none;
+       position: absolute;
+       margin-top: 0px;
+       top: 50%;
+       left: 50%;
+       transform: translate(-50%, -50%);
+       font-size: 20px;
+       border: 1px solid #dddddd;
+       width: 80%;
+       vertical-align: top;
+       background-color: #F9E7D0;
+       border-radius: 25px;
+       box-shadow: 2px 2px 1px grey;
+       
+    }
+    
     </style>
 
 
   </head>
   <body>
-<form class="img">
-  <img src ="cofano.png" width="500">
-</form>
+<div class="img">
+  <img src ="cofano2.png" width="500">
+</div>
 
 <div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
 
@@ -40,23 +96,59 @@ var profile=googleUser.getBasicProfile();
 $(".btn").css("display","block");
 $(".g-signin2").css("display","none");
 $(".btn2").css("display","block");
+$(".data").css("display","block");
+$("#pic").attr('src',profile.getImageUrl());
+$("#email").text(profile.getEmail());
+$("#name").text(profile.getName());
+console.log("ID: " + profile.getId()); 
+console.log('Full Name: ' + profile.getName());
+console.log("Image URL: " + profile.getImageUrl());
+console.log("Email: " + profile.getEmail());
+$(".warn").css("display","none");
 
 var id_token = googleUser.getAuthResponse().id_token;
-
 var xhr = new XMLHttpRequest();
-xhr.open('POST', 'https://localhost/tokensignin');
+xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 xhr.onload = function() {
   console.log('Signed in as: ' + xhr.responseText);
+  var json = xhr.responseText;
+  var obj = JSON.parse(json);
+  if (obj.hd == 'student.utwente.nl') {
+	  $(".data").css("display","block");
+      $(".btn").css("display","block");
+  } else {
+	  $(".data").css("display","none");
+      $(".btn").css("display","none");
+      $(".warn").css("display","block");
+      }
+  
+  
 };
 xhr.send('idtoken=' + id_token);
 }
 
 </script>
 
+<div class="data text-center">
+			<p></p>
+			<img id="pic" class="img-circle text-center" width="50" height="50"/>
+			<p></p>
+			
+			<p id="name" class="alert alert-info text-center"></p>
+			<p></p>
+			
+			<p id="email" class="alert alert-info text-center"></p>
+		</div>
+
 <a href="mainDashboard.html" class="btn btn-default">Continue</a>
 
-<a href="#" onclick="signOut();" class="btn2 btn-secondary text-center">Sign out</a>
+
+<div class="warn text-center">
+<p style="padding-left:30px; padding-top:20px; padding-bottom: 20px;">Please sign out and sign in again using the company email to obtain access.</p>
+</div>
+
+<button onclick="signOut()" class="btn2 btn-danger text-center">Sign out</button>
 <script>
   function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
@@ -64,7 +156,9 @@ xhr.send('idtoken=' + id_token);
       $(".btn2").css("display","none");
       $(".btn").css("display","none");
       $(".g-signin2").css("display","block");
-      alert('User signed out.');
+	  $(".data").css("display","none");
+      console.log('User signed out.');
+      $(".warn").css("display","none");
     });
   }
 </script>
