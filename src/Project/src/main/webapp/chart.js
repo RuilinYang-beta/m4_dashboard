@@ -514,7 +514,7 @@ function addEmployee() {
 	}
 	http.onreadystatechange = function() {
 		if(this.readyState == 4 & this.status == 200) {
-		
+		console.log(this.responseText);	
 		}
 	};
 	http.open("POST", url);
@@ -529,8 +529,22 @@ function checkEmployee() {
 	url += mail;
 	http.onreadystatechange = function() {
 		if(this.readyState == 4 & this.status == 200) {
-		
+		var a = this.responseText;
+		console.log(a);
+		doThis(a);
+//		$(".data2").css("display","block");
+//		$(".verify").css("display","none");
 		}
+
+function doThis(a) {
+	if (a == "true") {
+		$(".data2").css("display","block");
+		$(".verify").css("display","none");
+	} else {
+		alert('Access denied: user not authorized');
+	}
+}
+		
 	};
 	http.open("GET", url);
 	http.send();
@@ -544,7 +558,7 @@ function removeEmployee() {
 	var mail = $('#mail').val();
 	var id = $('#id').val();
 	//http://localhost:8080/Project/rest/sql/auth?name=""&id=""&mail=""
-	var list = {name, mail, id};
+	var list = {name, mail, id};	
 	var x 
 	for (x in list){
 		if (x != list[list.length-1]){
@@ -555,7 +569,7 @@ function removeEmployee() {
 	}
 	http.onreadystatechange = function() {
 		if(this.readyState == 4 & this.status == 200) {
-		
+		console.log(this.responseText);
 		}
 	};
 	http.open("DELETE", url);
