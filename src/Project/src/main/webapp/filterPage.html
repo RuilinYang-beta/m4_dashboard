@@ -2,10 +2,14 @@
 <html>
 
 <head>
+<title>Cofano</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
+  
+  <meta name="google-signin-client_id" content="1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 
  
@@ -22,31 +26,64 @@
 
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
   <script type="text/javascript" src="chart.js"></script>
   <script type="text/javascript" src="sidebar_collapse.js"></script>
+  
+  <style>
+  .g-signin2 {
+   display: none;
+  }
+  
+  .pic {
+   border-radius: 50%;
+  }
+ 
+  
+  </style>
 
 
 </head>
 
 <body>
+<script>
+gapi.load('auth2', function() {
+
+	  gapi.auth2.init({
+
+	    client_id: '1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com',
+
+	  }).then(function(){
+
+	    auth2 = gapi.auth2.getAuthInstance();
+	    console.log(auth2.isSignedIn.get()); 
+	    
+	    if (auth2.isSignedIn.get() == false ) 
+	    	window.location = "http://localhost:8080/Project/";
+	  });
+	});
+</script>
+
   <div class="wrapper">
    <nav id="sidebar">
           <div class="sidebar-header">
             <div class="logo">
-              <img src="cofano.png" alt="Cofano" width="200">
+              <img src="cofano2.png" alt="Cofano" width="200">
             </div>
 
             <div class="profileIcon">
-              <a class="btn" href="mainDashboard.html">
-                <i class="fas fa-user"></i>
-              </a>
+            <a href="index.html">
+        	<img id="pic" class="rounded" width="50" height="50"/></a>
+        	<p></p>
             </div>
-          </div>
+			<div class="signOut">
+            <button onClick="signOut()" class="btn btn-danger text-center">Sign Out</button>
+            <p></p>
+            </div>
+           </div>
           <ul class="list-unstyled components">
             <li>
               <a href="mainDashboard.html">Main</a>
@@ -55,7 +92,7 @@
               <a class="active">Filters</a>
             </li>
             <li>
-              <a href="settings.html" >Settings</a>
+              <a href="verify.html" >Settings</a>
             </li>
           </ul>
         </nav>
@@ -247,7 +284,40 @@
 
 
 
+<div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
 
+<script>
+function onSignIn(googleUser) {
+	var profile=googleUser.getBasicProfile();
+	$("#pic").attr('src',profile.getImageUrl());
+	$("#email").text(profile.getEmail());
+	$("#name").text(profile.getName());
+	
+	var id_token = googleUser.getAuthResponse().id_token;
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.onload = function() {
+	  console.log('Signed in as: ' + xhr.responseText);
+	  var json = xhr.responseText;
+	  var obj = JSON.parse(json);
+	  if (obj.hd !== 'student.utwente.nl') {
+	      window.location = "http://localhost:8080/Project/"
+	  } 
+	      };
+	xhr.send('idtoken=' + id_token);
+	
+}
+	
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      window.location = "http://localhost:8080/Project/"
+      console.log('User signed out.');
+    });
+  }
+</script>
 </body>
 
 </html>
