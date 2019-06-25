@@ -4,7 +4,8 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 
 body {
-  font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
 }
 
 p {
@@ -26,6 +27,7 @@ a:focus {
   display: inline-block;
 }
 
+
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
@@ -42,7 +44,6 @@ a:focus {
 #sidebar {
   min-width: 250px;
   max-width: 250px;
-  height: 5000px;
   background: #FEB72A;
   color: #fff;
   transition: all 0.3s;
@@ -67,6 +68,7 @@ a:focus {
   padding: 10px;
   font-size: 1.1em;
   display: block;
+  text-decoration:none;
 }
 
 #sidebar ul li a:hover:not(.active) {
@@ -100,6 +102,7 @@ ul ul a {
   font-size: 0.9em !important;
   padding-left: 30px !important;
   background: #6d7fcc;
+  color: #0060B6;
 }
 
 ul.CTAs {
@@ -150,83 +153,7 @@ a.article:hover {
   #sidebarCollapse span {
     display: none;
   }
-}
 
-/* ---------------------------------------------------
-    LOGIN
------------------------------------------------------ */
-body {
-  margin 0;
-  padding 0;
-  font-family: sans-serif;
-  background: white;
-  background-size: cover;
-}
-
-.img img {
-  position: absolute;
-  margin-top: -200px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.box {
-  width: 300px;
-  padding: 40px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: 10px;
-  transform: translate(-50%, -50%);
-  text-align: center
-}
-
-.box h1 {
-  color: green;
-  text-transform: uppercase;
-  font-weight: 500;
-  < !-- nipisin tulisan -->border-bottom: 6px solid;
-  font-size: 40px;
-}
-
-.box input[type="text"], .box input[type="password"] {
-  border: 0;
-  background: none;
-  display: block;
-  margin: 20px auto;
-  text-align: center;
-  border: 2px solid #3496db;
-  padding: 14px 10px;
-  width: 200px;
-  outline: none;
-  color: black;
-  border-radius: 24px;
-  transition: 0.25s;
-}
-
-.box input[type="text"]:focus, .box input[type="password"]:focus {
-  width: 280px;
-  border-color: #2ecc71;
-}
-
-.box input[type="submit"] {
-  border: 0;
-  background: none;
-  display: block;
-  margin: 20px auto;
-  text-align: center;
-  border: 2px solid #2ecc71;
-  padding: 14px 10px;
-  outline: none;
-  color: green;
-  border-radius: 24px;
-  transition: 0.25s;
-  cursor: pointer;
-}
-
-.box input[type="submit"]:hover {
-  background: #2eec71;
 }
 
 /* ---------------------------------------------------
@@ -274,13 +201,25 @@ body {
 .filters {
   margin: 50px 0 50px 30px;
   border: 1px solid #dddddd;
-  width: 80%;
+  width: 82%;
   display:block;
   vertical-align: top;
   background-color: #F9E7D0;
   border-radius: 25px;
   box-shadow: 2px 2px 1px grey;
-  
+
+}
+
+.filterGraphs {
+  margin: 50px 0 50px 30px;
+  border: 1px solid #dddddd;
+  width: 40%;
+  display:inline-block;
+  vertical-align: top;
+  background-color: #F9E7D0;
+  border-radius: 25px;
+  box-shadow: 2px 2px 1px grey;
+
 }
 
 .fillIns {
@@ -288,17 +227,29 @@ body {
   padding-left: 30px;
 }
 
+.graphs{
+	margin-left: 10px;
+	margin-right: 20px;
+	margin-bottom: 20px;
+}
+
+.table {
+	margin-left: 5px;
+	margin-right: 20px;
+	margin-bottom: 20px;
+}
 
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 60%;
-  margin: 0 auto;
-  margin-top: 15px;
+  width: 70%;
+  margin-top: 20px;
   margin-bottom:20px;
+  font-size:13px;
 }
 
 td, th {
+  border-top: 1px solid black;
   border: 1px solid black;
   text-align: left;
   padding: 8px;
@@ -308,10 +259,6 @@ tr:nth-child(even) {
   background-color: #dddddd;
 }
 
-
-#icon:hover ~ #info{
-    visibility: inline;
-}
 
 
 /* ---------------------------------------------------
@@ -419,3 +366,6 @@ input[name="r"] {
 }
 
 
+/* ---------------------------------------------------
+    CHECKBOXES
+----------------------------------------------------- */
