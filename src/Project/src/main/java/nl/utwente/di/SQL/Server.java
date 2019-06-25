@@ -7,6 +7,7 @@ import org.json.*;
 
 @Path("/sql")
 public class Server{
+	
 	public static final String LINK = "http://localhost:8080";
 	@GET
 	@Path("/autoupdate")
@@ -57,6 +58,8 @@ public class Server{
 		}
 	}
 	
+
+		
 	@GET
 	@Path("/count")
 	@Produces(MediaType.TEXT_HTML)
@@ -64,44 +67,10 @@ public class Server{
 		Statistics a = new Statistics();
 		a.connectToDatabase();
 		String message = a.getCount()+ "";
-		try {a.connection.close();}catch(SQLException e) {}
 		return message;
 	}
 	
-	@GET
-	@Path("/year")
-	@Produces(MediaType.TEXT_HTML)
-	public String getYears() {
-		Statistics a = new Statistics();
-		a.connectToDatabase();
-		ResultSet x = a.execute("SELECT date, counter FROM st_book WHERE date <> '_' ORDER BY date DESC;");
-		return parseToStringarray(x);
-	}
-	
-	public static String parseToStringarray(ResultSet set) {
-		StringBuffer res1 = new StringBuffer();
-		StringBuffer res2 = new StringBuffer();
-		String res = "";
-		try {
-			while (set.next()) {
-				if (((String)set.getObject(1)).equals("_0")) {
-					//System.out.println("Found IT");
-				} else {
-					res1.append(set.getObject(1)+";");
-					res2.append(set.getObject(2)+";"); 
-				}
-				
-			}
-			res1.setLength(res1.length()-1);
-			res2.setLength(res2.length()-1);
-			res = res1.toString() + "|" + res2.toString();
-		} catch (SQLException e) {
 
-		}
-		return res;
-	}
-	
-	//Add entire environment
 	@POST
 	@Path("/update")
 	public String addEnvironment(@QueryParam("name") String name,
@@ -113,33 +82,123 @@ public class Server{
 		d.update(true, name, bools);
 		return "";
 	}
+
 	
 	//update database values
-	@GET
-	@Path("/update")
-	public String updateDatabase() {
-		Database d = new Database();
-		d.connectToDatabase();
-		try {
-			Statement s = d.connection.createStatement();
-			ResultSet rs = s.executeQuery("SELECT name, id FROM customers");
-			System.out.println("pulling customers");
-			while (rs.next()) {
-				System.out.println(rs.getString(1) + " " + rs.getInt(2));
-				d.update(false, rs.getString("name"));
-			}
-		} catch (SQLException e) {
-			System.err.println("error getting stuff");
-			e.printStackTrace();
-		} finally {
+		@GET
+		@Path("/update")
+		public String updateDatabase() {
+			Database d = new Database();
+			d.connectToDatabase();
 			try {
-				d.connection.close();
+				Statement s = d.connection.createStatement();
+				ResultSet rs = s.executeQuery("SELECT name, id FROM customers");
+				System.out.println("pulling customers");
+				while (rs.next()) {
+					System.out.println(rs.getString(1) + " " + rs.getInt(2));
+					d.update(false, rs.getString("name"));
+				}
 			} catch (SQLException e) {
+				System.err.println("error getting stuff");
+				e.printStackTrace();
+			} finally {
+				try {
+					d.connection.close();
+				} catch (SQLException e) {
+					
+				}
+			}
+			return "";
+		}
+
+		private class autoUpdate extends Thread {
+			private Server s;
+			private int frequency;
+			
+			//give frequency in seconds between updates
+			public autoUpdate(Server s, int frequency) {
+				this.frequency = frequency;
+				this.s = s; 
+			}
+			
+			public void run() {
+				int i = 0;
 				
+				while (true) {
+					while (i < frequency) {
+						i += 1;
+						try{Thread.sleep(1000);}catch(InterruptedException e) { System.out.println("error thread timer");}
+					}
+					s.updateDatabase();
+					i = 0;
+				}
 			}
 		}
-		return "";
+
+
+	
+	public static String parseToStringarray(ResultSet set) {
+		StringBuffer res1 = new StringBuffer();
+		StringBuffer res2 = new StringBuffer();
+	
+		String res = "";
+		try {
+			while (set.next()) {
+			
+					res1.append(set.getObject(1)+";");
+					res2.append(set.getObject(2)+";"); 
+				
+			
+			}
+			res1.setLength(res1.length()-1);
+			res2.setLength(res2.length()-1);
+		
+			res = res1.toString() + "|" + res2.toString();
+		} catch (SQLException e) {
+
+		}
+		return res;
 	}
+	
+//	public static String parseToStringarray(ResultSet set) {
+//		StringBuffer res1 = new StringBuffer();
+//		StringBuffer res2 = new StringBuffer();
+//		StringBuffer res3 = new StringBuffer();
+//		String res = "";
+//		ResultSetMetaData rsmd;
+//		int col = -1;
+//		try {
+//			rsmd = set.getMetaData();
+//			col = rsmd.getColumnCount();
+//		} catch (SQLException e1) {
+//			e1.printStackTrace();
+//		}
+//		try {
+//			while (set.next()) {
+//				res1.append(set.getObject(1)+";");
+//				res2.append(set.getObject(2)+";"); 
+//			
+//				if(col == 3) {
+//					res3.append(set.getObject(3)+";");
+//				}
+//				
+//			}
+//			res1.setLength(res1.length()-1);
+//			res2.setLength(res2.length()-1);
+//			if(col == 3) {
+//				res3.setLength(res3.length()-1);
+//			}
+//			
+//			res = res1.toString() + "|" + res2.toString();
+//			if(col == 3) {
+//				res += "|" + res3.toString();
+//			}
+//			
+//		} catch (SQLException e) {
+//
+//		}
+//		return res;
+//	}
 	
 	@GET
 	@Path("/select")
@@ -152,9 +211,10 @@ public class Server{
 									@QueryParam("shipCompId") int compId,
 									@QueryParam("shipCompScac") String compScac,
 									@QueryParam("goal") String goal,
-									@QueryParam("table") String  table
+									@QueryParam("table") String  table,
+									@QueryParam("customerId") int custId
 									) {
-		Object[] inserts = new Object[]{null, null, null, null, null, null, null, null};
+		Object[] inserts = new Object[]{null, null, null, null, null, null, null, null, null};
 		String command = "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" + 
 				"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED'";
 		if (dateLow != null) {
@@ -189,6 +249,10 @@ public class Server{
 			command += " AND shippingCompanyScac = ?";
 			inserts[7] = compScac;
 		}
+		if (custId != 0) {
+			command += " AND id = ?";
+			inserts[8] = custId;
+		}
 		if (table != null) {
 			if(table.equals("true")) {
 				return getValue(command, inserts, goal, true);
@@ -211,6 +275,11 @@ public class Server{
 				stm = a.connection.prepareStatement(SORT_MONTH + "SUM(nettoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
 			} else if (((String) goal).equals("brutoWeight")) { 
 				stm = a.connection.prepareStatement(SORT_MONTH + "SUM(brutoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
+			} else if (((String) goal).equals("topCustomerWeight")){
+				stm = a.connection.prepareStatement("SELECT customer AS custName, COUNT(bookingId)" + topCustomer);		
+			} else if (((String) goal).equals("topCustomerBook")){
+				stm = a.connection.prepareStatement("SELECT customer AS custName, SUM(brutoWeight)" + topCustomer);
+				
 			} else {
 				return -2 + ""; 
 			}
@@ -238,6 +307,9 @@ public class Server{
 				col += 1;
 			} if (inserts[7] != null) {
 				stm.setObject(col, (String) inserts[7]);
+				col += 1;
+			} if (inserts[8] != null) {
+				stm.setObject(col, (int) inserts[8]);
 				col += 1;
 			}
 			ResultSet x = stm.executeQuery();
@@ -276,28 +348,8 @@ public class Server{
 	}
 	private static final String SORT_MONTH = "SELECT CONCAT(cast(EXTRACT(year FROM createdOn) AS VARCHAR(4))"
 			+ ",'_', RIGHT(CONCAT('0',cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))), 2)) AS m_y, ";
-	
-	private class autoUpdate extends Thread {
-		private Server s;
-		private int frequency;
-		
-		//give frequency in seconds between updates
-		public autoUpdate(Server s, int frequency) {
-			this.frequency = frequency;
-			this.s = s; 
-		}
-		
-		public void run() {
-			int i = 0;
-			
-			while (true) {
-				while (i < frequency) {
-					i += 1;
-					try{Thread.sleep(1000);}catch(InterruptedException e) { System.out.println("error thread timer");}
-				}
-				s.updateDatabase();
-				i = 0;
-			}
-		}
-	}
+	private static final String topCustomer = " FROM bookings "
+			+ "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" +  
+			"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED' "
+			+ "AND brutoWeight IS NOT NULL AND customer IS NOT NULL GROUP BY custName ORDER BY (SUM(brutoWeight) + COUNT(bookingId)*1000) DESC LIMIT 10";
 }
