@@ -6,13 +6,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
+
   <meta name="google-signin-client_id" content="1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com">
   <script src="https://apis.google.com/js/platform.js" async defer></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 
- 
+
   <!-- Our Custom CSS -->
   <link rel="stylesheet" href="style.css">
 
@@ -32,17 +32,17 @@
 
   <script type="text/javascript" src="chart.js"></script>
   <script type="text/javascript" src="sidebar_collapse.js"></script>
-  
+
   <style>
   .g-signin2 {
    display: none;
   }
-  
+
   .pic {
    border-radius: 50%;
   }
- 
-  
+
+
   </style>
 
 
@@ -59,31 +59,27 @@ gapi.load('auth2', function() {
 	  }).then(function(){
 
 	    auth2 = gapi.auth2.getAuthInstance();
-	    console.log(auth2.isSignedIn.get()); 
-	    
-	    if (auth2.isSignedIn.get() == false ) 
+	    console.log(auth2.isSignedIn.get());
+
+	    if (auth2.isSignedIn.get() == false )
 	    	window.location = "http://localhost:8080/Project/";
 	  });
 	});
 </script>
 
-  <div class="wrapper">
+<div class="wrapper">
    <nav id="sidebar">
           <div class="sidebar-header">
             <div class="logo">
-              <img src="cofano2.png" alt="Cofano" width="200">
+              <img src="cofano.png" alt="Cofano" width="200">
             </div>
 
             <div class="profileIcon">
-            <a href="index.html">
-        	<img id="pic" class="rounded" width="50" height="50"/></a>
-        	<p></p>
+              <a class="btn" href="mainDashboard.html">
+                <i class="fas fa-user"></i>
+              </a>
             </div>
-			<div class="signOut">
-            <button onClick="signOut()" class="btn btn-danger text-center">Sign Out</button>
-            <p></p>
-            </div>
-           </div>
+          </div>
           <ul class="list-unstyled components">
             <li>
               <a href="mainDashboard.html">Main</a>
@@ -92,7 +88,7 @@ gapi.load('auth2', function() {
               <a class="active">Filters</a>
             </li>
             <li>
-              <a href="verify.html" >Settings</a>
+              <a href="settings.html" >Settings</a>
             </li>
           </ul>
         </nav>
@@ -111,119 +107,64 @@ gapi.load('auth2', function() {
         </div>
       </nav>
       <div class="content-container-fluid">
+      	<div class="filterGraphs">
+          <canvas id="container3"></canvas>
+        </div>
+      	<div class="filterGraphs">
+          <canvas id="container4"></canvas>
+        </div>
+
         <div class="filters" >
           <p style="padding-left:30px; padding-top:30px;"> Filters:  </p>
           <div class="fillIns">
               <label id="customer" > Customer:
-              	<select id='customerFill'>
+              	<select id='customerFill' class="form-control input-sm">
               	  <option value="1" selected>1 </option>
 			  	  <option value="2">2</option>
-			    </select>*
+			    </select>
               </label>
             </div>
           <div class ="fillIns">
           	<div>
 	          <label id="dateFrom">From:
-	            <input id="dateFromFill" type="date">*
+	            <input id="dateFromFill" type="date" class="form-control input-sm">
 	          </label>
 	          <label id="dateTo">To:
-	            <input id="dateToFill" type="date">*
+	            <input id="dateToFill" type="date" class="form-control input-sm">
 	          </label>
 	        </div>
-	        <div>
-	          *Must be filled.
-	        </div>
           </div>
-          
           <div class="fillIns">
-            <input type="checkbox" id="customCheck" onclick="check('.customChoice', 'customCheck')" >
+            <input type="checkbox" id="customCheck" onclick="checkWithSelect('#customChoice', '#customCheck', '#customFill')" >
             <label for="customCheck"> Customer of Customer</label>
-            <div class="customChoice" style="display:none">
+            <div id="customChoice" style="display:none;">
               <label id="custom" > Name:
-              <input oninput="maxLengthCheck(this, 10)"  id="customFill"/>
-              </label>
+              <input id="customFill" class="form-control input-sm" onkeypress="validateEvent(event,/[A-Z ]|\./)"/>
+              </label>*
+              <div class="info" style="display:inline; font-size:12px;">UpperCase Only</div>
             </div>
           </div>
           <div class="fillIns">
-            <input type="checkbox" name="company" id="companyCheck" onclick="check('.companyChoice', 'companyCheck')">
+            <input type="checkbox" name="company" id="companyCheck" onclick="checkWithSelect('#companyChoice', '#companyCheck', '#companyNameFill')">
             <label for="companyCheck">Shipping Company</label>
-            <div class="companyChoice" style="display:none;">
-              	<label id="companyNameFill" >Name:
-              		<input id="companyNameFill" list="companyNameList" oninput="maxLengthCheck(this, 4)"  />
-            	</label> 
+            <div id="companyChoice" style="display:none;">
+              	<label >Name:
+              		<input id="companyNameFill" list="companyNameList" class="form-control input-sm" onkeypress="restrictInput(this,event,/[A-Za-z]|\./,1,/[0-9]|\./)" oninput="maxLengthCheck(this, 4)"/>
+            	</label>*
+            	<div class="info" style="display:inline; font-size:12px;">Uppercase(except s) then 3 digit, e.g. A288</div>
 		    	<datalist id='companyNameList'>
-				  <option value="A288">A288</option>
-				  <option value="A315">A315</option>
-				  <option value="A342">A342</option>
-				  <option value="B291">B291</option>
-				  <option value="B325">B325</option>
-				  <option value="C290">C290</option>
-				  <option value="C295">C295</option>
-				  <option value="C296">C296</option>
-				  <option value="C297">C297</option>
-				  <option value="C320">C320</option>
-				  <option value="C323">C323</option>
-				  <option value="C327">C327</option>
-				  <option value="C330">C330</option>
-				  <option value="C334">C334</option>
-				  <option value="D319">D319</option>
-				  <option value="D337">D337</option>
-				  <option value="E298">E298</option>
-				  <option value="E322">E322</option>
-				  <option value="F289">F289</option>
-				  <option value="G339">G339</option>
-				  <option value="G350">G350</option>
-				  <option value="H299">H299</option>
-				  <option value="H300">H300</option>
-				  <option value="H301">H301</option>
-				  <option value="H302">H302</option>
-				  <option value="H328">H328</option>
-				  <option value="I292">I292</option>
-				  <option value="I303">I303</option>
-				  <option value="K304">K304</option>
-				  <option value="M293">M293</option>
-				  <option value="M294">M294</option>
-				  <option value="M305">M305</option>
-				  <option value="N306">N306</option>
-				  <option value="N321">N321</option>
-				  <option value="N335">N335</option>
-				  <option value="O307">O307</option>
-				  <option value="O314">O314</option>
-				  <option value="O336">O336</option>
-				  <option value="P316">P316</option>
-				  <option value="P324">P324</option>
-				  <option value="S308">S308</option>
-				  <option value="S312">S312</option>
-				  <option value="S313">S313</option>
-				  <option value="S326">S326</option>
-				  <option value="S332">S332</option>
+
 				  <option value="s333">s333</option>
-				  <option value="S338">S338</option>
-				  <option value="S340">S340</option>
-				  <option value="T331">T331</option>
-				  <option value="U309">U309</option>
-				  <option value="U359">U359</option>
-				  <option value="W317">W317</option>
-				  <option value="Y310">Y310</option>
-				  <option value="Z311">Z311</option>
+
 				</datalist>
             </div>
           </div>
           <div class="fillIns">
-            <input type="checkbox" name="yesno" id="locationCheck" onclick="check('.locationChoice', 'locationCheck')">
-            <label for="locationCheck">Location</label>
-            <div class="locationChoice" style="display:none">
-              <label id="location" >Location:
-                <input id="locationFill" placeholder="Location" />
-              </label>
-            </div>
-          </div>
-          <div class="fillIns">
-            <input type="checkbox" name="yesno" id="orderStateCheck" onclick="check('.orderStateChoice', 'orderStateCheck', '#orderStateFill')">
+            <input type="checkbox" name="yesno" id="orderStateCheck" onclick="checkWithSelect('#orderStateChoice', '#orderStateCheck', '#orderStateFill')">
             <label for="orderStateCheck">Order State</label>
-            <div class="orderStateChoice" style="display:none">
-              Order State: 
-              <select id='orderStateFill'>
+            <div id="orderStateChoice" style="display:none">
+              Order State:
+              <select id='orderStateFill' class="form-control form-control-sm" style="width:auto;">
               	<option value="" selected> </option>
 			  	<option value="FINISHED">FINISHED</option>
 			  	<option value="PLANNED">PLANNED</option>
@@ -232,49 +173,33 @@ gapi.load('auth2', function() {
             </div>
           </div>
           <div class="fillIns">
-            <input type="checkbox" name="yesno" id="transportCheck" onclick ="check('.transportChoice', 'transportCheck')">
-            <label for="transportCheck">Transport Mode</label>
-            <div class="transportChoice" style="display:none">
-              <label id="transport" >Transport Mode:
-              <input id="transportFill" placeholder="Transport Mode" size="25" />
-              </label>
-            </div>
-          </div>
-          <div class="fillIns">
-            <input type="checkbox" name="yesno" id="teuCheck" onclick="check('.teuChoice', 'teuCheck')">
+            <input type="checkbox" name="yesno" id="teuCheck" onclick="checkWithSelect('#teuChoice', '#teuCheck','#teuFill')">
             <label for="teuCheck">TEU</label>
-            <div class="teuChoice" style="display:none" >
+            <div id="teuChoice" style="display:none" >
               <label id="teu">TEU:
-                <input id="teuFill" onkeypress="validate(event)" oninput="maxLengthCheck(this, 1) " size="1" pattern="[1-2|]{6,25}"/>
-              </label>
-              <i class="fa fa-info-circle" id="icon" onmouseover="mouseHoverShow('info')" onmouseout="mouseHoverHidden('info')"></i>
-              <div id="info" style="display:none">1 or 2</div>
+                <input id="teuFill" class="form-control form-control-sm" onkeypress="validateEvent(event, /[1-2]|\./)" oninput="maxLengthCheck(this, 1) " size="1" />
+              </label>*
+              <div class="info" style="display:inline; font-size:12px;">1 or 2</div>
             </div>
           </div>
-          <div class="fillIns">          
-              <label id="result">Result Type:
-              <select id='resultFill'>
-              	<option value="" selected>Graph</option>
-			  	<option value="table">Table</option>
-			  </select>
-              </label>
-          </div>
-
 
           <div style="padding-left:30px; padding-top:15px; padding-bottom: 30px;">
-            <input type="button" value="Search" id="search" style="width:100px;height:30px;">
+            <button onclick="" class="btn btn-secondary text-center" id="search">Search</button>
           </div>
         </div>
         <div class="filters" >
           <div class="fillIns" >Results:
-          	<div style="width: 60%;">
+          	<div class="table" >
           		<table class ="resultTable" id="resultTab" ></table>
           	</div>
-          	<div>
+          	<div class="graphs">
           	  <canvas id="container"></canvas>
           	</div>
-          	<div>
+          	<div class="graphs">
           	  <canvas id="container1"></canvas>
+          	</div>
+          	<div class="graphs">
+          	  <canvas id="container2"></canvas>
           	</div>
           </div>
         </div>
@@ -292,7 +217,7 @@ function onSignIn(googleUser) {
 	$("#pic").attr('src',profile.getImageUrl());
 	$("#email").text(profile.getEmail());
 	$("#name").text(profile.getName());
-	
+
 	var id_token = googleUser.getAuthResponse().id_token;
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
@@ -303,12 +228,12 @@ function onSignIn(googleUser) {
 	  var obj = JSON.parse(json);
 	  if (obj.hd !== 'student.utwente.nl') {
 	      window.location = "http://localhost:8080/Project/"
-	  } 
+	  }
 	      };
 	xhr.send('idtoken=' + id_token);
-	
+
 }
-	
+
 
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
