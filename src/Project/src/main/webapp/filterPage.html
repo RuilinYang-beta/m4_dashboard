@@ -70,15 +70,22 @@ gapi.load('auth2', function() {
 <div class="wrapper">
    <nav id="sidebar">
           <div class="sidebar-header">
+		  
             <div class="logo">
-              <img src="cofano.png" alt="Cofano" width="200">
+              <img src="cofano2.png" alt="Cofano" width="200">
             </div>
 
             <div class="profileIcon">
-              <a class="btn" href="mainDashboard.html">
-                <i class="fas fa-user"></i>
-              </a>
+              <a href="index.html">
+			  <img id="pic" class="rounded" width="50" height="50"/></a>
+        	  <p></p>
             </div>
+			
+			<div class="signOut">
+              <button onClick="signOut()" class="btn btn-danger text-center">Sign Out</button>
+              <p></p>
+            </div>
+			
           </div>
           <ul class="list-unstyled components">
             <li>
