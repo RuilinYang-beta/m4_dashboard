@@ -134,6 +134,7 @@ gapi.load('auth2', function() {
               <p>User not authorized.</p>
               <a class="close" href="http://localhost:8080/Project/filterPage.html">Exit page</a>
             </div>
+            <div class = "data2">
             <div class="row">
 	            <div class="col">
 	              <p class="title">Admin settings</p>
@@ -167,6 +168,7 @@ gapi.load('auth2', function() {
 
 	            </div>
             </div>
+           </div>
   		</div>
 </div>
 
@@ -228,6 +230,8 @@ function onSignIn(googleUser) {
 				$("#alert").css("display","none");
 			} else {
 				$("#alert").css("display","block");
+				$(".data2").css("display","none");
+
 			}
 		}
 			};
