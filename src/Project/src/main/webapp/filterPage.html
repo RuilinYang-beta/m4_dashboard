@@ -1,565 +1,253 @@
-$(document).ready(function() {
-  $('#customFill').val("");
-  $('#companyFill').val("");
-  $('#locationFill').val("");
-  $('#dateFromFill').val("");
-  $('#dateToFill').val("");
-  $('#teuFill').val("");
-  $('#transportFill').val("");
-  dataList('companyNameList');
-});
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Cofano</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <meta name="google-signin-client_id" content="1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 
-function dataList(datalistName) {
-	var mylist = ['A288','A305','A315','A332','A342','B283','B291','B321','B325','C287','C288','C290','C295','C296','C297','C310','C320','C323','C327','C330','C334','C344','D319','D326','D337','D346','E290','E298','E312','E322',
-		'F289','G318','G339','G350','H291','H293','H299','H300','H301','H302','H322','H328','I292','I294','I303','I324','J328','K295','K304','M285','M286','M293','M294',
-		'M305','M317','M342','M352','M355','N296','N306','N321','N333','N335','N343','O297','O304','O307','O314','O336','O338','P314','P316','P324','S298','S303','S308','S312',
-		'S313','S319','S325','S326','S332','S335','S336','S338','S340','T327','T331','U299','U309','U359','V339','W307','W317','Y300','Y310','Z301','Z311',
-		];
-	var list = document.getElementById(datalistName);
-	var sortedMyList = mylist.sort();
-	sortedMyList.forEach(function(item){
-	   var option = document.createElement('option');
-	   option.value = item;
-	   list.appendChild(option);
-	});
-}
+
+  <!-- Our Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Font Awesome JS -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"> </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
-//Determine the max length of an input
-function maxLengthCheck(object, maxLength) {
-	if(object.value.length > maxLength) {
-        object.value = object.value.substr(0, maxLength);
-    }
+  <script type="text/javascript" src="chart.js"></script>
+  <script type="text/javascript" src="sidebar_collapse.js"></script>
+
+  <style>
+  .g-signin2 {
+   display: none;
   }
 
-// Validate whether the input matches the regexValue parameter, e.g, /[1-2]|\./ where the values allowed are those specified inside the [].
-function validateEvent(evt,regexValue) {
-	  var theEvent = evt || window.event;
-
-	  // Handle paste
-	  if (theEvent.type === 'paste') {
-	      key = event.clipboardData.getData('text/plain');
-	  } else {
-	  // Handle key press
-	      var key = theEvent.keyCode || theEvent.which;
-	      key = String.fromCharCode(key);
-	  }
-	  var regex = regexValue;
-	  if( !regex.test(key) ) {
-	    theEvent.returnValue = false;
-	    if(theEvent.preventDefault) theEvent.preventDefault();
-	  }
-	}
-
-// Validate on certain input.value.length, e.g, only Uppercase under length 1 and digit above length 1
-function restrictInput(obj, evt, regexA, rangeA, regexB) {
-	if(obj.value.length < rangeA) {
-		validateEvent(evt,regexA);
-	} else {
-		validateEvent(evt,regexB)
-	}
-}
-
-// Show input fields when checkbox is checked
-function check(divClass, checkboxClass){
-	var buttons = document.querySelector(divClass);
-	if (document.getElementById(checkboxClass).checked == true) {
-	    buttons.style.display = 'block';
-	} else {
-	    buttons.style.display = 'none';
-	}
-}
-
-// Checkboxes will show fillins when they are checked. Empty the value in the field and hiding the fillins when they are unchecked
-function checkWithSelect(divClass, checkboxClass, fillInId){
-	$(checkboxClass).on('change', function (e) {
-		if(this.checked) {
-			 $(divClass).css("display", "block");
-		} else {
-			$(divClass).css("display", "none");
-			$(fillInId).val('');
-		}
-	});
-}
-
-// Checks if the date input is correct
-function dateCorrect() {
-	var dateFrom = new Date($('#dateFromFill').val());
-	var dateTo = new Date($('#dateToFill').val());
-	var today = new Date();
-	var dateF = dateFrom.getTime();
-	var dateT = dateTo.getTime();
-
-	if (dateF > dateT) {
-		alert("Date From cannot be larger than date To");
-		$('#dateFromFill').val('');
-		$('#dateToFill').val('');
-		return false;
-	} else if (dateF > today.getTime()){
-		alert("Date From cannot be larger than Today's Date");
-		$('#dateFromFill').val('');
-		return false;
-	} else if (dateT > today.getTime()){
-		alert("Date To cannot be larger than Today's Date");
-		$('#dateToFill').val('');
-		return false;
-	} else {
-		return true;
-	}
-}
-
-//Wait for .. ms
-function wait(ms){
-	   var start = new Date().getTime();
-	   var end = start;
-	   while(end < start + ms) {
-	     end = new Date().getTime();
-    }
-}
+  .pic {
+   border-radius: 50%;
+  }
 
 
+  </style>
 
 
-// Get the count on number of bookings
-function getCount() {
-	var http = new XMLHttpRequest();
-	var url = "http://localhost:8080/Project/rest/sql/count";
-	http.onreadystatechange = function() {
-		  if (this.readyState == 4 && this.status == 200) {
+</head>
 
-			  document.getElementById("numcount").innerHTML = this.responseText;
-			  countit();
-		  }
-		};
-	http.open("GET", url);
-	http.send();
-};
+<body>
+<script>
+gapi.load('auth2', function() {
 
-// Filtering functions
+	  gapi.auth2.init({
 
-var book = "0";
-var bruto = "0";
-var netto = "0";
+	    client_id: '1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com',
 
-/* Get the results based on filters inputted
-Parameters:
-table: The result type --> "table" or ""
-searchType: The type of search on the database --> "bookings" for booking, "brutoWeight" for total bruto, and "nettoWeight" for total netto
-canvasId: the canvas for the graph (optional)
-graphTitle: title for the graph (optional)
-label: name for certain data on the graph(optional)
-label1: same as label, but for the second data
-*/
+	  }).then(function(){
 
+	    auth2 = gapi.auth2.getAuthInstance();
+	    console.log(auth2.isSignedIn.get());
 
-function getFilter(table, searchType, type, canvasId = "", graphTitle = "", label = "",label1=""){
-	var http = new XMLHttpRequest();
-	var customerId = $('#customerFill').val();
-	var dateFrom = new Date($('#dateFromFill').val());
-	var dateTo = new Date($('#dateToFill').val());
-	var fromD = "";
-	var toD = "";
-	if(dateFrom != "Invalid Date") {
-		fromD = dateFrom.getTime() / 1000;
-	}
-	if (dateTo != "Invalid Date") {
-		toD = dateTo.getTime() / 1000;
-	}
-	var customer = $('#customFill').val();
-	var ordState = $('#orderStateFill').val();
-	var teu = $('#teuFill').val();
-	var shipComp= $('#companyNameFill').val();
-	var shipCompId = "";
-	var shipCompScac = "";
-	var list = {fromD, toD, customer, ordState, teu, shipComp, shipCompId, shipCompScac, customerId};
-	var url = "http://localhost:8080/Project/rest/sql/select?goal=";
-	if(searchType == "bookings") {
-		url += "bookings";
-	} else if (searchType == "brutoWeight") {
-		url += "brutoWeight";
-	} else if (searchType == "nettoWeight") {
-		url += "nettoWeight";
-	} else if (searchType == "2yAxis") {
-		url += "2yAxis";
-	} else if(searchType == "topCustomerBook"){
-		url += "topCustomerBook";
-	} else if (searchType == "topCustomerWeight"){
-		url += "topCustomerWeight";
-	}
-	var x;
-	if(table == "table"){
-		url += "&table=true";
-		for(x in list ){
-			if(list[x] != ""){
-				url += "&" + x + "=" + list[x];
-			}
-
-
-		}
-
-		http.onreadystatechange = function(){
-			  if (this.readyState == 4 && this.status == 200) {
-				  if(searchType == "bookings") {
-					  book = this.responseText;
-				  } else if(searchType == "brutoWeight") {
-					  bruto = this.responseText;
-				  } else if(searchType == "nettoWeight") {
-					  netto = this.responseText;
-					  document.getElementById('resultTab').innerHTML = createTable(customerId,book,bruto,netto);
-				  }
-
-			  }
-		};
-
-	} else {
-		for(x in list ){
-			if(list[x] != ""){
-				url += "&" + x + "=" + list[x];
-			}
-
-		}
-
-		http.onreadystatechange = function(){
-			  if (this.readyState == 4 && this.status == 200 & searchType != "2yAxis") {
-				  var temp = this.responseText.split("|");
-
-				  a = temp[0].split(";");
-				  b = temp[1].split(";").map(function(item) {
-					    return parseInt(item, 10);
-				  });
-
-				  var i;
-				  for(i = 1; i<b.length ; i++){
-					  b[i] = b[i] + b[i-1];
-				  };
-				  chart(a,b,canvasId,graphTitle, type, label);
-			  }else if(this.readyState == 4 && this.status == 200 & searchType == "2yAxis"){
-				  var temp = this.responseText.split("|");
-				  a = temp[0].split(";");
-				  b = temp[1].split(";").map(function(item) {
-					    return parseInt(item, 10);
-				  });
-
-				  c = temp[2].split(";").map(function(item) {
-					    return parseInt(item, 10);
-				  });
-
-				  chart2yAxis(a,canvasId,type,label,label1,b,c,graphTitle);
-			  }
-		};
-	}
-
-	http.open("GET", url);
-	http.send();
-};
-
-
-//Filters on all searchType
-function searchIt() {
-		getFilter("table", "bookings");
-		wait(10);
-		getFilter("table", "brutoWeight");
-		wait(10);
-		getFilter("table", "nettoWeight");
-
-		getFilter("Graph", "bookings", 'line', "container", "Cumulative Bookings per Month", "# of bookings");
-		getFilter("Graph", "brutoWeight", 'line', "container1", "Total Bruto Weight", "Bruto Weight");
-		getFilter("Graph", "nettoWeight", 'line', "container2", "Total Netto Weight", "Netto Weight");
-		getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights");
-		getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings");
-
-}
-
-///CREATE A TABLE WHEN SEARCH IS PRESSED
-function createTable(customer, containTotal, brutoTotal, nettoTotal) {
-	var table ="<tr><th>Customer</th><td>" + customer + "</td></tr><tr><th>Total Containers</th><td>" + containTotal + "</td></tr><tr><th>Total Bruto Weight</th><td>" + brutoTotal + "</td></tr><tr><th>Total Netto Weight</th><td>" + nettoTotal + "</td></tr>";
-	return table;
-};
-
-//Running filters with choice as the result type
-function combine(){
-	searchIt();
-}
-
-//CREATE CHART with 1 data
-//parameter:
-//year: list of YYYY_MM
-//canvas: canvas name(container,container1, etc)
-//type: type of the chart
-//label: same as label in getFilter
-//total: the list of total given query(bookings/weights)
-//chartName: title fot the chart
-function chart(year, total, canvas, chartName, type, label) {
-	  var x = generateListColor(year, type);
-	  var ctx = document.getElementById(canvas).getContext('2d');
-	  var myChart = new Chart(ctx, {
-	    type: type,
-	    data: {
-	        labels: year,
-	        datasets: [{
-	            label: label,
-	            data: total,
-	            backgroundColor: x,
-	            hoverBackgroundColor: x,
-	            borderWidth: 2
-	        }]
-	    },
-	    options: {
-	        responsive: true,
-	        title: {
-	            display: true,
-	            text: chartName
-	          }
-	    }
-	  });
-};
-
-//CREATE CHART WITH 2 DATA
-//parameter:
-//year: list of YYYY_MM
-//canvas: canvas name(container,container1, etc)
-//type: type of the chart
-//label: same as label in getFilter
-//label1: label for second data
-//total: the list of total given query(bookings/weights)
-//total1: total fot second data
-//chartName: title fot the chart
-function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
-	  var x = generateListColor(year, type);
-	  var y = generateListColor(year, type);
-
-	  var ctx = document.getElementById(canvas).getContext('2d');
-	  var myChart = new Chart(ctx, {
-	    type: type,
-	    data: {
-	        labels: year,
-	        datasets: [{
-	            label: label,
-	            yAxisID: 'y-axis-1',
-	            backgroundColor: x,
-	            hoverBackgroundColor: x,
-	            borderWidth: 10,
-	            fill: false,
-	            data: total,
-	        },{
-	        	label: label1,
-	            yAxisID: 'y-axis-2',
-	            backgroundColor: y,
-	            hoverBackgroundColor: y,
-	            borderWidth: 10,
-	            fill: false,
-	            data: total1,
-
-
-	        }]
-	    },
-	    options: {
-			responsive: true,
-			hoverMode: 'index',
-			stacked: false,
-			title: {
-				display: true,
-				text: chartName
-			},
-			scales: {
-				yAxes: [{
-					type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-					display: true,
-					position: 'left',
-					id: 'y-axis-1',
-				}, {
-					type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-					display: true,
-					position: 'right',
-					id: 'y-axis-2',
-
-					// grid line settings
-					gridLines: {
-						drawOnChartArea: false, // only want the grid lines for one axis to show up
-					},
-				}],
-			}
-		}
-	  });
-}
-
-// generate random color
-function generateListColor(year, type){
-	var x;
-	var list = [];
-
-	for(x in year){
-		if(type == 'doughnut'){
-			if(list.includes(getRandomColor())){
-				getRandomColor();
-			}else{
-				list.push(getRandomColor());
-			}
-		}else{
-			if(list.includes(random_rgba())){
-				random_rgba();
-			}else{
-				list.push(random_rgba());
-			}
-		}
-
-	}
-	return list;
-}
-/// random color with #
-function getRandomColor() {
-	  var letters = '0123456789ABCDEF';
-	  var color = '#';
-	  for (var i = 0; i < 6; i++) {
-	    color += letters[Math.floor(Math.random() * 16)];
-	  }
-	  return color;
-	}
-//random color with rgba
-function random_rgba() {
-  var o = Math.round, r = Math.random, s = 255;
-  return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
-}
-
-//add employees to authorization database
-function addEmployee() {
-	var http = new XMLHttpRequest();
-	var url = "http://localhost:8080/Project/rest/sql/auth?";
-	var name = $('#name').val();
-	var mail = $('#mail').val();
-	var id = $('#id').val();
-	//http://localhost:8080/Project/rest/sql/auth?name=""&id=""&mail=""
-	var list = {name, mail, id};
-	var x;
-  for(x in list){
-		if(list[x] != ""){
-			url +=  x + "=" + list[x] + "&" ;
-		}
-	}
-	var newUrl = url.substring(0, url.length-1);
-	http.onreadystatechange = function() {
-		if(this.readyState == 4 & this.status == 200) {
-		console.log(this.responseText);
-		}
-	};
-	http.open("POST", url);
-	http.send();
-};
-
-//GENERATE TOP 10 CUSTOMER WITH ID 1
-$(document).ready(function() {
-	 $('#container3').replaceWith('<canvas id="container3" ></canvas>');
-	 $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-	 $(getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights"));
-	 $(getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings"));
-
-//	 $(getFilter("Graph", "2yAxis", 'line', "container3", "line chart multiple Axis", "Amount of book", "amount of weight"));
-
-//GENERATE GRAPH BELOW THE RESULT AND UPDATE THE TOP 10 CUSTOMER
-$("#search").click(function() {
-	  if(dateCorrect()) {
-		  combine();
-		  $('#container').replaceWith('<canvas id="container" ></canvas>');
-		  $('#container1').replaceWith('<canvas id="container1" ></canvas>');
-		  $('#container2').replaceWith('<canvas id="container2" ></canvas>');
-		  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
-		  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-
-	  }
- });
-});
-
-//remove said employees
-function removeEmployee() {
-	var http = new XMLHttpRequest();
-	var url = "http://localhost:8080/Project/rest/sql/auth?";
-	var name = $('#name').val();
-	var mail = $('#mail').val();
-	var id = $('#id').val();
-	//http://localhost:8080/Project/rest/sql/auth?name=""&id=""&mail=""
-	var list = {name, mail, id};
-  var x;
-  for(x in list){
-		if(list[x] != ""){
-			url +=  x + "=" + list[x] + "&" ;
-		}
-	}
-	var newUrl = url.substring(0, url.length-1);
-	http.onreadystatechange = function() {
-		if(this.readyState == 4 & this.status == 200) {
-		console.log(this.responseText);
-		}
-	};
-	http.open("DELETE", url);
-	http.send();
-};
-
-
-
-/////// Settings Page \\\\\\\
-
-function addEnvi() {
-	var http = new XMLHttpRequest();
-	var url = "http://localhost:8080/Project/rest/sql/update?";
-	var name = $('#custname').val();
-	var link = $('#httplink').val();
-	alert("a");
-	var B_L_A_S;
-	var bookCheck = $("#bookingCheck").is(':checked');
-	var locationCheck = $("#locationCheck").is(':checked');
-	var actionCheck = $("#actionCheck").is(':checked');
-	var linestopCheck = $("#linestopCheck").is(':checked');
-	var check = [locationCheck,actionCheck,linestopCheck];
-	if(bookCheck) {
-		B_L_A_S = "t";
-	} else {
-		B_L_A_S = "f";
-	}
-	var a;
-	for(a = 0; a < check.length; a++) {
-		if(check[a]){
-			B_L_A_S += "_t";
-		} else {
-			B_L_A_S += "_f";
-		}
-
-	}
-	var list = {name,link,B_L_A_S};
-	var x;
-	var newUrl;
-	for(x in list){
-		if(x != list[list.length - 1]){
-			url += x + "=" + list[x] + "&";
-		}else{
-			url += x + "=" + list[x];
-		}
-	}
-	alert(url);
-//	http.open("POST", url);
-//	http.send();
-}
-
-//Check if input field Name and HttpLink is not empty
-function inputNotEmpty() {
-	var name = $('#custname').val();
-	var link = $('#httplink').val();
-
-	if (name == "") {
-		alert("Name Cannot be Empty");
-		return false;
-	} else if (link == ""){
-		alert("Link cannot be empty");
-		return false;
-	}  else {
-		return true;
-	}
-}
-
-$(document).ready(function() {
-	  $("#addEnviButton").click(function() {
-		  if(inputNotEmpty()) {
-			  addEnvi();
-		  }
+	    if (auth2.isSignedIn.get() == false )
+	    	window.location = "http://localhost:8080/Project/";
 	  });
 	});
+</script>
+
+<div class="wrapper">
+   <nav id="sidebar">
+          <div class="sidebar-header">
+            <div class="logo">
+              <img src="cofano2.png" alt="Cofano" width="200">
+            </div>
+
+            <div class="profileIcon">
+              <a class="btn" href="mainDashboard.html">
+                <i class="fas fa-user"></i>
+              </a>
+            </div>
+          </div>
+          <ul class="list-unstyled components">
+            <li>
+              <a href="mainDashboard.html">Main</a>
+            </li>
+            <li>
+              <a class="active">Filters</a>
+            </li>
+            <li>
+              <a href="settings.html" >Settings</a>
+            </li>
+          </ul>
+        </nav>
+    <!-- Page Content  -->
+    <div id="content">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div>
+
+          <button type="button" id="sidebarCollapse" class="btn btn-info">
+            <i class="fas fa-align-left"></i>
+
+            <span>Toggle Sidebar</span>
+          </button>
+
+        </div>
+      </nav>
+      <div class="content-container-fluid">
+      	<div class="gridDiv">
+      		<div class="filterGraphs">
+          		<canvas id="container3"></canvas>
+        	</div>
+      		<div class="filterGraphs">
+          		<canvas id="container4"></canvas>
+        	</div>
+	  	</div>
+	  	<div class="gridDiv">
+	        <div class="filters" >
+	          <p style="padding-left:30px; padding-top:30px;"> Filters:  </p>
+	          <div class="fillIns">
+	              <label id="customer" > Customer:
+	              	<select id='customerFill' class="form-control input-sm">
+	              	  <option value="1" selected>1 </option>
+				  	  <option value="2">2</option>
+				    </select>
+	              </label>
+	            </div>
+	          <div class ="fillIns">
+	          	<div>
+		          <label id="dateFrom">From:
+		            <input id="dateFromFill" type="date" class="form-control input-sm">
+		          </label>
+		          <label id="dateTo">To:
+		            <input id="dateToFill" type="date" class="form-control input-sm">
+		          </label>
+		        </div>
+	          </div>
+	          <div class="fillIns">
+	            <input type="checkbox" id="customCheck" onclick="checkWithSelect('#customChoice', '#customCheck', '#customFill')" >
+	            <label for="customCheck"> Customer of Customer</label>
+	            <div id="customChoice" style="display:none;">
+	              <label id="custom" > Name:
+	              <input id="customFill" class="form-control input-sm" onkeypress="validateEvent(event,/[A-Z ]|\./)"/>
+	              </label>
+	              <div class="info" style="display:inline; font-size:12px;">*UpperCase Only</div>
+	            </div>
+	          </div>
+	          <div class="fillIns">
+	            <input type="checkbox" name="company" id="companyCheck" onclick="checkWithSelect('#companyChoice', '#companyCheck', '#companyNameFill')">
+	            <label for="companyCheck">Shipping Company</label>
+	            <div id="companyChoice" style="display:none;">
+	              	<label >Name:
+	              		<input id="companyNameFill" list="companyNameList" class="form-control input-sm" onkeypress="restrictInput(this,event,/[A-Za-z]|\./,1,/[0-9]|\./)" oninput="maxLengthCheck(this, 4)"/>
+	            	</label>
+	            	<div class="info" style="display:inline; font-size:12px;">*Uppercase(except s) then 3 digit, e.g. A288</div>
+			    	<datalist id='companyNameList'>
+	
+					  <option value="s333">s333</option>
+	
+					</datalist>
+	            </div>
+	          </div>
+	          <div class="fillIns">
+	            <input type="checkbox" name="yesno" id="orderStateCheck" onclick="checkWithSelect('#orderStateChoice', '#orderStateCheck', '#orderStateFill')">
+	            <label for="orderStateCheck">Order State</label>
+	            <div id="orderStateChoice" style="display:none">
+	              Order State:
+	              <select id='orderStateFill' class="form-control form-control-sm" style="width:auto;">
+	              	<option value="" selected> </option>
+				  	<option value="FINISHED">FINISHED</option>
+				  	<option value="PLANNED">PLANNED</option>
+				  	<option value="READY">READY</option>
+				  </select>
+	            </div>
+	          </div>
+	          <div class="fillIns">
+	            <input type="checkbox" name="yesno" id="teuCheck" onclick="checkWithSelect('#teuChoice', '#teuCheck','#teuFill')">
+	            <label for="teuCheck">TEU</label>
+	            <div id="teuChoice" style="display:none" >
+	              <label id="teu">TEU:
+	                <input id="teuFill" class="form-control form-control-sm" onkeypress="validateEvent(event, /[1-2]|\./)" oninput="maxLengthCheck(this, 1) " size="1" />
+	              </label>
+	              <div class="info" style="display:inline; font-size:12px;">*1 or 2</div>
+	            </div>
+	          </div>
+	
+	          <div style="padding-left:30px; padding-top:15px; padding-bottom: 30px;">
+	            <button onclick="" class="btn btn-secondary text-center" id="search">Search</button>
+	          </div>
+	        </div>
+        </div>
+        <div class="gridDiv">
+	        <div class="filters" >
+	          <div class="fillIns" >Results:
+	          	<div class="table" >
+	          		<table class ="resultTable" id="resultTab" ></table>
+	          	</div>
+	          	<div class="graphs">
+	          	  <canvas id="container"></canvas>
+	          	</div>
+	          	<div class="graphs">
+	          	  <canvas id="container1"></canvas>
+	          	</div>
+	          	<div class="graphs">
+	          	  <canvas id="container2"></canvas>
+	          	</div>
+	          </div>
+	        </div>
+	     </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
+
+<script>
+function onSignIn(googleUser) {
+	var profile=googleUser.getBasicProfile();
+	$("#pic").attr('src',profile.getImageUrl());
+	$("#email").text(profile.getEmail());
+	$("#name").text(profile.getName());
+
+	var id_token = googleUser.getAuthResponse().id_token;
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.onload = function() {
+	  console.log('Signed in as: ' + xhr.responseText);
+	  var json = xhr.responseText;
+	  var obj = JSON.parse(json);
+	  if (obj.hd !== 'student.utwente.nl') {
+	      window.location = "http://localhost:8080/Project/"
+	  }
+	      };
+	xhr.send('idtoken=' + id_token);
+
+}
+
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      window.location = "http://localhost:8080/Project/"
+      console.log('User signed out.');
+    });
+  }
+</script>
+</body>
+
+</html>
