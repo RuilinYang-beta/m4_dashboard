@@ -44,10 +44,12 @@ public class Statistics {
 		
 //		ResultSet rs = s.execute("SELECT DISTINCT(DATE(sta)) AS sta_date FROM linestops ORDER BY sta_date");
 //		ResultSet rs = s.execute("SELECT DATE(sta) AS sta_date FROM linestops ORDER BY sta_date");
-		ResultSet rs = s.execute("SELECT DISTINCT sta_date FROM (SELECT DATE(sta) AS sta_date FROM linestops ORDER BY sta_date) AS sub");
+//		ResultSet rs = s.execute("SELECT DISTINCT sta_date FROM (SELECT DATE(sta) AS sta_date FROM linestops ORDER BY sta_date) AS sub");
+		ResultSet rs = s.execute("SELECT * FROM locations");
 		
-		System.out.println(SQLUtils.glueColumnIntoString(rs));
+//		System.out.println(SQLUtils.glueColumnIntoString(rs));
 //		Utils.displayResultSet(rs);		
+		SQLUtils.exportToCSV(rs, "locations.csv");
 		 
 //		s.parseActions(true, 1);
 		try {

@@ -3,6 +3,8 @@ package Utils;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.io.FileWriter;
+import java.io.IOException;  
 
 public class SQLUtils {
 	
@@ -44,6 +46,49 @@ public class SQLUtils {
 
 	}
 
+	
+	public static void exportToCSV(ResultSet rs, String filename) {
+		if (rs == null) {
+			System.out.println("No result!");
+			return ;
+		}
+
+		try {
+			  FileWriter fw = new FileWriter(filename);
+			  
+			   ResultSetMetaData rsmd = rs.getMetaData();
+			   int columnsNumber = rsmd.getColumnCount();
+			   
+			   // print column name
+			    for (int i = 1; i <= columnsNumber; i++) {
+			           if (i > 1) { 
+			        	   fw.append(", ");
+			           }
+			           fw.append(rsmd.getColumnName(i));
+		        }
+			    fw.append("\n");
+			    
+			   // print every row
+			   while (rs.next()) {
+			       for (int i = 1; i <= columnsNumber; i++) {
+			           if (i > 1) {
+			        	   fw.append(", ");
+			           }
+			           String columnValue = rs.getString(i);
+			           fw.append(columnValue);
+			       }
+			       fw.append("\n");
+			   }	
+			   
+			   fw.close();
+			   rs.close();
+			   
+		       System.out.println("Success! Your file here: " +
+		    		   				System.getProperty("user.dir"));
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Glue one column into one string.
 	 * @requires rs has only one column

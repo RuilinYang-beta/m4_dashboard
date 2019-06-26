@@ -1,7 +1,7 @@
 // ---------------------- dev log 20190626: what can be improved ----------------------
 // - need transition to make the change of graph smooth
 // - belgium map need to be added
-// - is there really 5 or so ports used? verify this!
+// - is there really 5 or so ports used? verify this! --- 7 ports, but the added 2 are rarely used
 // - several locationid need map to unlo
 
 var baseURL = "http://localhost:8080/Project/rest/sql";

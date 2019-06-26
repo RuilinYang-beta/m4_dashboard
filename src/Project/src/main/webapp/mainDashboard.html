@@ -11,6 +11,13 @@
   <script src="sql_counter.js"></script>
 
   <script type="text/javascript" src="chart.js"></script>
+
+  <!-- geoMap-->
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body id='mainDashboard'>
@@ -33,8 +40,14 @@
           <div class="mapGraph">
             <div class="map">
               <div id="map-responsive">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d1251637.9986128206!2d4.644316619238018!3d52.21421683082925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sgoogle+map!5e0!3m2!1sen!2snl!4v1559119034500!5m2!1sen!2snl"
-                  width="800" height="500" frameborder="0" style="border:0" allowfullscreen></iframe>
+                <div id="sliderContainer">
+                  <input id="timeslide" class='slider' type="range" min="0" max="1468" value="0" step="1"/><br>
+                  <span id="range">2013-03-02</span>
+                </div>
+
+                <div id='mapContainer'>
+                  <!-- here to put svg -->
+                </div>
               </div>
             </div>
             <div class="slideShow">
@@ -97,5 +110,8 @@
 	
 </script>
 <script src="sql_counter.js"></script>
+
+  <!-- geoMap -->
+  <script type="text/javascript" src="geoMap.js"></script>
 
 </html>
