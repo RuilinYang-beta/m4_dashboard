@@ -2,6 +2,8 @@ package nl.utwente.di.SQL;
 
 import java.sql.*;
 
+import Utils.SQLUtils;
+
 public class Statistics {
 	public Connection connection;
 	
@@ -21,15 +23,33 @@ public class Statistics {
 			connection = DriverManager.getConnection(url, dbName, password);
 		}
 		catch(SQLException sqle) {
-			System.err.println("Error connecting: " + sqle);
+			System.err.println("Error connecting: " + sqle); 
 		}
 	}
 	
 	public static void main(String[] args) {
 		Statistics s = new Statistics();
 		s.connectToDatabase();
-		//ResultSet rs = s.execute("SELECT DISTINCT(orderState) as c FROM bookings;");
-		s.parseActions(true, 1);
+//		ResultSet rs = s.execute("SELECT COUNT(*) as c FROM linestops;");						// 16963 entries of linestops
+//		ResultSet rs = s.execute("SELECT COUNT(DISTINCT(linestopid))  FROM linestops;");		// 16946 unique linestopid
+
+//		ResultSet rs = s.execute("SELECT * FROM linestops LIMIT 5;"); 
+		
+		// 1468 distinct date of sta
+//		ResultSet rs = s.execute("SELECT COUNT(DISTINCT(DATE(sta))) FROM linestops;");
+		// 1555 distinct date of sta
+//		ResultSet rs = s.execute("SELECT COUNT(DISTINCT(DATE(std))) FROM linestops;");
+		
+//		ResultSet rs = s.execute("SELECT linestopid, locationid, DATE(sta) AS sta_date, DATE(std) AS std_date FROM linestops LIMIT 10");
+		
+//		ResultSet rs = s.execute("SELECT DISTINCT(DATE(sta)) AS sta_date FROM linestops ORDER BY sta_date");
+//		ResultSet rs = s.execute("SELECT DATE(sta) AS sta_date FROM linestops ORDER BY sta_date");
+		ResultSet rs = s.execute("SELECT DISTINCT sta_date FROM (SELECT DATE(sta) AS sta_date FROM linestops ORDER BY sta_date) AS sub");
+		
+		System.out.println(SQLUtils.glueColumnIntoString(rs));
+//		Utils.displayResultSet(rs);		
+		 
+//		s.parseActions(true, 1);
 		try {
 			s.connection.close();
 		} catch (SQLException e) {
