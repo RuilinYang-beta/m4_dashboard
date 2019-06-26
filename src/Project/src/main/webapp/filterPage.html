@@ -70,22 +70,15 @@ gapi.load('auth2', function() {
 <div class="wrapper">
    <nav id="sidebar">
           <div class="sidebar-header">
-		  
             <div class="logo">
               <img src="cofano2.png" alt="Cofano" width="200">
             </div>
 
             <div class="profileIcon">
-              <a href="index.html">
-			  <img id="pic" class="rounded" width="50" height="50"/></a>
-        	  <p></p>
+              <a class="btn" href="mainDashboard.html">
+                <i class="fas fa-user"></i>
+              </a>
             </div>
-			
-			<div class="signOut">
-              <button onClick="signOut()" class="btn btn-danger text-center">Sign Out</button>
-              <p></p>
-            </div>
-			
           </div>
           <ul class="list-unstyled components">
             <li>
@@ -114,102 +107,107 @@ gapi.load('auth2', function() {
         </div>
       </nav>
       <div class="content-container-fluid">
-      	<div class="filterGraphs">
-          <canvas id="container3"></canvas>
-        </div>
-      	<div class="filterGraphs">
-          <canvas id="container4"></canvas>
-        </div>
-
-        <div class="filters" >
-          <p style="padding-left:30px; padding-top:30px;"> Filters:  </p>
-          <div class="fillIns">
-              <label id="customer" > Customer:
-              	<select id='customerFill' class="form-control input-sm">
-              	  <option value="1" selected>1 </option>
-			  	  <option value="2">2</option>
-			    </select>
-              </label>
-            </div>
-          <div class ="fillIns">
-          	<div>
-	          <label id="dateFrom">From:
-	            <input id="dateFromFill" type="date" class="form-control input-sm">
-	          </label>
-	          <label id="dateTo">To:
-	            <input id="dateToFill" type="date" class="form-control input-sm">
-	          </label>
+      	<div class="gridDiv">
+      		<div class="filterGraphs">
+          		<canvas id="container3"></canvas>
+        	</div>
+      		<div class="filterGraphs">
+          		<canvas id="container4"></canvas>
+        	</div>
+	  	</div>
+	  	<div class="gridDiv">
+	        <div class="filters" >
+	          <p style="padding-left:30px; padding-top:30px;"> Filters:  </p>
+	          <div class="fillIns">
+	              <label id="customer" > Customer:
+	              	<select id='customerFill' class="form-control input-sm">
+	              	  <option value="1" selected>1 </option>
+				  	  <option value="2">2</option>
+				    </select>
+	              </label>
+	            </div>
+	          <div class ="fillIns">
+	          	<div>
+		          <label id="dateFrom">From:
+		            <input id="dateFromFill" type="date" class="form-control input-sm">
+		          </label>
+		          <label id="dateTo">To:
+		            <input id="dateToFill" type="date" class="form-control input-sm">
+		          </label>
+		        </div>
+	          </div>
+	          <div class="fillIns">
+	            <input type="checkbox" id="customCheck" onclick="checkWithSelect('#customChoice', '#customCheck', '#customFill')" >
+	            <label for="customCheck"> Customer of Customer</label>
+	            <div id="customChoice" style="display:none;">
+	              <label id="custom" > Name:
+	              <input id="customFill" class="form-control input-sm" onkeypress="validateEvent(event,/[A-Z ]|\./)"/>
+	              </label>
+	              <div class="info" style="display:inline; font-size:12px;">*UpperCase Only</div>
+	            </div>
+	          </div>
+	          <div class="fillIns">
+	            <input type="checkbox" name="company" id="companyCheck" onclick="checkWithSelect('#companyChoice', '#companyCheck', '#companyNameFill')">
+	            <label for="companyCheck">Shipping Company</label>
+	            <div id="companyChoice" style="display:none;">
+	              	<label >Name:
+	              		<input id="companyNameFill" list="companyNameList" class="form-control input-sm" onkeypress="restrictInput(this,event,/[A-Za-z]|\./,1,/[0-9]|\./)" oninput="maxLengthCheck(this, 4)"/>
+	            	</label>
+	            	<div class="info" style="display:inline; font-size:12px;">*Uppercase(except s) then 3 digit, e.g. A288</div>
+			    	<datalist id='companyNameList'>
+	
+					  <option value="s333">s333</option>
+	
+					</datalist>
+	            </div>
+	          </div>
+	          <div class="fillIns">
+	            <input type="checkbox" name="yesno" id="orderStateCheck" onclick="checkWithSelect('#orderStateChoice', '#orderStateCheck', '#orderStateFill')">
+	            <label for="orderStateCheck">Order State</label>
+	            <div id="orderStateChoice" style="display:none">
+	              Order State:
+	              <select id='orderStateFill' class="form-control form-control-sm" style="width:auto;">
+	              	<option value="" selected> </option>
+				  	<option value="FINISHED">FINISHED</option>
+				  	<option value="PLANNED">PLANNED</option>
+				  	<option value="READY">READY</option>
+				  </select>
+	            </div>
+	          </div>
+	          <div class="fillIns">
+	            <input type="checkbox" name="yesno" id="teuCheck" onclick="checkWithSelect('#teuChoice', '#teuCheck','#teuFill')">
+	            <label for="teuCheck">TEU</label>
+	            <div id="teuChoice" style="display:none" >
+	              <label id="teu">TEU:
+	                <input id="teuFill" class="form-control form-control-sm" onkeypress="validateEvent(event, /[1-2]|\./)" oninput="maxLengthCheck(this, 1) " size="1" />
+	              </label>
+	              <div class="info" style="display:inline; font-size:12px;">*1 or 2</div>
+	            </div>
+	          </div>
+	
+	          <div style="padding-left:30px; padding-top:15px; padding-bottom: 30px;">
+	            <button onclick="" class="btn btn-secondary text-center" id="search">Search</button>
+	          </div>
 	        </div>
-          </div>
-          <div class="fillIns">
-            <input type="checkbox" id="customCheck" onclick="checkWithSelect('#customChoice', '#customCheck', '#customFill')" >
-            <label for="customCheck"> Customer of Customer</label>
-            <div id="customChoice" style="display:none;">
-              <label id="custom" > Name:
-              <input id="customFill" class="form-control input-sm" onkeypress="validateEvent(event,/[A-Z ]|\./)"/>
-              </label>*
-              <div class="info" style="display:inline; font-size:12px;">UpperCase Only</div>
-            </div>
-          </div>
-          <div class="fillIns">
-            <input type="checkbox" name="company" id="companyCheck" onclick="checkWithSelect('#companyChoice', '#companyCheck', '#companyNameFill')">
-            <label for="companyCheck">Shipping Company</label>
-            <div id="companyChoice" style="display:none;">
-              	<label >Name:
-              		<input id="companyNameFill" list="companyNameList" class="form-control input-sm" onkeypress="restrictInput(this,event,/[A-Za-z]|\./,1,/[0-9]|\./)" oninput="maxLengthCheck(this, 4)"/>
-            	</label>*
-            	<div class="info" style="display:inline; font-size:12px;">Uppercase(except s) then 3 digit, e.g. A288</div>
-		    	<datalist id='companyNameList'>
-
-				  <option value="s333">s333</option>
-
-				</datalist>
-            </div>
-          </div>
-          <div class="fillIns">
-            <input type="checkbox" name="yesno" id="orderStateCheck" onclick="checkWithSelect('#orderStateChoice', '#orderStateCheck', '#orderStateFill')">
-            <label for="orderStateCheck">Order State</label>
-            <div id="orderStateChoice" style="display:none">
-              Order State:
-              <select id='orderStateFill' class="form-control form-control-sm" style="width:auto;">
-              	<option value="" selected> </option>
-			  	<option value="FINISHED">FINISHED</option>
-			  	<option value="PLANNED">PLANNED</option>
-			  	<option value="READY">READY</option>
-			  </select>
-            </div>
-          </div>
-          <div class="fillIns">
-            <input type="checkbox" name="yesno" id="teuCheck" onclick="checkWithSelect('#teuChoice', '#teuCheck','#teuFill')">
-            <label for="teuCheck">TEU</label>
-            <div id="teuChoice" style="display:none" >
-              <label id="teu">TEU:
-                <input id="teuFill" class="form-control form-control-sm" onkeypress="validateEvent(event, /[1-2]|\./)" oninput="maxLengthCheck(this, 1) " size="1" />
-              </label>*
-              <div class="info" style="display:inline; font-size:12px;">1 or 2</div>
-            </div>
-          </div>
-
-          <div style="padding-left:30px; padding-top:15px; padding-bottom: 30px;">
-            <button onclick="" class="btn btn-secondary text-center" id="search">Search</button>
-          </div>
         </div>
-        <div class="filters" >
-          <div class="fillIns" >Results:
-          	<div class="table" >
-          		<table class ="resultTable" id="resultTab" ></table>
-          	</div>
-          	<div class="graphs">
-          	  <canvas id="container"></canvas>
-          	</div>
-          	<div class="graphs">
-          	  <canvas id="container1"></canvas>
-          	</div>
-          	<div class="graphs">
-          	  <canvas id="container2"></canvas>
-          	</div>
-          </div>
-        </div>
+        <div class="gridDiv">
+	        <div class="filters" >
+	          <div class="fillIns" >Results:
+	          	<div class="table" >
+	          		<table class ="resultTable" id="resultTab" ></table>
+	          	</div>
+	          	<div class="graphs">
+	          	  <canvas id="container"></canvas>
+	          	</div>
+	          	<div class="graphs">
+	          	  <canvas id="container1"></canvas>
+	          	</div>
+	          	<div class="graphs">
+	          	  <canvas id="container2"></canvas>
+	          	</div>
+	          </div>
+	        </div>
+	     </div>
       </div>
     </div>
   </div>
