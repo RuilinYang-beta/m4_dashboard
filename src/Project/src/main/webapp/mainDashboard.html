@@ -11,9 +11,20 @@
   <script src="sql_counter.js"></script>
 
   <script type="text/javascript" src="chart.js"></script>
+  <style>
+  body {
+      margin: 0;
+      padding: 0;
+      background-image: url(container.jpg);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-attachment: fixed;
+    }
+  </style>
 </head>
 
-<body id='mainDashboard'>
+<body id='mainDashboard' onload="getCount" >
 
   <a class="btn" href="filterPage.html">
 
@@ -26,16 +37,14 @@
         </div>
 
         <div class="counting-sec">
-          <div class="num">86020</div>
+          <div class="num" id="numcount">0</div>
         </div>
 
+<!--  
         <div class=#>
           <div class="mapGraph">
             <div class="map">
-              <div id="map-responsive">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d1251637.9986128206!2d4.644316619238018!3d52.21421683082925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sgoogle+map!5e0!3m2!1sen!2snl!4v1559119034500!5m2!1sen!2snl"
-                  width="800" height="500" frameborder="0" style="border:0" allowfullscreen></iframe>
-              </div>
+              **MAP HERE**
             </div>
             <div class="slideShow">
 
@@ -57,13 +66,10 @@
                   <label for="r2" class="bar"></label>
                 </div>
               </div>
-
-
             </div>
-
           </div>
         </div>
-
+-->
 
       </div>
     </div>
@@ -96,6 +102,5 @@
   });
 	
 </script>
-<script src="sql_counter.js"></script>
 
 </html>
