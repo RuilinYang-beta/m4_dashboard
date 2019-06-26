@@ -24,21 +24,21 @@
     .g-signin2 {
    display: none;
   }
-  
+
   .pic {
    border-radius: 50%;
   }
-  
+
   .data2 {
    display: none;
   }
-  
+
   .verify {
    display: block;
   }
-  
-  
- 
+
+
+
     </style>
 </head>
 
@@ -53,8 +53,8 @@ gapi.load('auth2', function() {
 	  }).then(function(){
 
 	    auth2 = gapi.auth2.getAuthInstance();
-	    console.log(auth2.isSignedIn.get());    
-	    if (auth2.isSignedIn.get() == false ) 
+	    console.log(auth2.isSignedIn.get());
+	    if (auth2.isSignedIn.get() == false )
 	    	window.location = "http://localhost:8080/Project/";
 	  });
 	});
@@ -74,7 +74,7 @@ gapi.load('auth2', function() {
         </div>
         <div class="signOut">
             <button onClick="signOut()" class="btn btn-danger text-center">Sign Out</button>
-            
+
         	<p></p>
         </div>
           </div>
@@ -107,49 +107,29 @@ gapi.load('auth2', function() {
 
             </nav>
             <div class="row">
-            <div class="col">
-              <br>
-              <p class="title">Admin settings</p><br>
-              <div class="verify">
-              <form>
-                Email: <br>
-                <input type="text" name="mail" id="mail" required><br>
-                <p></p>
+	            <div class="col">
+	              <p class="title">Admin settings</p>
+	                Customer Name: <br>
+	                <input type="text" name="custname" id="custname" onkeypress="validateEvent(event,/[A-Za-z0-9 ]|\./)" autocomplete="off"><br>
+	                HttpLink: <br>
+	                <input type="text" name="httplink" id="httplink" autocomplete="off" onkeypress="validateEvent(event,/[A-Za-z0-9_/=?-]|\./)"><br>
+	                Add: <br>
+	                <input type="checkbox" id="bookingCheck">
+	                <label for="">Bookings</label>
+	                <input type="checkbox" id="locationCheck">
+	                <label for="">Locations</label>
+	                <input type="checkbox" id="actionCheck">
+	                <label for="">Actions</label>
+	                <input type="checkbox" id="linestopCheck">
+	                <label for="">Linestops</label> <br>
 
-                <input type="button" value="Log In" id="login" onclick="checkEmployee()"><br>
+	                <button  class="btn btn-secondary text-center" id="addEnviButton">Add</button>
 
-                </form>
-                <br>
-              </div>
-              
-              <div class="data2">
-                <form>
-                Customer Name: <br>
-                <input type="text" name="custname"><br>
-                HttpLink: <br>
-                <input type="text" name="httplink" autocomplete="on"><br><br>
-                
-                <button onclick="" class="btn btn-primary text-center">Add customer</button>
-                
-                </form>
-             <br><br>
-                <form>
-                Employee name: <br>
-                <input type="text" name="name" id="name" required><br>
-                Employee id: <br>
-                <input type="text" name="id" id="id"><br>
-                Employee email: <br>
-                <input type="email" name="mail" id="mail"><br><br>
-                <button onclick="addEmployee()" class="btn btn-primary text-center">Authorize Employee</button>
-                <button onclick="removeEmployee()" class="btn btn-danger text-center">Revoke Access</button>
-                </form>
-              </div>
+
+	            </div>
             </div>
-            
-            
-            </div>
-
-  </div>
+  		</div>
+</div>
 
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -172,7 +152,7 @@ function onSignIn(googleUser) {
 	$("#pic").attr('src',profile.getImageUrl());
 	$("#email").text(profile.getEmail());
 	$("#name").text(profile.getName());
-	
+
 	var id_token = googleUser.getAuthResponse().id_token;
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
@@ -183,12 +163,12 @@ function onSignIn(googleUser) {
 	  var obj = JSON.parse(json);
 	  if (obj.hd !== 'student.utwente.nl') {
 	      window.location = "http://localhost:8080/Project/"
-	  } 
+	  }
 	      };
 	xhr.send('idtoken=' + id_token);
-	
+
 }
-	
+
 
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
