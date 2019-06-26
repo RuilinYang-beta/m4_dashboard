@@ -464,3 +464,49 @@ function removeEmployee() {
 	http.open("DELETE", url);
 	http.send();
 };
+
+/////// Settings Page \\\\\\\
+
+function addEnvi() {
+	var http = new XMLHttpRequest();
+	var url = "http://localhost:8080/Project/rest/sql/update";
+	var name = $('#custname').val();
+	var link = $('#httplink').val();
+	alert("a");
+	var B_L_A_S;
+	var bookCheck = $("#bookingCheck").is(':checked');
+	var locationCheck = $("#locationCheck").is(':checked');
+	var actionCheck = $("#actionCheck").is(':checked');
+	var linestopCheck = $("#linestopCheck").is(':checked');
+	var check = [locationCheck,actionCheck,linestopCheck];
+	if(bookCheck) {
+		B_L_A_S = "t";
+	} else {
+		B_L_A_S = "f";
+	}
+	var a;
+	for(a = 0; a < check.length; a++) {
+		if(check[a]){
+			B_L_A_S += "_t";
+		} else {
+			B_L_A_S += "_f";
+		}
+
+	}
+	var list = {name,link,B_L_A_S};
+	var x;
+	var newUrl;
+	for(x in list){
+		if(list[x] != ""){
+			url += "&" + x + "=" + list[x];
+		}
+	}
+	//http.open("POST", url);
+	//http.send();
+}
+
+$(document).ready(function() {
+	  $("#addEnviButton").click(function() {
+		  addEnvi();
+	  });
+	});
