@@ -36,9 +36,32 @@
   .verify {
    display: block;
   }
-
-
-
+  
+  #alert {
+   width: 500px;
+   overflow: hidden;
+   background: #f1f1f1;
+   box-shadow: 0 0 20px black;
+   border-radius: 8px;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   z-index: 9999;
+   padding: 10px;
+   text-align: center;
+   display: none;
+  }
+  
+  .close {
+   font-size: 20px;
+   color: black;
+   padding: 10px 30px;
+   cursor: pointer;
+   background: #3498db;
+   display: inline-block;
+   border-radius: 4px;
+}
     </style>
 </head>
 
@@ -106,6 +129,11 @@ gapi.load('auth2', function() {
                 </div>
 
             </nav>
+			<div id="alert">
+              <h1>Access denied</h1>
+              <p>User not authorized.</p>
+              <a class="close" href="http://localhost:8080/Project/filterPage.html">Exit page</a>
+            </div>
             <div class="row">
 	            <div class="col">
 	              <p class="title">Admin settings</p>
@@ -124,7 +152,18 @@ gapi.load('auth2', function() {
 	                <label for="">Linestops</label> <br>
 
 	                <button  class="btn btn-secondary text-center" id="addEnviButton">Add</button>
-
+                 <br><br>
+                <form>
+                <p style="font-size: 17px;"><i>*Only name and email or name and id required to revoke access.</i></p>
+                Employee name: <br>
+                <input type="text" name="name" id="name" required><br>
+                Employee id: <br>
+                <input type="text" name="id" id="id"><br>
+                Employee email: <br>
+                <input type="email" name="mail" id="mail"><br><br>
+                <button onclick="addEmployee()" class="btn btn-primary text-center">Authorize Employee</button>
+                <button onclick="removeEmployee()" class="btn btn-danger text-center">Revoke Access</button>
+                </form>
 
 	            </div>
             </div>
@@ -152,7 +191,7 @@ function onSignIn(googleUser) {
 	$("#pic").attr('src',profile.getImageUrl());
 	$("#email").text(profile.getEmail());
 	$("#name").text(profile.getName());
-
+	
 	var id_token = googleUser.getAuthResponse().id_token;
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
@@ -163,10 +202,41 @@ function onSignIn(googleUser) {
 	  var obj = JSON.parse(json);
 	  if (obj.hd !== 'student.utwente.nl') {
 	      window.location = "http://localhost:8080/Project/"
+	  } 
+	  function getEmail() {
+		  var json = xhr.responseText;
+		  var obj = JSON.parse(json);
+		  var em = obj.email;
+		  console.log(em);
 	  }
-	      };
+	  getEmail();
+	  function checkEmployee() {
+			var http = new XMLHttpRequest();
+			var url = "http://localhost:8080/Project/rest/sql/auth?mail=";
+			var mail = obj.email;
+			url += mail;
+			http.onreadystatechange = function() {
+				if(this.readyState == 4 & this.status == 200) {
+				var a = this.responseText;
+				console.log(a);
+				doThis(a);
+				}
+		function doThis(a) {
+			if (a == "true") {
+				$(".data2").css("display","block");
+				$(".verify").css("display","none");
+				$("#alert").css("display","none");
+			} else {
+				$("#alert").css("display","block");
+			}
+		}
+			};
+			http.open("GET", url);
+			http.send();
+		};
+	    checkEmployee();
+          };
 	xhr.send('idtoken=' + id_token);
-
 }
 
 
