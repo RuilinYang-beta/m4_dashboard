@@ -6,107 +6,16 @@ $(document).ready(function() {
   $('#dateToFill').val("");
   $('#teuFill').val("");
   $('#transportFill').val("");
-  //dataList('companyNameList')
+  dataList('companyNameList')
 });
 
 
 function dataList(datalistName) {
-	var mylist = ['A288','A305','A315','A332',
-		'A342',
-		'B283',
-		'B291',
-		'B321',
-		'B325',
-		'C287',
-		'C288',
-		'C290',
-		'C295',
-		'C296',
-		'C297',
-		'C310',
-		'C320',
-		'C323',
-		'C327',
-		'C330',
-		'C334',
-		'C344',
-		'D319',
-		'D326',
-		'D337',
-		'D346',
-		'E290',
-		'E298',
-		'E312',
-		'E322',
-		'F289',
-		'G318',
-		'G339',
-		'G350',
-		'H291',
-		'H293',
-		'H299',
-		'H300',
-		'H301',
-		'H302',
-		'H322',
-		'H328',
-		'I292',
-		'I294',
-		'I303',
-		'I324',
-		'J328',
-		'K295',
-		'K304',
-		'M285',
-		'M286',
-		'M293',
-		'M294',
-		'M305',
-		'M317',
-		'M342',
-		'M352',
-		'M355',
-		'N296',
-		'N306',
-		'N321',
-		'N333',
-		'N335',
-		'N343',
-		'O297',
-		'O304',
-		'O307',
-		'O314',
-		'O336',
-		'O338',
-		'P314',
-		'P316',
-		'P324',
-		'S298',
-		'S303',
-		'S308',
-		'S312',
-		'S313',
-		'S319',
-		'S325',
-		'S326',
-		'S332',
-		'S335',
-		'S336',
-		'S338',
-		'S340',
-		'T327',
-		'T331',
-		'U299',
-		'U309',
-		'U359',
-		'V339',
-		'W307',
-		'W317',
-		'Y300',
-		'Y310',
-		'Z301',
-		'Z311',
-		'S333'];
+	var mylist = ['A288','A305','A315','A332','A342','B283','B291','B321','B325','C287','C288','C290','C295','C296','C297','C310','C320','C323','C327','C330','C334','C344','D319','D326','D337','D346','E290','E298','E312','E322',
+		'F289','G318','G339','G350','H291','H293','H299','H300','H301','H302','H322','H328','I292','I294','I303','I324','J328','K295','K304','M285','M286','M293','M294',
+		'M305','M317','M342','M352','M355','N296','N306','N321','N333','N335','N343','O297','O304','O307','O314','O336','O338','P314','P316','P324','S298','S303','S308','S312',
+		'S313','S319','S325','S326','S332','S335','S336','S338','S340','T327','T331','U299','U309','U359','V339','W307','W317','Y300','Y310','Z301','Z311',
+		];
 	var list = document.getElementById(datalistName);
 	var sortedMyList = mylist.sort();
 	sortedMyList.forEach(function(item){
@@ -161,7 +70,7 @@ function check(divClass, checkboxClass){
 	}
 }
 
-// same as check() but for select types (still not working)
+// Checkboxes will show fillins when they are checked. Empty the value in the field and hiding the fillins when they are unchecked
 function checkWithSelect(divClass, checkboxClass, fillInId){
 	$(checkboxClass).on('change', function (e) {
 		if(this.checked) {
@@ -173,19 +82,13 @@ function checkWithSelect(divClass, checkboxClass, fillInId){
 	});
 }
 
-function removeVal(fillId){
-	$(fillId).on('change', function (e) {
-        $("#emailid").val('');
-    });
-}
-
-
+// Checks if the date input is correct
 function dateCorrect() {
 	var dateFrom = new Date($('#dateFromFill').val());
 	var dateTo = new Date($('#dateToFill').val());
 	var today = new Date();
 	var dateF = dateFrom.getTime();
-	var dateT = dateTo.getTime();	
+	var dateT = dateTo.getTime();
 
 	if (dateF > dateT) {
 		alert("Date From cannot be larger than date To");
@@ -205,14 +108,14 @@ function dateCorrect() {
 	}
 }
 
-
+//Wait for .. ms
 function wait(ms){
 	   var start = new Date().getTime();
 	   var end = start;
 	   while(end < start + ms) {
 	     end = new Date().getTime();
-	  }
-	}
+    }
+}
 
 
 
@@ -223,9 +126,9 @@ function getCount() {
 	var url = "http://localhost:8080/Project/rest/sql/count";
 	http.onreadystatechange = function() {
 		  if (this.readyState == 4 && this.status == 200) {
-			  
+
 			  document.getElementById("numcount").innerHTML = this.responseText;
-			  countit(); 
+			  countit();
 		  }
 		};
 	http.open("GET", url);
@@ -263,7 +166,7 @@ Parameters:
 a: The result type --> "table" or ""
 searchType: The type of search on the database --> "bookings" for booking, "brutoWeight" for total bruto, and "nettoWeight" for total netto
 canvasId: the canvas for the graph (optional)
-graphTitle: titl for the graph (optional) 
+graphTitle: titl for the graph (optional)
 */
 function getFilter(table, searchType, type, canvasId = "", graphTitle = "", label = ""){
 	var http = new XMLHttpRequest();
@@ -273,10 +176,10 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 	var fromD = "";
 	var toD = "";
 	if(dateFrom != "Invalid Date") {
-		fromD = dateFrom.getTime() / 1000;	
+		fromD = dateFrom.getTime() / 1000;
 	}
 	if (dateTo != "Invalid Date") {
-		toD = dateTo.getTime() / 1000;	
+		toD = dateTo.getTime() / 1000;
 	}
 	var customer = $('#customFill').val();
 	var ordState = $('#orderStateFill').val();
@@ -292,21 +195,16 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 		url += "brutoWeight&";
 	} else if (searchType == "nettoWeight") {
 		url += "nettoWeight&";
-	} 
-	var x;	
+	}
+	var x;
 	if(table == "table"){
 		url += "table=true&";
-		for(x in list ){
+    for(x in list ){
 			if(list[x] != ""){
-				if(x != list[list.length - 1]){
-					url += x + "=" + list[x] + "&";
-				}else{
-					url += x + "=" + list[x];
-				}
+				url += "&" + x + "=" + list[x];
 			}
-
 		}
-		
+
 		http.onreadystatechange = function(){
 			  if (this.readyState == 4 && this.status == 200) {
 				  if(searchType == "bookings") {
@@ -314,25 +212,20 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 				  } else if(searchType == "brutoWeight") {
 					  bruto = this.responseText;
 				  } else if(searchType == "nettoWeight") {
-					  netto = this.responseText;  
+					  netto = this.responseText;
 					  document.getElementById('resultTab').innerHTML = createTable(book,bruto,netto);
 				  }
-				  
+
 			  }
 		};
-		
+
 	} else {
-		for(x in list ){
+    for(x in list ){
 			if(list[x] != ""){
-				if(x != list[list.length - 1]){
-					url += x + "=" + list[x] + "&";
-				}else{
-					url += x + "=" + list[x];
-				}
+				url += "&" + x + "=" + list[x];
 			}
-			
 		}
-		
+
 		http.onreadystatechange = function(){
 			  if (this.readyState == 4 && this.status == 200) {
 				  var temp = this.responseText.split("|");
@@ -340,7 +233,7 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 				  b = temp[1].split(";").map(function(item) {
 					    return parseInt(item, 10);
 				  });
-				  
+
 				  var i;
 				  for(i = 1; i<b.length ; i++){
 					  b[i] = b[i] + b[i-1];
@@ -349,25 +242,21 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 			  }
 		};
 	}
-	
+
 	http.open("GET", url);
 	http.send();
 };
 
 //Filters on all searchType
-function searchIt(searchResult) { 
-	if(searchResult == "table") {
-		getFilter(searchResult, "bookings");
-		wait(10);
-		getFilter(searchResult, "brutoWeight");
-		wait(10);
-		getFilter(searchResult, "nettoWeight");
-		
-	} else {
-		getFilter(searchResult, "bookings", 'pie', "container", "Cumulative Bookings per Month", "# of bookings");
-		getFilter(searchResult, "brutoWeight", 'bar', "container1", "Total Bruto Weight", "Bruto Weight");
-		getFilter(searchResult, "nettoWeight", 'doughnut', "container2", "Total Netto Weight", "Netto Weight");
-	}
+function searchIt() {
+	getFilter("table", "bookings");
+	wait(10);
+	getFilter("table", "brutoWeight");
+	wait(10);
+	getFilter("table", "nettoWeight");
+	getFilter(searchResult, "bookings", "container", "Total # of Bookings");
+	getFilter(searchResult, "brutoWeight", "container1", "Total Bruto Weight");
+	getFilter(searchResult, "nettoWeight", "container2", "Total Netto Weight");
 }
 
 
@@ -387,26 +276,26 @@ function topTen(goal, container, title){
 	}
 	http.onreadystatechange = function(){
 	  if (this.readyState == 4 && this.status == 200) {
-		  
+
 		  var temp = this.responseText.split("|");
 		  a = temp[0].split(";");
-		  b = temp[1].split(";").map(function(item) {					  
+		  b = temp[1].split(";").map(function(item) {
 		  return parseInt(item, 10);
 		  });
 
 		  chart(a,b,container,title,'doughnut');
-		 
+
 	  }
 	};
 
-	
+
 	http.open("GET", url);
 	http.send();
 };
 
 //Running filters with choice as the result type
-function combine(choice){
-	searchIt(choice);	
+function combine(){
+	searchIt();
 }
 
 $(document).ready(function() {
@@ -414,16 +303,16 @@ $(document).ready(function() {
 	 $('#container4').replaceWith('<canvas id="container4" ></canvas>');
 	 $(topTen("topCustomerWeight", "container3", "Top 10 Customer(Weight)"));
 	 $(topTen("topCustomerBook", "container4", "Top 10 Customer(Books)"));
-	 
+
 //	 $(getFilter("graph", "topCustomerWeights", 'doughnut', "container4", "Top 10 Customer", "Amount of Weight"));
-  $("#search").click(function() { 
+  $("#search").click(function() {
 	  if(dateCorrect()) {
-		  combine($('#resultFill').val()); 
+		  combine();
 		  $('#container').replaceWith('<canvas id="container" ></canvas>');
 		  $('#container1').replaceWith('<canvas id="container1" ></canvas>');
 		  $('#container2').replaceWith('<canvas id="container2" ></canvas>');
-		 
-	  }  
+
+	  }
   });
 });
 
@@ -461,7 +350,7 @@ function chart(year, total, canvas, chartName, type, label) {
 function generateListColor(year, type){
 	var x;
 	var list = [];
-	
+
 	for(x in year){
 		if(type == 'doughnut'){
 			if(list.includes(getRandomColor())){
@@ -476,7 +365,7 @@ function generateListColor(year, type){
 				list.push(random_rgba());
 			}
 		}
-		
+
 	}
 	return list;
 }
@@ -504,17 +393,17 @@ function addEmployee() {
 	var id = $('#id').val();
 	//http://localhost:8080/Project/rest/sql/auth?name=""&id=""&mail=""
 	var list = {name, mail, id};
-	var x 
+	var x
 	for (x in list){
 		if (x != list[list.length-1]){
 		url += x + "=" + list[x] + "&";
-		} else { 
+		} else {
 		url += x + "=" + list[x];
 		}
 	}
 	http.onreadystatechange = function() {
 		if(this.readyState == 4 & this.status == 200) {
-		console.log(this.responseText);	
+		console.log(this.responseText);
 		}
 	};
 	http.open("POST", url);
@@ -544,7 +433,7 @@ function doThis(a) {
 		alert('Access denied: user not authorized');
 	}
 }
-		
+
 	};
 	http.open("GET", url);
 	http.send();
@@ -558,12 +447,12 @@ function removeEmployee() {
 	var mail = $('#mail').val();
 	var id = $('#id').val();
 	//http://localhost:8080/Project/rest/sql/auth?name=""&id=""&mail=""
-	var list = {name, mail, id};	
-	var x 
+	var list = {name, mail, id};
+	var x
 	for (x in list){
 		if (x != list[list.length-1]){
 		url += x + "=" + list[x] + "&";
-		} else { 
+		} else {
 		url += x + "=" + list[x];
 		}
 	}
