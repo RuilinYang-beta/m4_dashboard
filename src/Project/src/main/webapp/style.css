@@ -198,10 +198,15 @@ a.article:hover {
 /* ---------------------------------------------------
     FILTERPAGE
 ----------------------------------------------------- */
+.gridDiv {
+	display: grid;  
+    grid-gap: 5px;  
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
 .filters {
-  margin: 50px 0 50px 30px;
+  margin: 25px 0 50px 30px;
   border: 1px solid #dddddd;
-  width: 82%;
   display:block;
   vertical-align: top;
   background-color: #F9E7D0;
@@ -211,10 +216,8 @@ a.article:hover {
 }
 
 .filterGraphs {
-  margin: 50px 0 50px 30px;
+  margin: 20px 0 0 30px;
   border: 1px solid #dddddd;
-  width: 40%;
-  display:inline-block;
   vertical-align: top;
   background-color: #F9E7D0;
   border-radius: 25px;
@@ -231,6 +234,11 @@ a.article:hover {
 	margin-left: 10px;
 	margin-right: 20px;
 	margin-bottom: 20px;
+}
+
+.carousel {
+	height: 150px;
+	width: 150px;
 }
 
 .table {
