@@ -278,13 +278,14 @@ function searchIt() {
 			
 		}
 		
+		
 
 		getFilter("Graph", "bookings", 'line', "container", "Cumulative Bookings per Month", "# of bookings");
-		getFilter("Graph", "brutoWeight", 'line', "container1", "Total Bruto Weight", "Bruto Weight");
-		getFilter("Graph", "nettoWeight", 'line', "container2", "Total Netto Weight", "Netto Weight");
+	//	getFilter("Graph", "brutoWeight", 'line', "container1", "Total Bruto Weight", "Bruto Weight");
+	//	getFilter("Graph", "nettoWeight", 'line', "container2", "Total Netto Weight", "Netto Weight");
 		getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights");
 		getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings");
-
+		
 }
 
 ///CREATE A TABLE WHEN SEARCH IS PRESSED
@@ -293,10 +294,6 @@ function createTable(customer, containTotal, brutoTotal, nettoTotal) {
 	return table;
 };
 
-//Running filters with choice as the result type
-function combine(){
-	searchIt();
-}
 
 //CREATE CHART with 1 data
 //parameter:
@@ -475,21 +472,39 @@ $(document).ready(function() {
 	 $(getFilter("Graph", "2yAxis", 'line', "container5", "Total Bookings and Weights", "Amount of books", "Amount of weight"));
 	 
 
-
-//	 $(getFilter("Graph", "2yAxis", 'line', "container3", "line chart multiple Axis", "Amount of book", "amount of weight"));
-
 //GENERATE GRAPH BELOW THE RESULT AND UPDATE THE TOP 10 CUSTOMER
-$("#search").click(function() {
-	  if(dateCorrect()) {
-		  combine();
-		  $('#container').replaceWith('<canvas id="container" ></canvas>');
-		  $('#container1').replaceWith('<canvas id="container1" ></canvas>');
-		  $('#container2').replaceWith('<canvas id="container2" ></canvas>');
-		  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
-		  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-
-	  }
- });
+	$("#search").click(function() {
+		  if(dateCorrect()) {
+			  searchIt();
+			  $('#container').replaceWith('<canvas id="container" ></canvas>');
+			  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
+			  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
+			  $(".resultButtonDiv").removeAttr("style").show();
+			 
+		  }
+		  
+		  
+		  
+	 });
+	$("#bookingCountButton").click(function() {
+		  if(dateCorrect()) {
+			  $('#container').replaceWith('<canvas id="container" ></canvas>');
+			  getFilter("Graph", "bookings", 'line', "container", "Cumulative Bookings per Month", "# of bookings");
+		  }
+	});
+	$("#totalBrutoButton").click(function() {
+		  if(dateCorrect()) {
+			  $('#container').replaceWith('<canvas id="container" ></canvas>');
+			  getFilter("Graph", "brutoWeight", 'line', "container", "Total Bruto Weight", "Bruto Weight");
+		  }
+	});
+	$("#totalNettoButton").click(function() {
+		  if(dateCorrect()) {
+			  $('#container').replaceWith('<canvas id="container" ></canvas>');
+			  getFilter("Graph", "nettoWeight", 'line', "container", "Total Netto Weight", "Netto Weight");
+		  }
+	});
+	
 });
 
 //remove said employees
