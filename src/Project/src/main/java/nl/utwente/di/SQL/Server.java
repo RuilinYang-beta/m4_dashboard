@@ -65,9 +65,16 @@ public class Server{
 	
 	@GET
 	@Path("/auth")
-	public boolean checkEmployee(@QueryParam("mail") String mail) {
-		Statistics s = new Statistics();
-		return s.checkEmployee(mail);
+	public boolean checkEmployee(@QueryParam("mail") String mail,
+									@QueryParam("admin") String admin) {
+		if (admin != null) {
+			Statistics s = new Statistics();
+			return s.checkAdmin(mail);
+		} else {
+			Statistics s = new Statistics();
+			return s.checkEmployee(mail);
+		}
+		
 	}
 	@POST
 	@Path("/auth")
