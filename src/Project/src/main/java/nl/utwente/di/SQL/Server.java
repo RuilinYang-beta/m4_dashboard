@@ -4,11 +4,52 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.sql.*;
 import org.json.*;
+import Utils.SQLUtils;
 
 @Path("/sql")
 public class Server{
 	
 	public static final String LINK = "http://localhost:8080";
+	
+	/**
+	 * Function to return the data used in geo map.
+	 */
+	@GET
+	@Path("/linestops")
+	public String getLinestops() { 
+		Statistics stat = new Statistics();
+		stat.connectToDatabase();
+		ResultSet rs = stat.execute("SELECT linestopid, locationid, DATE(sta) AS sta_date, DATE(std) AS std_date FROM linestops"); 
+		
+		try {
+			stat.connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return parseJSON(rs).toString();
+	}
+	
+	/**
+	 * Function to return data used in geo map's slide bar.
+	 */
+	@GET
+	@Path("/uniquesta")
+	public String getLinestopsUniqueStaDate() { 
+		Statistics stat = new Statistics();
+		stat.connectToDatabase();
+//		ResultSet rs = stat.execute("SELECT DISTINCT sta_date FROM (SELECT DATE(sta) AS sta_date FROM linestops ORDER BY sta_date) AS sub"); 
+		ResultSet rs = stat.execute("SELECT DISTINCT(DATE(sta)) AS sta_date FROM linestops ORDER BY sta_date"); 
+		
+		try {
+			stat.connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return SQLUtils.glueColumnIntoString(rs);
+	}
+	
 	@GET
 	@Path("/autoupdate")
 	public String setTimer(@QueryParam("time") int time) {

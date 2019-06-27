@@ -11,6 +11,12 @@
   <script src="sql_counter.js"></script>
 
   <script type="text/javascript" src="chart.js"></script>
+   <!-- geoMap-->
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <link rel="stylesheet" href="geoMap.css">
+ 
   <style>
   body {
       margin: 0;
@@ -40,13 +46,19 @@
           <div class="num" id="numcount">0</div>
         </div>
 
-<!--  
-        <div class=#>
+
+       <div class=# >
           <div class="mapGraph">
-            <div class="map">
-              **MAP HERE**
+            <div class="map" id='geoParent' style='width:50%'>
+                <div id="sliderContainer">
+                  <input id="timeslide" class='slider' type="range" min="0" max="1468" value="0" step="1"/><br>
+                  <span id="range">2013-03-02</span>
+                </div>
+
+                <div id='mapContainer'>
+                </div>
             </div>
-            <div class="slideShow">
+<!--             <div class="slideShow"> -->
 
               <div class="slidershow middle">
                 <div class=slides>
@@ -69,7 +81,7 @@
             </div>
           </div>
         </div>
--->
+
 
       </div>
     </div>
@@ -102,5 +114,8 @@
   });
 	
 </script>
+
+  <!-- geoMap -->
+  <script type="text/javascript" src="geoMap.js"></script>
 
 </html>
