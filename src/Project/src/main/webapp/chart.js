@@ -153,7 +153,7 @@ label1: same as label, but for the second data
 */
 
 
-function getFilter(table, searchType, type, canvasId = "", graphTitle = "", label = "",label1=""){
+function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "",label1=""){
 	var http = new XMLHttpRequest();
 	var customerId = $('#customerFill').val();
 	var dateFrom = new Date($('#dateFromFill').val());
@@ -182,6 +182,7 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 		url += "nettoWeight";
 	} else if (searchType == "2yAxis") {
 		url += "2yAxis";
+		var list = "";
 	} else if(searchType == "topCustomerBook"){
 		url += "topCustomerBook";
 	} else if (searchType == "topCustomerWeight"){
@@ -202,10 +203,20 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 			  if (this.readyState == 4 && this.status == 200) {
 				  if(searchType == "bookings") {
 					  book = this.responseText;
+					  if(book == 0){
+						  return false;
+					  }
 				  } else if(searchType == "brutoWeight") {
 					  bruto = this.responseText;
+					  if(bruto == 0){
+						  return false;
+					  }
 				  } else if(searchType == "nettoWeight") {
 					  netto = this.responseText;
+					  if(netto == 0){
+						  return false;
+					  }
+					  
 					  document.getElementById('resultTab').innerHTML = createTable(customerId,book,bruto,netto);
 				  }
 
@@ -257,18 +268,24 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 
 //Filters on all searchType
 function searchIt() {
-		getFilter("table", "bookings");
-		wait(10);
-		getFilter("table", "brutoWeight");
-		wait(10);
-		getFilter("table", "nettoWeight");
+		list = ["bookings", "brutoWeight", "nettoWeight"];
+
+		for(i=0 ; i<list.length ; i++){
+			getFilter("table", list[i]);
+			if(getFilter("table", list[i]) == false){
+				i--;
+			}
+			
+		}
+		
+		
 
 		getFilter("Graph", "bookings", 'line', "container", "Cumulative Bookings per Month", "# of bookings");
-		getFilter("Graph", "brutoWeight", 'line', "container1", "Total Bruto Weight", "Bruto Weight");
-		getFilter("Graph", "nettoWeight", 'line', "container2", "Total Netto Weight", "Netto Weight");
+	//	getFilter("Graph", "brutoWeight", 'line', "container1", "Total Bruto Weight", "Bruto Weight");
+	//	getFilter("Graph", "nettoWeight", 'line', "container2", "Total Netto Weight", "Netto Weight");
 		getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights");
 		getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings");
-
+		
 }
 
 ///CREATE A TABLE WHEN SEARCH IS PRESSED
@@ -277,10 +294,6 @@ function createTable(customer, containTotal, brutoTotal, nettoTotal) {
 	return table;
 };
 
-//Running filters with choice as the result type
-function combine(){
-	searchIt();
-}
 
 //CREATE CHART with 1 data
 //parameter:
@@ -339,7 +352,7 @@ function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 	            yAxisID: 'y-axis-1',
 	            backgroundColor: x,
 	            hoverBackgroundColor: x,
-	            borderWidth: 10,
+	            borderWidth: 2,
 	            fill: false,
 	            data: total,
 	        },{
@@ -347,7 +360,7 @@ function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 	            yAxisID: 'y-axis-2',
 	            backgroundColor: y,
 	            hoverBackgroundColor: y,
-	            borderWidth: 10,
+	            borderWidth: 2,
 	            fill: false,
 	            data: total1,
 
@@ -449,25 +462,49 @@ function addEmployee() {
 
 //GENERATE TOP 10 CUSTOMER WITH ID 1
 $(document).ready(function() {
+
 	 $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 	 $('#container4').replaceWith('<canvas id="container4" ></canvas>');
 	 $(getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights"));
 	 $(getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings"));
 
-//	 $(getFilter("Graph", "2yAxis", 'line', "container3", "line chart multiple Axis", "Amount of book", "amount of weight"));
+	 $('#container5').replaceWith('<canvas id="container5" ></canvas>');
+	 $(getFilter("Graph", "2yAxis", 'line', "container5", "Total Bookings and Weights", "Amount of books", "Amount of weight"));
+	 
 
 //GENERATE GRAPH BELOW THE RESULT AND UPDATE THE TOP 10 CUSTOMER
-$("#search").click(function() {
-	  if(dateCorrect()) {
-		  combine();
-		  $('#container').replaceWith('<canvas id="container" ></canvas>');
-		  $('#container1').replaceWith('<canvas id="container1" ></canvas>');
-		  $('#container2').replaceWith('<canvas id="container2" ></canvas>');
-		  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
-		  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-
-	  }
- });
+	$("#search").click(function() {
+		  if(dateCorrect()) {
+			  searchIt();
+			  $('#container').replaceWith('<canvas id="container" ></canvas>');
+			  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
+			  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
+			  $(".resultButtonDiv").removeAttr("style").show();
+			 
+		  }
+		  
+		  
+		  
+	 });
+	$("#bookingCountButton").click(function() {
+		  if(dateCorrect()) {
+			  $('#container').replaceWith('<canvas id="container" ></canvas>');
+			  getFilter("Graph", "bookings", 'line', "container", "Cumulative Bookings per Month", "# of bookings");
+		  }
+	});
+	$("#totalBrutoButton").click(function() {
+		  if(dateCorrect()) {
+			  $('#container').replaceWith('<canvas id="container" ></canvas>');
+			  getFilter("Graph", "brutoWeight", 'line', "container", "Total Bruto Weight", "Bruto Weight");
+		  }
+	});
+	$("#totalNettoButton").click(function() {
+		  if(dateCorrect()) {
+			  $('#container').replaceWith('<canvas id="container" ></canvas>');
+			  getFilter("Graph", "nettoWeight", 'line', "container", "Total Netto Weight", "Netto Weight");
+		  }
+	});
+	
 });
 
 //remove said employees
@@ -528,16 +565,15 @@ function addEnvi() {
 	var list = {name,link,B_L_A_S};
 	var x;
 	var newUrl;
-	for(x in list){
-		if(x != list[list.length - 1]){
-			url += x + "=" + list[x] + "&";
-		}else{
-			url += x + "=" + list[x];
+    for(x in list){
+		if(list[x] != ""){
+			url +=  x + "=" + list[x] + "&" ;
 		}
 	}
-	alert(url);
-//	http.open("POST", url);
-//	http.send();
+	var newUrl = url.substring(0, url.length-1);
+	alert(newUrl);
+	http.open("POST", newUrl);
+	http.send();
 }
 
 //Check if input field Name and HttpLink is not empty

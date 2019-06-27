@@ -72,7 +72,7 @@ a:focus {
 }
 
 #sidebar ul li a:hover:not(.active) {
-  color: #7386D5;
+  color: #fff;
   background: #fff;
 }
 
@@ -102,7 +102,7 @@ ul ul a {
   font-size: 0.9em !important;
   padding-left: 30px !important;
   background: #6d7fcc;
-  color: #0060B6;
+  color: #fff;
 }
 
 ul.CTAs {
@@ -119,7 +119,7 @@ ul.CTAs a {
 
 a.download {
   background: #fff;
-  color: #7386D5;
+  color: #fff;
 }
 
 a.article,
@@ -240,6 +240,17 @@ a.article:hover {
 	height: 150px;
 	width: 150px;
 }
+
+.resultButton {
+	margin: 20px 0 0 30px;
+  	display:inline;
+}
+
+.resultButtonDiv {
+	margin: 20px 0 0 30px;
+	display:none;
+}
+
 
 .table {
 	margin-left: 5px;

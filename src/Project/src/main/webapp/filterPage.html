@@ -71,21 +71,20 @@ gapi.load('auth2', function() {
    <nav id="sidebar">
           <div class="sidebar-header">
             <div class="logo">
-              <img src="cofano2.png" alt="Cofano" width="200">
+              <img src="cofano2.png" alt="Cofano" href="mainDashboard.html"width="200">
             </div>
 
             <div class="profileIcon">
             <a href="index.html">
-            <img id="pic" class="rounded" width="50" height="50"/></a>
+        	<img id="pic" class="rounded" width="50" height="50"/></a>
         	<p></p>
-            
-            </div>
-            <div class="signOut">
-            <button onClick="signOut()" class="btn btn-danger text-center">Sign Out</button>
-        	<p></p>
-       	 	</div>
+        	</div>
+       		<div class="signOut">
+           		<button onClick="signOut()" class="btn btn-danger text-center">Sign Out</button>
+
+        		<p></p>
+        	</div>
           </div>
-          
           <ul class="list-unstyled components">
             <li>
               <a href="mainDashboard.html">Main</a>
@@ -107,7 +106,7 @@ gapi.load('auth2', function() {
           <button type="button" id="sidebarCollapse" class="btn btn-info">
             <i class="fas fa-align-left"></i>
 
-            <span>Toggle Sidebar</span>
+            
           </button>
 
         </div>
@@ -147,7 +146,7 @@ gapi.load('auth2', function() {
 	            <label for="customCheck"> Customer of Customer</label>
 	            <div id="customChoice" style="display:none;">
 	              <label id="custom" > Name:
-	              <input id="customFill" class="form-control input-sm" onkeypress="validateEvent(event,/[A-Z ]|\./)"/>
+	              <input id="customFill" class="form-control input-sm" onkeypress="validateEvent(event,/[A-Za-z0-9-() ]|\./)"/>
 	              </label>
 	              <div class="info" style="display:inline; font-size:12px;">*UpperCase Only</div>
 	            </div>
@@ -199,18 +198,24 @@ gapi.load('auth2', function() {
         <div class="gridDiv">
 	        <div class="filters" >
 	          <div class="fillIns" >Results:
-	          	<div class="table" >
-	          		<table class ="resultTable" id="resultTab" ></table>
+	          	<div class="table">
+	          		<table class ="resultTable" id="resultTab" ></table>          		
+	          	</div>
+	          	<div class="resultButtonDiv">
+	          		<div class="resultButton">
+	          			<button onclick="" class="btn btn-secondary text-center" id="bookingCountButton">Bookings</button>
+	          		</div>
+	          		<div class="resultButton">
+	          			<button onclick="" class="btn btn-secondary text-center" id="totalBrutoButton">Bruto</button>
+	          		</div>
+	          		<div class="resultButton">
+	          			<button onclick="" class="btn btn-secondary text-center" id="totalNettoButton">Netto</button>
+	          		</div>
 	          	</div>
 	          	<div class="graphs">
 	          	  <canvas id="container"></canvas>
 	          	</div>
-	          	<div class="graphs">
-	          	  <canvas id="container1"></canvas>
-	          	</div>
-	          	<div class="graphs">
-	          	  <canvas id="container2"></canvas>
-	          	</div>
+	          	
 	          </div>
 	        </div>
 	     </div>
