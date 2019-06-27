@@ -6,7 +6,7 @@ $(document).ready(function() {
   $('#dateToFill').val("");
   $('#teuFill').val("");
   $('#transportFill').val("");
-  //dataList('companyNameList')
+  dataList('companyNameList');
 });
 
 
@@ -147,13 +147,13 @@ Parameters:
 table: The result type --> "table" or ""
 searchType: The type of search on the database --> "bookings" for booking, "brutoWeight" for total bruto, and "nettoWeight" for total netto
 canvasId: the canvas for the graph (optional)
-graphTitle: title for the graph (optional) 
+graphTitle: title for the graph (optional)
 label: name for certain data on the graph(optional)
 label1: same as label, but for the second data
 */
 
 
-function getFilter(table, searchType, type, canvasId = "", graphTitle = "", label = "",label1=""){
+function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "",label1=""){
 	var http = new XMLHttpRequest();
 	var customerId = $('#customerFill').val();
 	var dateFrom = new Date($('#dateFromFill').val());
@@ -161,10 +161,10 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 	var fromD = "";
 	var toD = "";
 	if(dateFrom != "Invalid Date") {
-		fromD = dateFrom.getTime() / 1000;	
+		fromD = dateFrom.getTime() / 1000;
 	}
 	if (dateTo != "Invalid Date") {
-		toD = dateTo.getTime() / 1000;	
+		toD = dateTo.getTime() / 1000;
 	}
 	var customer = $('#customFill').val();
 	var ordState = $('#orderStateFill').val();
@@ -182,51 +182,64 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 		url += "nettoWeight";
 	} else if (searchType == "2yAxis") {
 		url += "2yAxis";
+		var list = "";
 	} else if(searchType == "topCustomerBook"){
 		url += "topCustomerBook";
 	} else if (searchType == "topCustomerWeight"){
 		url += "topCustomerWeight";
 	}
-	var x;	
+	var x;
 	if(table == "table"){
 		url += "&table=true";
 		for(x in list ){
 			if(list[x] != ""){
 				url += "&" + x + "=" + list[x];
 			}
+
+
 		}
-		
+
 		http.onreadystatechange = function(){
 			  if (this.readyState == 4 && this.status == 200) {
 				  if(searchType == "bookings") {
 					  book = this.responseText;
+					  if(book == 0){
+						  return false;
+					  }
 				  } else if(searchType == "brutoWeight") {
 					  bruto = this.responseText;
+					  if(bruto == 0){
+						  return false;
+					  }
 				  } else if(searchType == "nettoWeight") {
-					  netto = this.responseText;  
-					  document.getElementById('resultTab').innerHTML = createTable(book,bruto,netto);
+					  netto = this.responseText;
+					  if(netto == 0){
+						  return false;
+					  }
+					  
+					  document.getElementById('resultTab').innerHTML = createTable(customerId,book,bruto,netto);
 				  }
-				  
+
 			  }
 		};
-		
+
 	} else {
 		for(x in list ){
 			if(list[x] != ""){
 				url += "&" + x + "=" + list[x];
 			}
-			
+
 		}
-		
+
 		http.onreadystatechange = function(){
 			  if (this.readyState == 4 && this.status == 200 & searchType != "2yAxis") {
 				  var temp = this.responseText.split("|");
-				  
+
 				  a = temp[0].split(";");
 				  b = temp[1].split(";").map(function(item) {
 					    return parseInt(item, 10);
 				  });
-				  
+
 				  var i;
 				  for(i = 1; i<b.length ; i++){
 					  b[i] = b[i] + b[i-1];
@@ -238,46 +251,52 @@ function getFilter(table, searchType, type, canvasId = "", graphTitle = "", labe
 				  b = temp[1].split(";").map(function(item) {
 					    return parseInt(item, 10);
 				  });
-				  
+
 				  c = temp[2].split(";").map(function(item) {
 					    return parseInt(item, 10);
 				  });
-				  
+
 				  chart2yAxis(a,canvasId,type,label,label1,b,c,graphTitle);
 			  }
 		};
 	}
-	
+
 	http.open("GET", url);
 	http.send();
 };
 
 
 //Filters on all searchType
-function searchIt() { 
+function searchIt() {
+		list = ["bookings", "brutoWeight", "nettoWeight"];
 
-		getFilter("table", "bookings");
-		wait(10);
-		getFilter("table", "brutoWeight");
-		wait(10);
-		getFilter("table", "nettoWeight");
+		for(i=0 ; i<list.length ; i++){
+			getFilter("table", list[i]);
+			if(getFilter("table", list[i]) == false){
+				i--;
+			}
+			
+		}
 		
-		getFilter("Graph", "bookings", 'bar', "container", "Cumulative Bookings per Month", "# of bookings");
-		getFilter("Graph", "brutoWeight", 'bar', "container1", "Total Bruto Weight", "Bruto Weight");
-		getFilter("Graph", "nettoWeight", 'bar', "container2", "Total Netto Weight", "Netto Weight");
+
+		getFilter("Graph", "bookings", 'line', "container", "Cumulative Bookings per Month", "# of bookings");
+		getFilter("Graph", "brutoWeight", 'line', "container1", "Total Bruto Weight", "Bruto Weight");
+		getFilter("Graph", "nettoWeight", 'line', "container2", "Total Netto Weight", "Netto Weight");
 		getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights");
 		getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings");
-	
+
 }
 
 ///CREATE A TABLE WHEN SEARCH IS PRESSED
-function createTable(containTotal, brutoTotal, nettoTotal) {
-	var table ="<tr><th>Total Containers</th><td>" + containTotal + "</td></tr><tr><th>Total Bruto Weight</th><td>" + brutoTotal + "</td></tr><tr><th>Total Netto Weight</th><td>" + nettoTotal + "</td></tr>";
+function createTable(customer, containTotal, brutoTotal, nettoTotal) {
+	var table ="<tr><th>Customer</th><td>" + customer + "</td></tr><tr><th>Total Containers</th><td>" + containTotal + "</td></tr><tr><th>Total Bruto Weight</th><td>" + brutoTotal + "</td></tr><tr><th>Total Netto Weight</th><td>" + nettoTotal + "</td></tr>";
 	return table;
 };
 
 //Running filters with choice as the result type
-
+function combine(){
+	searchIt();
+}
 
 //CREATE CHART with 1 data
 //parameter:
@@ -325,7 +344,7 @@ function chart(year, total, canvas, chartName, type, label) {
 function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 	  var x = generateListColor(year, type);
 	  var y = generateListColor(year, type);
-	  
+
 	  var ctx = document.getElementById(canvas).getContext('2d');
 	  var myChart = new Chart(ctx, {
 	    type: type,
@@ -336,7 +355,7 @@ function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 	            yAxisID: 'y-axis-1',
 	            backgroundColor: x,
 	            hoverBackgroundColor: x,
-	            borderWidth: 10,
+	            borderWidth: 2,
 	            fill: false,
 	            data: total,
 	        },{
@@ -344,11 +363,11 @@ function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 	            yAxisID: 'y-axis-2',
 	            backgroundColor: y,
 	            hoverBackgroundColor: y,
-	            borderWidth: 10,
+	            borderWidth: 2,
 	            fill: false,
 	            data: total1,
-	        	
-	        	
+
+
 	        }]
 	    },
 	    options: {
@@ -385,7 +404,7 @@ function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 function generateListColor(year, type){
 	var x;
 	var list = [];
-	
+
 	for(x in year){
 		if(type == 'doughnut'){
 			if(list.includes(getRandomColor())){
@@ -400,7 +419,7 @@ function generateListColor(year, type){
 				list.push(random_rgba());
 			}
 		}
-		
+
 	}
 	return list;
 }
@@ -428,14 +447,13 @@ function addEmployee() {
 	var id = $('#id').val();
 	//http://localhost:8080/Project/rest/sql/auth?name=""&id=""&mail=""
 	var list = {name, mail, id};
-	var x
-	for (x in list){
-		if (x != list[list.length-1]){
-		url += x + "=" + list[x] + "&";
-		} else {
-		url += x + "=" + list[x];
+	var x;
+  for(x in list){
+		if(list[x] != ""){
+			url +=  x + "=" + list[x] + "&" ;
 		}
 	}
+	var newUrl = url.substring(0, url.length-1);
 	http.onreadystatechange = function() {
 		if(this.readyState == 4 & this.status == 200) {
 		console.log(this.responseText);
@@ -445,28 +463,32 @@ function addEmployee() {
 	http.send();
 };
 
-//GENERATE TOP 10 CUSTOMER WITH ID 1 
+//GENERATE TOP 10 CUSTOMER WITH ID 1
 $(document).ready(function() {
+
 	 $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 	 $('#container4').replaceWith('<canvas id="container4" ></canvas>');
 	 $(getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights"));
 	 $(getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings"));
-	 
-	 $('#container5').replaceWith('<canvas id="container5" ></canvas>');
-	 $(getFilter("Graph", "2yAxis", 'line', "container5", "line chart multiple Axis", "Amount of book", "amount of weight"));
 
-//GENERATE GRAPH BELOW THE RESULT AND UPDATE THE TOP 10 CUSTOMER		 
-$("#search").click(function() { 
+	 $('#container5').replaceWith('<canvas id="container5" ></canvas>');
+	 $(getFilter("Graph", "2yAxis", 'line', "container5", "Total Bookings and Weights", "Amount of books", "Amount of weight"));
+	 
+
+
+//	 $(getFilter("Graph", "2yAxis", 'line', "container3", "line chart multiple Axis", "Amount of book", "amount of weight"));
+
+//GENERATE GRAPH BELOW THE RESULT AND UPDATE THE TOP 10 CUSTOMER
+$("#search").click(function() {
 	  if(dateCorrect()) {
-		  searchIt();
-		  $('resultTab').replaceWith('<table class ="resultTable" id="resultTab" ></table>');
+		  combine();
 		  $('#container').replaceWith('<canvas id="container" ></canvas>');
 		  $('#container1').replaceWith('<canvas id="container1" ></canvas>');
 		  $('#container2').replaceWith('<canvas id="container2" ></canvas>');
 		  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 		  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-		 
-	  }  
+
+	  }
  });
 });
 
@@ -479,14 +501,13 @@ function removeEmployee() {
 	var id = $('#id').val();
 	//http://localhost:8080/Project/rest/sql/auth?name=""&id=""&mail=""
 	var list = {name, mail, id};
-	var x
-	for (x in list){
-		if (x != ""){
-		url += x + "=" + list[x] + "&";
-		} else {
-		url += x + "=" + list[x];
+  var x;
+  for(x in list){
+		if(list[x] != ""){
+			url +=  x + "=" + list[x] + "&" ;
 		}
 	}
+	var newUrl = url.substring(0, url.length-1);
 	http.onreadystatechange = function() {
 		if(this.readyState == 4 & this.status == 200) {
 		console.log(this.responseText);
@@ -529,23 +550,37 @@ function addEnvi() {
 	var list = {name,link,B_L_A_S};
 	var x;
 	var newUrl;
-	for(x in list){
-		if(x != list[list.length - 1]){
-			url += x + "=" + list[x] + "&";
-		}else{
-			url += x + "=" + list[x]; 
+    for(x in list){
+		if(list[x] != ""){
+			url +=  x + "=" + list[x] + "&" ;
 		}
 	}
-	alert(url);
-//	http.open("POST", url);
-//	http.send();
+	var newUrl = url.substring(0, url.length-1);
+	alert(newUrl);
+	http.open("POST", newUrl);
+	http.send();
+}
+
+//Check if input field Name and HttpLink is not empty
+function inputNotEmpty() {
+	var name = $('#custname').val();
+	var link = $('#httplink').val();
+
+	if (name == "") {
+		alert("Name Cannot be Empty");
+		return false;
+	} else if (link == ""){
+		alert("Link cannot be empty");
+		return false;
+	}  else {
+		return true;
+	}
 }
 
 $(document).ready(function() {
 	  $("#addEnviButton").click(function() {
-		  addEnvi();
+		  if(inputNotEmpty()) {
+			  addEnvi();
+		  }
 	  });
 	});
-
-
-
