@@ -4,6 +4,8 @@
 <head>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <meta name="google-signin-client_id" content="1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.js"></script>
@@ -21,6 +23,10 @@
       background-position: center center;
       background-attachment: fixed;
     }
+	
+   .g-signin2 {
+      display: none;
+  }
   </style>
 </head>
 
@@ -35,23 +41,10 @@
         <div class="logo">
           <img src="cofano2.png" height="100">
         </div>
-		<div class="row">
-	        <div class="counting-sec">
-	          <div class="num" id="numcount">0</div>
-	        </div>
-	        
-	         <div class="col">a
-	         
-	         </div>
-			 <div class="col content-container-fluid">
-			 	<div class="filterGraphs">
-			 		<canvas id="container5"></canvas>
-			 	</div>
-			 </div>
-		
+
+        <div class="counting-sec">
+          <div class="num" id="numcount">0</div>
         </div>
-        
-	   
 
 <!--  
         <div class=#>
@@ -87,6 +80,40 @@
       </div>
     </div>
   </a>
+<div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
+
+<script>
+function onSignIn(googleUser) {
+	var profile=googleUser.getBasicProfile();
+	$("#pic").attr('src',profile.getImageUrl());
+	$("#email").text(profile.getEmail());
+	$("#name").text(profile.getName());
+
+	var id_token = googleUser.getAuthResponse().id_token;
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.onload = function() {
+	  console.log('Signed in as: ' + xhr.responseText);
+	  var json = xhr.responseText;
+	  var obj = JSON.parse(json);
+	  if (obj.hd !== 'student.utwente.nl') {
+	      window.location = "http://localhost:8080/Project/"
+	  }
+	      };
+	xhr.send('idtoken=' + id_token);
+
+}
+
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      window.location = "http://localhost:8080/Project/"
+      console.log('User signed out.');
+    });
+  }
+</script>
 </body>
 
 <script type="text/javascript">
@@ -99,7 +126,21 @@
   $(getCount());
   $(chart1());
 
- 
+  $(document).ready(function() {
+    $("#r1").click(function() {
+      $('#container').replaceWith('<canvas id="container"></canvas>');
+      chart1();
+    })
+  });
+
+  $(document).ready(function() {
+    $("#r2").click(function() {
+      $('#contain').replaceWith('<canvas id="contain"></canvas>');
+      //chart2();
+      getYear();
+    })
+  });
+	
 </script>
 
 </html>
