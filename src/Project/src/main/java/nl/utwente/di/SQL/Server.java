@@ -178,68 +178,69 @@ public class Server{
 
 
 	
-	public static String parseToStringarray(ResultSet set) {
-		StringBuffer res1 = new StringBuffer();
-		StringBuffer res2 = new StringBuffer();
-	
-		String res = "";
-		try {
-			while (set.next()) {
-			
-					res1.append(set.getObject(1)+";");
-					res2.append(set.getObject(2)+";"); 
-				
-			
-			}
-			res1.setLength(res1.length()-1);
-			res2.setLength(res2.length()-1);
-		
-			res = res1.toString() + "|" + res2.toString();
-		} catch (SQLException e) {
-
-		}
-		return res;
-	}
-	
 //	public static String parseToStringarray(ResultSet set) {
 //		StringBuffer res1 = new StringBuffer();
 //		StringBuffer res2 = new StringBuffer();
-//		StringBuffer res3 = new StringBuffer();
+//	
 //		String res = "";
-//		ResultSetMetaData rsmd;
-//		int col = -1;
-//		try {
-//			rsmd = set.getMetaData();
-//			col = rsmd.getColumnCount();
-//		} catch (SQLException e1) {
-//			e1.printStackTrace();
-//		}
 //		try {
 //			while (set.next()) {
-//				res1.append(set.getObject(1)+";");
-//				res2.append(set.getObject(2)+";"); 
 //			
-//				if(col == 3) {
-//					res3.append(set.getObject(3)+";");
-//				}
+//					res1.append(set.getObject(1)+";");
+//					res2.append(set.getObject(2)+";"); 
 //				
+//			
 //			}
 //			res1.setLength(res1.length()-1);
 //			res2.setLength(res2.length()-1);
-//			if(col == 3) {
-//				res3.setLength(res3.length()-1);
-//			}
-//			
+//		
 //			res = res1.toString() + "|" + res2.toString();
-//			if(col == 3) {
-//				res += "|" + res3.toString();
-//			}
-//			
 //		} catch (SQLException e) {
 //
 //		}
 //		return res;
 //	}
+	
+	public static String parseToStringarray(ResultSet set) {
+		StringBuffer res1 = new StringBuffer();
+		StringBuffer res2 = new StringBuffer();
+		StringBuffer res3 = new StringBuffer();
+		String res = "";
+		ResultSetMetaData rsmd;
+		int col = -1;
+		try {
+			rsmd = set.getMetaData();
+			col = rsmd.getColumnCount();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			while (set.next()) {
+				res1.append(set.getObject(1)+";");
+				res2.append(set.getObject(2)+";"); 
+			
+				if(col == 3) {
+					res3.append(set.getObject(3)+";");
+				}
+				
+			}
+			res1.setLength(res1.length()-1);
+			res2.setLength(res2.length()-1);
+			if(col == 3) {
+				res3.setLength(res3.length()-1);
+			}
+			
+			res = res1.toString() + "|" + res2.toString();
+			if(col == 3) {
+				res += "|" + res3.toString();
+			}
+			
+		} catch (SQLException e) {
+
+		}
+		
+		return res;
+	}
 	
 	@GET
 	@Path("/select")
@@ -316,12 +317,14 @@ public class Server{
 				stm = a.connection.prepareStatement(SORT_MONTH + "SUM(nettoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
 			} else if (((String) goal).equals("brutoWeight")) { 
 				stm = a.connection.prepareStatement(SORT_MONTH + "SUM(brutoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
-			} else if (((String) goal).equals("topCustomerWeight")){
-				stm = a.connection.prepareStatement("SELECT customer AS custName, COUNT(bookingId)" + topCustomer);		
 			} else if (((String) goal).equals("topCustomerBook")){
-				stm = a.connection.prepareStatement("SELECT customer AS custName, SUM(brutoWeight)" + topCustomer);
+				stm = a.connection.prepareStatement("SELECT customer AS custName, COUNT(bookingId) FROM bookings "  + command + topCustomer);		
+			} else if (((String) goal).equals("topCustomerWeight")){
+				stm = a.connection.prepareStatement("SELECT customer AS custName, SUM(brutoWeight) + SUM(nettoWeight) FROM bookings " + command + topCustomer);
+			} else if (((String) goal).equals("2yAxis")){
+				stm = a.connection.prepareStatement(SORT_MONTH + "COUNT(bookingId), SUM(brutoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
 				
-			} else {
+			}  else {
 				return -2 + ""; 
 			}
 			int col = 1;
@@ -389,8 +392,5 @@ public class Server{
 	}
 	private static final String SORT_MONTH = "SELECT CONCAT(cast(EXTRACT(year FROM createdOn) AS VARCHAR(4))"
 			+ ",'_', RIGHT(CONCAT('0',cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))), 2)) AS m_y, ";
-	private static final String topCustomer = " FROM bookings "
-			+ "WHERE 0=0 AND orderState <> 'INPLANNING' AND orderState <> 'INVOICE'" +  
-			"AND orderState <> 'DRAFT' AND orderState <> 'INVOICED' AND orderState <> 'INVOICABLE' AND orderState <> 'CANCELLED' "
-			+ "AND brutoWeight IS NOT NULL AND customer IS NOT NULL GROUP BY custName ORDER BY (SUM(brutoWeight) + COUNT(bookingId)*1000) DESC LIMIT 10";
+	private static final String topCustomer =  " AND brutoWeight IS NOT NULL AND customer IS NOT NULL GROUP BY custName ORDER BY (SUM(brutoWeight) + COUNT(bookingId)*1000) DESC LIMIT 10";
 }
