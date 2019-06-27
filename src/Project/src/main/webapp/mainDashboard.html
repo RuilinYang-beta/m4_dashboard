@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 
 <head>
+  <title>Cofano</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
   <meta name="google-signin-client_id" content="1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com">
@@ -42,8 +43,20 @@
           <img src="cofano2.png" height="100">
         </div>
 
-        <div class="counting-sec">
-          <div class="num" id="numcount">0</div>
+        <div class="row">
+	        <div class="counting-sec">
+	          <div class="num" id="numcount">0</div>
+	        </div>
+	        
+	         <div class="col">a
+	         
+	         </div>
+			 <div class="col content-container-fluid">
+			 	<div class="filterGraphs">
+			 		<canvas id="container5"></canvas>
+			 	</div>
+			 </div>
+
         </div>
 
 <!--  
@@ -126,21 +139,7 @@ function signOut() {
   $(getCount());
   $(chart1());
 
-  $(document).ready(function() {
-    $("#r1").click(function() {
-      $('#container').replaceWith('<canvas id="container"></canvas>');
-      chart1();
-    })
-  });
-
-  $(document).ready(function() {
-    $("#r2").click(function() {
-      $('#contain').replaceWith('<canvas id="contain"></canvas>');
-      //chart2();
-      getYear();
-    })
-  });
-	
+  
 </script>
 
 </html>
