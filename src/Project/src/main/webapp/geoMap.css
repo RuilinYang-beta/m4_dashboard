@@ -1,12 +1,25 @@
+#mapContainer {
+    position: relative;
+    height: 0;
+    width: 100%;
+    padding: 0;
+    /* padding-bottom will be overwritten by JavaScript later */
+    /*padding-bottom: 100%;*/
+}
+
+#mapContainer > svg {
+  border: 2px solid lightgrey;
+/*   height: 100%;
+  width: 100%;  */
+  display:block;
+}
 
 .circle:hover{
  	stroke: black;
 	stroke-width: 4px;
 }
 
-svg {
-	border: 1px solid lightgrey;
-}
+
 
 #mapid { 
 	height: 400px; 
@@ -14,12 +27,12 @@ svg {
 
 /* below are copied from w3school*/
 .slideContainer {
-  width: 800px;
+  width: 100%;
 }
 
 .slider {
   -webkit-appearance: none;
-  width: 800px;
+  width: 100%;
   height: 25px;
   background: #d3d3d3;
   outline: none;

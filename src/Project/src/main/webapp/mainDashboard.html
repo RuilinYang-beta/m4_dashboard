@@ -19,7 +19,11 @@
   <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
   <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
   <link rel="stylesheet" href="geoMap.css">
- 
+  <!-- bootstrap js -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
   <style>
   body {
       margin: 0;
@@ -37,87 +41,77 @@
   </style>
 </head>
 
-<body id='mainDashboard' onload="getCount" >
+<body id='mainDashboard' onload="getCount">
 
-    <div class=row> 
+    <div class='row'> 
 
-      <div class="counter">
+        <div class="counter">
 
-        <div class="logo">
-          <img src="cofano2.png" height="100">
-        </div>
-
-  <a class="btn" href="filterPage.html">
-        <div class="row">
-          <div class="counting-sec">
-            <div class="num" id="numcount">0</div>
-          </div>
-          
-           <div class="col">a
-           
-           </div>
-       <div class="col content-container-fluid">
-        <div class="filterGraphs">
-          <canvas id="container5"></canvas>
-        </div>
-       </div>
-
-        </div>
-</a>
-
-       <div class=# >
-          <div class="mapGraph">
-            <div class="map" id='geoParent' style='width:50%'>
-                <div id="sliderContainer">
-                  <input id="timeslide" class='slider' type="range" min="0" max="1468" value="0" step="1"/><br>
-                  <span id="range">2013-03-02</span>
-                </div>
-
-                <div id='mapContainer'>
-                </div>
+            <div class="logo">
+                <img src="cofano2.png" height="100">
             </div>
 
+                <div class="row" onclick="location.href='filterPage.html';">
+                    <div class="counting-sec">
+                        <div class="num" id="numcount">0</div>
+                    </div>
+                </div>
+
+                <div class="row d-flex justify-content-around" >
+                    <div class="col col-11 border border-danger col-md-5">
+                        <div class="map" id='geoParent'>
+                            <div id="sliderContainer">
+                                <input id="timeslide" class='slider' type="range" min="0" max="1468" value="0" step="1"/><br>
+                                <span id="range">2013-03-02</span>
+                            </div>
+                            <div id='mapContainer'> </div>
+                        </div>
+                    </div>
+                    <div class="col col-11 border border-danger col-md-5">
+                        <div class="filterGraphs">
+                            <canvas id="container5"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+
         </div>
-
-
-      </div>
     </div>
-  </div>
 
 <div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
 
-<script>
-function onSignIn(googleUser) {
-  var profile=googleUser.getBasicProfile();
-  $("#pic").attr('src',profile.getImageUrl());
-  $("#email").text(profile.getEmail());
-  $("#name").text(profile.getName());
+    <script>
+        function onSignIn(googleUser) {
+        var profile=googleUser.getBasicProfile();
+        $("#pic").attr('src',profile.getImageUrl());
+        $("#email").text(profile.getEmail());
+        $("#name").text(profile.getName());
 
-  var id_token = googleUser.getAuthResponse().id_token;
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  xhr.onload = function() {
-    console.log('Signed in as: ' + xhr.responseText);
-    var json = xhr.responseText;
-    var obj = JSON.parse(json);
-    if (obj.hd !== 'student.utwente.nl') {
+        var id_token = googleUser.getAuthResponse().id_token;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+        console.log('Signed in as: ' + xhr.responseText);
+        var json = xhr.responseText;
+        var obj = JSON.parse(json);
+        if (obj.hd !== 'student.utwente.nl') {
         window.location = "http://localhost:8080/Project/"
-    }
+        }
         };
-  xhr.send('idtoken=' + id_token);
+        xhr.send('idtoken=' + id_token);
 
-}
+        }
 
 
-function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      window.location = "http://localhost:8080/Project/"
-      console.log('User signed out.');
-    });
-  }
-</script>
+        function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+        window.location = "http://localhost:8080/Project/"
+        console.log('User signed out.');
+        });
+        }
+    </script>
 </body>
 
 <script type="text/javascript">

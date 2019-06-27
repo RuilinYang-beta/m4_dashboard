@@ -1,9 +1,3 @@
-// ---------------------- dev log 20190626: what can be improved ----------------------
-// - need transition to make the change of graph smooth
-// - belgium map need to be added
-// - is there really 5 or so ports used? verify this! --- 7 ports, but the added 2 are rarely used
-// - several locationid need map to unlo
-
 var baseURL = "http://localhost:8080/Project/rest/sql";
 
 // -- temp --
@@ -128,14 +122,19 @@ http.onreadystatechange = function() {
         })
 
         // ==========  Map Prep: svg area ==========  
-//        var width = 650 ;
-        var width = d3.select('.mapGraph').node().getBoundingClientRect().width / 2;
+        var width = 650 ;
+//        var width = d3.select('.mapGraph').node().getBoundingClientRect().width / 2;
         var	height = 580
 
         var svg = d3.select('#mapContainer')
+//                          .attr(
+//                                "style",
+//                                "padding-bottom: " + Math.ceil(height * 100 / width) + "%"
+//                          )
                          .append('svg')
-                         .attr('width', width)
-                         .attr('height', height) 
+                         .attr('viewBox', '0 0 ' + width + ' ' + height)
+//                          .attr('width', width)
+//                          .attr('height', height) 
 
         // ==========  Map Prepare: projection ==========  
         var projection = d3.geoMercator()
@@ -207,8 +206,10 @@ http.onreadystatechange = function() {
         }
 
         // ========== draw Map, Circle, activate Slide bar ========== 
-        d3.json("https://www.webuildinternet.com/articles/2015-07-19-geojson-data-of-the-netherlands/townships.geojson", function(data){
-
+        // d3.json("https://www.webuildinternet.com/articles/2015-07-19-geojson-data-of-the-netherlands/townships.geojson", function(data){
+        d3.json('./dummyMapData/nl.json', function(data){
+          console.log('inside draw map!')
+          console.log(data[0]);
             // Draw the map
             svg.append("g")
                 .selectAll("path")
