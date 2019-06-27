@@ -33,12 +33,25 @@
       <div class="counter">
 
         <div class="logo">
-          <img src="cofano.png" height="100">
+          <img src="cofano2.png" height="100">
         </div>
-
-        <div class="counting-sec">
-          <div class="num" id="numcount">0</div>
+		<div class="row">
+	        <div class="counting-sec">
+	          <div class="num" id="numcount">0</div>
+	        </div>
+	        
+	         <div class="col">a
+	         
+	         </div>
+			 <div class="col content-container-fluid">
+			 	<div class="filterGraphs">
+			 		<canvas id="container5"></canvas>
+			 	</div>
+			 </div>
+		
         </div>
+        
+	   
 
 <!--  
         <div class=#>
@@ -86,21 +99,7 @@
   $(getCount());
   $(chart1());
 
-  $(document).ready(function() {
-    $("#r1").click(function() {
-      $('#container').replaceWith('<canvas id="container"></canvas>');
-      chart1();
-    })
-  });
-
-  $(document).ready(function() {
-    $("#r2").click(function() {
-      $('#contain').replaceWith('<canvas id="contain"></canvas>');
-      //chart2();
-      getYear();
-    })
-  });
-	
+ 
 </script>
 
 </html>
