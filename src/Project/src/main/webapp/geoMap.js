@@ -267,4 +267,3 @@ http.send();
 //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
 //     maxZoom: 6,
 //     }).addTo(mymap);
-

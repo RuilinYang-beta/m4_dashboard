@@ -30,7 +30,7 @@
       background-position: center center;
       background-attachment: fixed;
     }
-	
+  
    .g-signin2 {
       display: none;
   }
@@ -39,9 +39,7 @@
 
 <body id='mainDashboard' onload="getCount" >
 
-  <a class="btn" href="filterPage.html">
-
-    <div class=row>
+    <div class=row> 
 
       <div class="counter">
 
@@ -49,22 +47,23 @@
           <img src="cofano2.png" height="100">
         </div>
 
+  <a class="btn" href="filterPage.html">
         <div class="row">
-	        <div class="counting-sec">
-	          <div class="num" id="numcount">0</div>
-	        </div>
-	        
-	         <div class="col">a
-	         
-	         </div>
-			 <div class="col content-container-fluid">
-			 	<div class="filterGraphs">
-			 		<canvas id="container5"></canvas>
-			 	</div>
-			 </div>
+          <div class="counting-sec">
+            <div class="num" id="numcount">0</div>
+          </div>
+          
+           <div class="col">a
+           
+           </div>
+       <div class="col content-container-fluid">
+        <div class="filterGraphs">
+          <canvas id="container5"></canvas>
+        </div>
+       </div>
 
         </div>
-
+</a>
 
        <div class=# >
           <div class="mapGraph">
@@ -77,56 +76,36 @@
                 <div id='mapContainer'>
                 </div>
             </div>
-<!--             <div class="slideShow"> -->
 
-              <div class="slidershow middle">
-                <div class=slides>
-                  <input type="radio" name="r" id=r1 checked>
-                  <input type="radio" name="r" id=r2>
-
-                  <div class="slide s1">
-                    <canvas id="container" style=""></canvas>
-                  </div>
-
-                  <div class=slide>
-                    <canvas id="contain" style=""></canvas>
-                  </div>
-                </div>
-                <div class=navigation>
-                  <label for="r1" class="bar"></label>
-                  <label for="r2" class="bar"></label>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
 
       </div>
     </div>
-  </a>
+  </div>
+
 <div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
 
 <script>
 function onSignIn(googleUser) {
-	var profile=googleUser.getBasicProfile();
-	$("#pic").attr('src',profile.getImageUrl());
-	$("#email").text(profile.getEmail());
-	$("#name").text(profile.getName());
+  var profile=googleUser.getBasicProfile();
+  $("#pic").attr('src',profile.getImageUrl());
+  $("#email").text(profile.getEmail());
+  $("#name").text(profile.getName());
 
-	var id_token = googleUser.getAuthResponse().id_token;
-	var xhr = new XMLHttpRequest();
-	xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	xhr.onload = function() {
-	  console.log('Signed in as: ' + xhr.responseText);
-	  var json = xhr.responseText;
-	  var obj = JSON.parse(json);
-	  if (obj.hd !== 'student.utwente.nl') {
-	      window.location = "http://localhost:8080/Project/"
-	  }
-	      };
-	xhr.send('idtoken=' + id_token);
+  var id_token = googleUser.getAuthResponse().id_token;
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function() {
+    console.log('Signed in as: ' + xhr.responseText);
+    var json = xhr.responseText;
+    var obj = JSON.parse(json);
+    if (obj.hd !== 'student.utwente.nl') {
+        window.location = "http://localhost:8080/Project/"
+    }
+        };
+  xhr.send('idtoken=' + id_token);
 
 }
 
@@ -143,11 +122,11 @@ function signOut() {
 
 <script type="text/javascript">
  function countit() {
-	$(".num").counterUp({
-	    delay: 30,
-	    time: 1000
-	  });
-	};
+  $(".num").counterUp({
+      delay: 30,
+      time: 1000
+    });
+  };
   $(getCount());
   $(chart1());
 
