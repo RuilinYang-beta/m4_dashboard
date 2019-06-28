@@ -100,41 +100,74 @@
 <script>
 
 function onSignIn(googleUser){
-var profile=googleUser.getBasicProfile();
-$(".btn").css("display","block");
-$(".g-signin2").css("display","none");
-$(".btn2").css("display","block");
-$(".data").css("display","block");
-$("#pic").attr('src',profile.getImageUrl());
-$("#email").text(profile.getEmail());
-$("#name").text(profile.getName());
-console.log("ID: " + profile.getId()); 
-console.log('Full Name: ' + profile.getName());
-console.log("Image URL: " + profile.getImageUrl());
-console.log("Email: " + profile.getEmail());
-$(".warn").css("display","none");
+	var profile=googleUser.getBasicProfile();
+	$(".btn").css("display","block");
+	$(".g-signin2").css("display","none");
+	$(".btn2").css("display","block");
+	$(".data").css("display","block");
+	$("#pic").attr('src',profile.getImageUrl());
+	$("#email").text(profile.getEmail());
+	$("#name").text(profile.getName());
+	console.log("ID: " + profile.getId()); 
+	console.log('Full Name: ' + profile.getName());
+	console.log("Image URL: " + profile.getImageUrl());
+	console.log("Email: " + profile.getEmail());
+	$(".warn").css("display","none");
 
-var id_token = googleUser.getAuthResponse().id_token;
-var xhr = new XMLHttpRequest();
-xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
-xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-xhr.onload = function() {
-  console.log('Signed in as: ' + xhr.responseText);
-  var json = xhr.responseText;
-  var obj = JSON.parse(json);
-  if (obj.hd == 'student.utwente.nl') {
-	  $(".data").css("display","block");
-      $(".btn").css("display","block");
-  } else {
-	  $(".data").css("display","none");
-      $(".btn").css("display","none");
-      $(".warn").css("display","block");
-      }
-  
-  
-};
-xhr.send('idtoken=' + id_token);
-}
+	var id_token = googleUser.getAuthResponse().id_token;
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.onload = function() {
+	  console.log('Signed in as: ' + xhr.responseText);
+	  var json = xhr.responseText;
+	  var obj = JSON.parse(json);
+	/*  if (obj.hd == 'cofano.nl') {
+		  $(".data").css("display","block");
+	      $(".btn").css("display","block");
+	  } else {
+		  $(".data").css("display","none");
+	      $(".btn").css("display","none");
+	      $(".warn").css("display","block");
+	      } */
+	  function checkEmployee() {
+			var http = new XMLHttpRequest();
+			var url = "http://localhost:8080/Project/rest/sql/auth?mail=";
+			var mail = obj.email;
+			url += mail;
+			http.onreadystatechange = function() {
+				if(this.readyState == 4 & this.status == 200) {
+				var a = this.responseText;
+				console.log(a);
+				doThis(a);
+				}
+		function doThis(a) {
+			if (a == "true" && obj.hd !== 'cofano.nl') {
+				$(".data").css("display","block");
+				$(".btn").css("display","block");
+				console.log('Hello non-cofano admin.');
+			} else if (a == "false" && obj.hd == 'cofano.nl'){
+				$(".data").css("display","block");
+			    $(".btn").css("display","block");
+		    } else if (a == "true" && obj.hd == 'cofano.nl'){
+		    	$(".data").css("display","block");
+			    $(".btn").css("display","block");
+			    console.log('Hello cofano admin');
+		    } else {
+			    $(".data").css("display","none");
+			    $(".btn").css("display","none");
+			    $(".warn").css("display","block");
+			    }
+		}
+			};
+			http.open("GET", url);
+			http.send();
+		};
+		checkEmployee();
+	  
+	};
+	xhr.send('idtoken=' + id_token);
+	}
 
 </script>
 

@@ -53,10 +53,11 @@ public class Statistics {
 			s.executeQuery();
 			z = "success";
 		} catch (SQLException e) {
-			System.err.println("error inserting");
-			e.printStackTrace();
 			if (e.getMessage().equals("No results were returned by the query.")) {
 				return "success";
+			} else {
+				System.err.println("error inserting");
+				e.printStackTrace();
 			}
 			return (e.getMessage());
 		} finally {
@@ -154,7 +155,10 @@ public class Statistics {
 		}
 		//s.fillBooking_to_Date();
 	}
-		
+	
+	//this method parses all actions in our SQL database,
+	//which are saved as JSON object
+	//by extracting the data we want
 	public void parseActions(boolean RESET, int customer) {
 		if (RESET) {
 			System.out.println("reset");
@@ -190,10 +194,12 @@ public class Statistics {
 		execute(res);
 	}
 	
+	//TODO
 	public void parseTasks(boolean RESET, int customer) {
 		
 	}
 
+	//executes a query and returns resultset 
 	public ResultSet execute(String command) {
 		try {
 			PreparedStatement s = connection.prepareStatement(command);
