@@ -329,7 +329,7 @@ public class Server{
 			} else if (((String) goal).equals("topCustomerWeight")){
 				stm = a.connection.prepareStatement("SELECT customer AS custName, SUM(brutoWeight) + SUM(nettoWeight) FROM bookings " + command + topCustomer);
 			} else if (((String) goal).equals("2yAxis")){
-				stm = a.connection.prepareStatement(SORT_MONTH + "COUNT(bookingId), SUM(brutoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
+				stm = a.connection.prepareStatement(SORT_MONTH + "COUNT(bookingId), SUM(brutoWeight) FROM bookings " + command + "AND createdOn IS NOT NULL GROUP BY m_y ORDER BY m_y;");
 				
 			}  else {
 				return -2 + ""; 
