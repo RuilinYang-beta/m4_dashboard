@@ -189,14 +189,14 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 		customer = "";
 		ordState = "";
 		teu = "";
-		shipCompt = "";
+		shipComp = "";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "topCustomerWeight"){
 		url += "topCustomerWeight";
 		customer = "";
 		ordState = "";
 		teu = "";
-		shipCompt = "";
+		shipComp = "";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "2yAxis") {
 		url += "2yAxis";
