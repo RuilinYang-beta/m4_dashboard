@@ -504,13 +504,12 @@ $(document).ready(function() {
 //GENERATE GRAPH BELOW THE RESULT AND UPDATE THE TOP 10 CUSTOMER
 	$("#search").click(function() {
 		removeTable('resultTab');
-		  if(dateCorrect()) {			  
+		  if(dateCorrect()) {		
+		      $(".graphs").removeAttr("style").show();
 			  searchIt();
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 			  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-			  $(".resultButtonDiv").removeAttr("style").show();
-			 
 		  }
 		  
 		  
