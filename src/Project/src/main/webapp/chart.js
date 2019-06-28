@@ -154,8 +154,6 @@ label1: same as label, but for the second data
 
 
 function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "",label1=""){
-	$(".noResult").removeAttr("style").hide();
-	$(".graphs").removeAttr("style").hide();
 	var http = new XMLHttpRequest();
 	var customerId = $('#customerFill').val();
 	var dateFrom = new Date($('#dateFromFill').val());
@@ -172,8 +170,7 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 	var ordState = $('#orderStateFill').val();
 	var teu = $('#teuFill').val();
 	var shipComp= $('#companyNameFill').val();
-	var shipCompId = "";
-	var shipCompScac = "";
+	
 	var url = "http://localhost:8080/Project/rest/sql/select?goal=";
 	if(searchType == "bookings") {
 		url += "bookings";
@@ -189,20 +186,19 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 		customer = "";
 		ordState = "";
 		teu = "";
-		shipComp = "";
+		shipCompt = "";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "topCustomerWeight"){
 		url += "topCustomerWeight";
 		customer = "";
 		ordState = "";
 		teu = "";
-		shipComp = "";
+		shipCompt = "";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "2yAxis") {
 		url += "2yAxis";
-	
 	} 
-
+	
 	var x;
 	if(table == "table"){
 		url += "&table=true";
@@ -215,32 +211,31 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 		}
 
 		http.onreadystatechange = function(){
-				
 			  if (this.readyState == 4 && this.status == 200) {
 				  if(searchType == "bookings") {
 					  book = this.responseText;
-					  if(book == 0) {
+					  if(book == 0){
 						  $(".noResult").removeAttr("style").show();
-						  
-						  
-						  return 101;
+                          
+                          
+                          return 101;
 					  }
 				  } else if(searchType == "brutoWeight") {
-					  bruto = this.responseText;
-					  if(bruto == 0 && book == 0){
-						  return false;
-					  }
-				  } else if(searchType == "nettoWeight") {
-					  netto = this.responseText;
-					  if(netto == 0 && book == 0){
-						  return false;
-					  }
-					  
-					  document.getElementById('resultTab').innerHTML = createTable(customerId,book,bruto,netto);
-					  $(".graphs").removeAttr("style").show();
-					  
-					
-				  }
+                      bruto = this.responseText;
+                      if(bruto == 0 && book == 0){
+                          return false;
+                      }
+                  } else if(searchType == "nettoWeight") {
+                      netto = this.responseText;
+                      if(netto == 0 && book == 0){
+                          return false;
+                      }
+                      
+                      document.getElementById('resultTab').innerHTML = createTable(customerId,book,bruto,netto);
+                      $(".graphs").removeAttr("style").show();
+                      
+                    
+                  }
 
 			  }
 		};
@@ -256,7 +251,6 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 		http.onreadystatechange = function(){
 			  if (this.readyState == 4 && this.status == 200 & searchType != "2yAxis") {
 				  var temp = this.responseText.split("|");
-				  
 
 				  a = temp[0].split(";");
 				  b = temp[1].split(";").map(function(item) {
@@ -267,7 +261,6 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 				  for(i = 1; i<b.length ; i++){
 					  b[i] = b[i] + b[i-1];
 				  };
-				  
 				  chart(a,b,canvasId,graphTitle, type, label);
 			  }else if(this.readyState == 4 && this.status == 200 & searchType == "2yAxis"){
 				  var temp = this.responseText.split("|");
@@ -298,9 +291,8 @@ function searchIt() {
 			getFilter("table", list[i]);
 			if(getFilter("table", list[i]) == false){
 				i--;
-			} else if (getFilter("table", list[i]) == 101) {
-				i = list.length;
 			}
+			
 		}
 		
 		
@@ -318,14 +310,6 @@ function createTable(customer, containTotal, brutoTotal, nettoTotal) {
 	var table ="<tr><th>Customer</th><td>" + customer + "</td></tr><tr><th>Total Containers</th><td>" + containTotal + "</td></tr><tr><th>Total Bruto Weight</th><td>" + brutoTotal + "</td></tr><tr><th>Total Netto Weight</th><td>" + nettoTotal + "</td></tr>";
 	return table;
 };
-
-function removeTable(tableId) {
-	var Parent = document.getElementById(tableId);
-	while(Parent.hasChildNodes())
-	{
-	   Parent.removeChild(Parent.firstChild);
-	}
-}
 
 
 //CREATE CHART with 1 data
@@ -498,8 +482,8 @@ $(document).ready(function() {
 
 	 $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 	 $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-	 $(getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights"));
-	 $(getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings"));
+	 $(getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 " + " Customer(weight)", "Amount of weights"));
+	 $(getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 " + " Customer(Books)", "Amount of bookings"));
 
 	 $('#container5').replaceWith('<canvas id="container5" ></canvas>');
 	 $(getFilter("Graph", "2yAxis", 'line', "container5", "Total Bookings and Weights", "Amount of books", "Amount of weight"));
@@ -507,12 +491,13 @@ $(document).ready(function() {
 
 //GENERATE GRAPH BELOW THE RESULT AND UPDATE THE TOP 10 CUSTOMER
 	$("#search").click(function() {
-		removeTable('resultTab');
 		  if(dateCorrect()) {
 			  searchIt();
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
-			  $('#container4').replaceWith('<canvas id="container4" ></canvas>');			 
+			  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
+			  $(".resultButtonDiv").removeAttr("style").show();
+			 
 		  }
 		  
 		  
@@ -522,18 +507,21 @@ $(document).ready(function() {
 		  if(dateCorrect()) {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  getFilter("Graph", "bookings", 'line', "container", "Cumulative Bookings per Month", "# of bookings");
+			  $(".graphs").removeAttr("style").show();
 		  }
 	});
 	$("#totalBrutoButton").click(function() {
 		  if(dateCorrect()) {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  getFilter("Graph", "brutoWeight", 'line', "container", "Total Bruto Weight", "Bruto Weight");
+			  $(".graphs").removeAttr("style").show();
 		  }
 	});
 	$("#totalNettoButton").click(function() {
 		  if(dateCorrect()) {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  getFilter("Graph", "nettoWeight", 'line', "container", "Total Netto Weight", "Netto Weight");
+			  $(".graphs").removeAttr("style").show();
 		  }
 	});
 	
