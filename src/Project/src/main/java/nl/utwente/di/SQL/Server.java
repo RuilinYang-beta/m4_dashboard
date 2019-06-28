@@ -65,16 +65,9 @@ public class Server{
 	
 	@GET
 	@Path("/auth")
-	public boolean checkEmployee(@QueryParam("mail") String mail,
-									@QueryParam("admin") String admin) {
-		if (admin != null) {
-			Statistics s = new Statistics();
-			return s.checkAdmin(mail);
-		} else {
-			Statistics s = new Statistics();
-			return s.checkEmployee(mail);
-		}
-		
+	public boolean checkEmployee(@QueryParam("mail") String mail) {
+		Statistics s = new Statistics();
+		return s.checkEmployee(mail);
 	}
 	@POST
 	@Path("/auth")
@@ -183,31 +176,6 @@ public class Server{
 			}
 		}
 
-
-	
-//	public static String parseToStringarray(ResultSet set) {
-//		StringBuffer res1 = new StringBuffer();
-//		StringBuffer res2 = new StringBuffer();
-//	
-//		String res = "";
-//		try {
-//			while (set.next()) {
-//			
-//					res1.append(set.getObject(1)+";");
-//					res2.append(set.getObject(2)+";"); 
-//				
-//			
-//			}
-//			res1.setLength(res1.length()-1);
-//			res2.setLength(res2.length()-1);
-//		
-//			res = res1.toString() + "|" + res2.toString();
-//		} catch (SQLException e) {
-//
-//		}
-//		return res;
-//	}
-	
 	public static String parseToStringarray(ResultSet set) {
 		StringBuffer res1 = new StringBuffer();
 		StringBuffer res2 = new StringBuffer();
@@ -231,16 +199,21 @@ public class Server{
 				}
 				
 			}
-			res1.setLength(res1.length()-1);
-			res2.setLength(res2.length()-1);
-			if(col == 3) {
-				res3.setLength(res3.length()-1);
+			if (res1.length() != 0 && res2.length() != 0) {
+				res1.setLength(res1.length()-1);
+				res2.setLength(res2.length()-1);
+				if(col == 3 && res3.length() != 0) {
+					res3.setLength(res3.length()-1);
+				}
+				
+				res = res1.toString() + "|" + res2.toString();
+				if(col == 3) {
+					res += "|" + res3.toString();
+				}
+			} else {
+				return "|";
 			}
 			
-			res = res1.toString() + "|" + res2.toString();
-			if(col == 3) {
-				res += "|" + res3.toString();
-			}
 			
 		} catch (SQLException e) {
 
