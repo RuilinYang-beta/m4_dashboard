@@ -148,7 +148,7 @@ gapi.load('auth2', function() {
 	              <label id="custom" > Name:
 	              <input id="customFill" class="form-control input-sm" onkeypress="validateEvent(event,/[A-Za-z0-9-() ]|\./)"/>
 	              </label>
-	              <div class="info" style="display:inline; font-size:12px;">*UpperCase Only</div>
+	              <div class="info" style="display:inline; font-size:12px;"></div>
 	            </div>
 	          </div>
 	          <div class="fillIns">
@@ -198,22 +198,26 @@ gapi.load('auth2', function() {
         <div class="gridDiv">
 	        <div class="filters" >
 	          <div class="fillIns" >Results:
+	          	<div class="noResult" style="display:none;font-size:30px;">
+	          	Bookings does not exist!
+	          	</div>
 	          	<div class="table">
 	          		<table class ="resultTable" id="resultTab" ></table>          		
 	          	</div>
-	          	<div class="resultButtonDiv">
-	          		<div class="resultButton">
-	          			<button onclick="" class="btn btn-secondary text-center" id="bookingCountButton">Bookings</button>
-	          		</div>
-	          		<div class="resultButton">
-	          			<button onclick="" class="btn btn-secondary text-center" id="totalBrutoButton">Bruto</button>
-	          		</div>
-	          		<div class="resultButton">
-	          			<button onclick="" class="btn btn-secondary text-center" id="totalNettoButton">Netto</button>
-	          		</div>
-	          	</div>
+	          	
 	          	<div class="graphs">
-	          	  <canvas id="container"></canvas>
+		          	<div class="resultButtonDiv">
+		          		<div class="resultButton">
+		          			<button onclick="" class="btn btn-secondary text-center" id="bookingCountButton">Bookings</button>
+		          		</div>
+		          		<div class="resultButton">
+		          			<button onclick="" class="btn btn-secondary text-center" id="totalBrutoButton">Bruto</button>
+		          		</div>
+		          		<div class="resultButton">
+		          			<button onclick="" class="btn btn-secondary text-center" id="totalNettoButton">Netto</button>
+		          		</div>
+		          	</div>
+	          	  	<canvas id="container"></canvas>
 	          	</div>
 	          	
 	          </div>
