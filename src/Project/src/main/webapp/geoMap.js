@@ -122,19 +122,11 @@ http.onreadystatechange = function() {
         })
 
         // ==========  Map Prep: svg area ==========  
-        var width = 650 ;
-//        var width = d3.select('.mapGraph').node().getBoundingClientRect().width / 2;
-        var	height = 580
+        var width = 650 * 0.8;
+        var	height = 580 * 0.8;
 
-        var svg = d3.select('#mapContainer')
-//                          .attr(
-//                                "style",
-//                                "padding-bottom: " + Math.ceil(height * 100 / width) + "%"
-//                          )
-                         .append('svg')
-                         .attr('viewBox', '0 0 ' + width + ' ' + height)
-//                          .attr('width', width)
-//                          .attr('height', height) 
+        var svg = d3.select('#mapHere')
+        			 .attr('viewBox', '0 0 ' + width + ' ' + height)
 
         // ==========  Map Prepare: projection ==========  
         var projection = d3.geoMercator()
@@ -251,20 +243,3 @@ http.onreadystatechange = function() {
 
 http.open("GET", url);
 http.send();
-
-// -------------- leaflet.js --------------
-
-// Initialize the map
-// [50, -0.1] are the latitude and longitude
-// 4 is the zoom
-// mapid is the id of the div where the map will appear
-// var mymap = L
-//   .map('mapid')
-//   .setView([50, -0.1], 3);
-
-// // Add a tile to the map = a background. Comes from OpenStreetmap
-// L.tileLayer(
-//     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
-//     maxZoom: 6,
-//     }).addTo(mymap);

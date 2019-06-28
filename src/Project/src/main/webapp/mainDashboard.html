@@ -28,7 +28,7 @@
   body {
       margin: 0;
       padding: 0;
-      background-image: url(container.jpg);
+      /* background-image: url(container.jpg); */
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center center;
@@ -57,19 +57,23 @@
                     </div>
                 </div>
 
-                <div class="row d-flex justify-content-around" >
-                    <div class="col col-11 border border-danger col-md-5">
+                <div class="row d-flex justify-content-around">
+                	<!-- graph -->
+                    <div class="col col-11 col-md-5">
+                        <div class="filterGraphs ">
+                            <canvas id="container5"></canvas>
+                        </div>
+                    </div>
+                    <!-- map -->
+                    <div class="col col-11 col-md-5">
                         <div class="map" id='geoParent'>
-                            <div id="sliderContainer">
+                            <div id="sliderContainer pt-sm-2 pt-md-3 pt-lg-0">
                                 <input id="timeslide" class='slider' type="range" min="0" max="1468" value="0" step="1"/><br>
                                 <span id="range">2013-03-02</span>
                             </div>
-                            <div id='mapContainer'> </div>
-                        </div>
-                    </div>
-                    <div class="col col-11 border border-danger col-md-5">
-                        <div class="filterGraphs">
-                            <canvas id="container5"></canvas>
+                            <div id='mapContainer'>
+                            	<svg id='mapHere'></svg>
+                            </div>
                         </div>
                     </div>
 
