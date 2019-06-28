@@ -1,0 +1,20 @@
+Unit tests:
+For the code that parsed data, we wrote unit tests to test the border cases. we knew that theoretically the delivered data
+would be errorless, but we made our webapp robust against flaws anyway.
+
+For the authorization and authentication, we checked vigorously before applying the code, because it is terribly irritating
+if that doesn't work. We wrote some tests that checked if a person could be added to the employee database, if it could be checked
+and if it could be deleted. We also checked if the admin rights (to access settings) worked correctly.
+
+Server tests:
+Using Postman to test server requests and responses, we tested all correct requests and some requests with errors. The server
+handled the errors quite well. The only minor inconvenience was that SQL didn't like to check the returned table if the query
+couldn't return anything. We coulcn't find a way to circumvent this, so we just wrote code to accept that specific exception.
+
+A lot of methods written in the server file or the attached java files were checked upon implementation if they return the 
+correct value, but the methods that don't return any value couldn't really be tested, so we assumed based on the fact that the
+program worked, that the methods also work.
+
+Dashboard (webapp):
+We checked the dashboard the way webapps are always tested: try to break it using faulty values. This showed some parts that we didn't
+pay enough attention to, so they were fixed quite quickly.

@@ -1,0 +1,27 @@
+There are two major security risks with a webapp with database:
+-Cross site scripting
+-SQL injection
+
+XSS (cross site scripting):
+XSS can occur when the input of a user is executed as html without proper checks. This can be prevented in two ways:
+	1 Don't allow user input, which is what we mainly apply, by giving drop menu's to choose from. This is the easiest
+	  way to ensure that the user cant insert malicious code.
+	2 Sanitize all input, which is what we don't do. Any and all input fields are sent to the server without considering
+	  the content. The advantage of this is that the server will see it as a string, not a command, therefore it tries to use
+	  the string to see what to return. Since it doesn't know what to do with this unknown string, it will return a 405 error.
+	  as long as this malicious script is seen as String, it is safe, and we never see it any other way.
+
+SQLi (SQL injection)
+This phenomenon occurs when SQL commands are appended by user input, and the user writes malicious queries. Our solution is the 
+same as with XSS: never see user input as command. The webapp handles the input as String and immediately sends it to the server.
+The server will Give this input as a string to a query (a preparedStatement), so that our database knows that it is to be seen as
+a string. The classic example is of course with name: "Fred'; DROP TABLE Students --", but if our server gets such an input/command,
+it will see it as a string, send it as string to the database, and the database will save or find it as a string, preventing any
+and all SQL injection.
+
+The webapp is of course not perfect, and although we checked the security risks, we probably missed some. However we do assume that
+the only people that can access the webapp are Cofano employees (since they are the only ones authorized) and we assume that they don't
+want to compromise their own webapp.
+
+We unfortunately didn't manage to secure our http requests, since neither of us has the knowledge to use SSL or TLS certificates. This
+leaves an unfortunate hole that allows some dataleak to happen, but the employees private data is still securely hashed.
