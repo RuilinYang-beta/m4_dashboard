@@ -3,5 +3,4 @@ Sprint 2 trello: https://trello.com/b/Maw1e6zO/sprint-2
 Sprint 3 trello: https://trello.com/b/zAXLKsua/sprint-3
 Sprint 4 trello: https://trello.com/b/8unxAwqX/sprint-4
 
-Add the URL of your application to README.md.  For example,
-the URL should be http://datainfo.ewi.utwente.nl/di10_app if your application is called di10_app.
+Add the URL of your application to README.md. - http://datainfo.ewi.utwente.nl/di12_app 
