@@ -85,25 +85,6 @@ public class Statistics {
 		}
 		return false;
 	}
-	public boolean checkAdmin(String mail) {
-		connectToDatabase();
-		try {
-			PreparedStatement s = connection.prepareStatement("SELECT COUNT(*) AS c FROM employees WHERE email=? AND admin=TRUE;");
-			s.setString(1,  hashString(mail));
-			ResultSet rs = s.executeQuery();
-			while (rs.next()) {
-				System.out.println(rs.getInt(1));
-				if (rs.getInt("c") > 0) {
-					return true;
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try{connection.close();}catch(SQLException e){}
-		}
-		return false;
-	}
 	//either have to know name and mail or name and id to delete
 	public String deleteEmployee(String name, int id) {
 		connectToDatabase();
