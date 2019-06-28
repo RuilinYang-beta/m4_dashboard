@@ -85,6 +85,9 @@
 <div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
 
     <script>
+    var FARMURL = "http://farm03.ewi.utwente.nl:7034";
+    var URL = "http://localhost:8080";
+
     function onSignIn(googleUser) {
         var profile=googleUser.getBasicProfile();
         $("#pic").attr('src',profile.getImageUrl());
@@ -100,11 +103,11 @@
         var json = xhr.responseText;
         var obj = JSON.parse(json);
 /*        if (obj.hd !== 'student.utwente.nl') {
-        window.location = "http://localhost:8080/Project/"
+        window.location = URL + "/Project/"
         } */
         function checkEmployee() {
     		var http = new XMLHttpRequest();
-    		var url = "http://localhost:8080/Project/rest/sql/auth?mail=";
+    		var url = URL + "/Project/rest/sql/auth?mail=";
     		var mail = obj.email;
     		url += mail;
     		http.onreadystatechange = function() {
@@ -121,7 +124,7 @@
     	    } else if (a == "false" && obj.hd == 'cofano.nl'){
     		    console.log('Hello cofano employee.')
     		} else {
-    	        window.location = "http://localhost:8080/Project/"
+    	        window.location = URL + "/Project/"
     		}
     	}
     		};

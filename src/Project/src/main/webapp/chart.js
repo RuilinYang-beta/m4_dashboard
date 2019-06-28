@@ -8,8 +8,9 @@ $(document).ready(function() {
   $('#transportFill').val("");
   dataList('companyNameList');
 });
-var URL = "http://farm03.ewi.utwente.nl:7034"
-var LOCALURL = "http://localhost:8080"
+//CHANGE FARM_URL TO URL AND URL TO LOCALURL
+var FARMURL = "http://farm03.ewi.utwente.nl:7034";
+var URL = "http://localhost:8080";
 
 function dataList(datalistName) {
 	var mylist = ['A288','A305','A315','A332','A342','B283','B291','B321','B325','C287','C288','C290','C295','C296','C297','C310','C320','C323','C327','C330','C334','C344','D319','D326','D337','D346','E290','E298','E312','E322',

@@ -98,6 +98,8 @@
 <div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
 
 <script>
+var FARMURL = "http://farm03.ewi.utwente.nl:7034";
+var URL = "http://localhost:8080";
 
 function onSignIn(googleUser){
 	var profile=googleUser.getBasicProfile();
@@ -132,7 +134,7 @@ function onSignIn(googleUser){
 	      } */
 	  function checkEmployee() {
 			var http = new XMLHttpRequest();
-			var url = "http://localhost:8080/Project/rest/sql/auth?mail=";
+			var url = URL + "/Project/rest/sql/auth?mail=";
 			var mail = obj.email;
 			url += mail;
 			http.onreadystatechange = function() {

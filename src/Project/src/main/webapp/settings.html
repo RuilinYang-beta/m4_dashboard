@@ -67,6 +67,8 @@
 
 <body>
 <script>
+var FARMURL = "http://farm03.ewi.utwente.nl:7034";
+var LOCALURL = "http://localhost:8080";
 gapi.load('auth2', function() {
 
 	  gapi.auth2.init({
@@ -78,7 +80,7 @@ gapi.load('auth2', function() {
 	    auth2 = gapi.auth2.getAuthInstance();
 	    console.log(auth2.isSignedIn.get());
 	    if (auth2.isSignedIn.get() == false )
-	    	window.location = "http://localhost:8080/Project/";
+	    	window.location = URL + "/Project/";
 	  });
 	});
 </script>
@@ -132,7 +134,7 @@ gapi.load('auth2', function() {
 			<div id="alert">
               <h1>Access denied</h1>
               <p>User not authorized.</p>
-              <a class="close" href="http://localhost:8080/Project/filterPage.html">Exit page</a>
+              <a class="close" href=URL + "/Project/filterPage.html">Exit page</a>
             </div>
             <div class = "data2">
             <div class="row">
@@ -197,7 +199,7 @@ function onSignIn(googleUser) {
 	  var json = xhr.responseText;
 	  var obj = JSON.parse(json);
 /*	  if (obj.hd !== 'student.utwente.nl') {
-	      window.location = "http://localhost:8080/Project/"
+	      window.location = URL + "/Project/"
 	  } */
 	  function getEmail() {
 		  var json = xhr.responseText;
@@ -208,7 +210,7 @@ function onSignIn(googleUser) {
 	  getEmail();
 	  function checkEmployee() {
 			var http = new XMLHttpRequest();
-			var url = "http://localhost:8080/Project/rest/sql/auth?mail=";
+			var url = URL + "/Project/rest/sql/auth?mail=";
 			var mail = obj.email;
 			url += mail;
 			http.onreadystatechange = function() {
@@ -229,7 +231,7 @@ function onSignIn(googleUser) {
 			} else if (a == "false" && obj.hd == 'cofano.nl'){
 				$("#alert").css("display","block");
 			} else {
-				window.location = "http://localhost:8080/Project/"
+				window.location = URL + "/Project/"
 			}
 		}
 			};
@@ -246,7 +248,7 @@ function onSignIn(googleUser) {
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(function () {
-      window.location = "http://localhost:8080/Project/"
+      window.location = URL + "/Project/"
       console.log('User signed out.');
     });
   }
