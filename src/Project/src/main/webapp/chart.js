@@ -177,21 +177,32 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 	var url = "http://localhost:8080/Project/rest/sql/select?goal=";
 	if(searchType == "bookings") {
 		url += "bookings";
+		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "brutoWeight") {
 		url += "brutoWeight";
+		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "nettoWeight") {
 		url += "nettoWeight";
+		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
+	} else if(searchType == "topCustomerBook"){
+		url += "topCustomerBook";
+		customer = "";
+		ordState = "";
+		teu = "";
+		shipCompt = "";
+		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
+	} else if (searchType == "topCustomerWeight"){
+		url += "topCustomerWeight";
+		customer = "";
+		ordState = "";
+		teu = "";
+		shipCompt = "";
+		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "2yAxis") {
 		url += "2yAxis";
-		var list = "";
-	} else if(searchType == "topCustomerBook"){
-		shipComp = "";
-		url += "topCustomerBook";
-	} else if (searchType == "topCustomerWeight"){
-		shipComp = "";
-		url += "topCustomerWeight";
-	}
-	var list = {fromD, toD, customer, ordState, teu, shipComp, shipCompId, shipCompScac, customerId};
+	
+	} 
+
 	var x;
 	if(table == "table"){
 		url += "&table=true";
