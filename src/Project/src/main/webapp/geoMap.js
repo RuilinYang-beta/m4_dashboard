@@ -1,4 +1,5 @@
-var baseURL = "http://localhost:8080/Project/rest/sql";
+var localURL = "http://localhost:8080/Project/rest/sql";
+var baseURL = "http://farm03.ewi.utwente.nl:7034/Project/rest/sql";
 
 // -- temp --
 var unknowloc = [];

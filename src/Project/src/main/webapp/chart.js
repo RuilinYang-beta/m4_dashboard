@@ -8,7 +8,8 @@ $(document).ready(function() {
   $('#transportFill').val("");
   dataList('companyNameList');
 });
-
+var URL = "http://farm03.ewi.utwente.nl:7034"
+var LOCALURL = "http://localhost:8080"
 
 function dataList(datalistName) {
 	var mylist = ['A288','A305','A315','A332','A342','B283','B291','B321','B325','C287','C288','C290','C295','C296','C297','C310','C320','C323','C327','C330','C334','C344','D319','D326','D337','D346','E290','E298','E312','E322',
@@ -124,7 +125,7 @@ function wait(ms){
 // Get the count on number of bookings
 function getCount() {
 	var http = new XMLHttpRequest();
-	var url = "http://localhost:8080/Project/rest/sql/count";
+	var url = URL + "/Project/rest/sql/count";
 	http.onreadystatechange = function() {
 		  if (this.readyState == 4 && this.status == 200) {
 
@@ -154,6 +155,8 @@ label1: same as label, but for the second data
 
 
 function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "",label1=""){
+	$(".noResult").removeAttr("style").hide();
+	$(".graphs").removeAttr("style").hide();
 	var http = new XMLHttpRequest();
 	var customerId = $('#customerFill').val();
 	var dateFrom = new Date($('#dateFromFill').val());
@@ -171,7 +174,7 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 	var teu = $('#teuFill').val();
 	var shipComp= $('#companyNameFill').val();
 	
-	var url = "http://localhost:8080/Project/rest/sql/select?goal=";
+	var url = URL + "/Project/rest/sql/select?goal=";
 	if(searchType == "bookings") {
 		url += "bookings";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
@@ -186,14 +189,14 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 		customer = "";
 		ordState = "";
 		teu = "";
-		shipCompt = "";
+		shipComp = "";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "topCustomerWeight"){
 		url += "topCustomerWeight";
 		customer = "";
 		ordState = "";
 		teu = "";
-		shipCompt = "";
+		shipComp = "";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "2yAxis") {
 		url += "2yAxis";
@@ -291,6 +294,8 @@ function searchIt() {
 			getFilter("table", list[i]);
 			if(getFilter("table", list[i]) == false){
 				i--;
+			}else if(getFilter("table", list[i]) == 101){
+				i = list.length;
 			}
 			
 		}
@@ -302,7 +307,6 @@ function searchIt() {
 	//	getFilter("Graph", "nettoWeight", 'line', "container2", "Total Netto Weight", "Netto Weight");
 		getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights");
 		getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings");
-		
 }
 
 ///CREATE A TABLE WHEN SEARCH IS PRESSED
@@ -310,6 +314,13 @@ function createTable(customer, containTotal, brutoTotal, nettoTotal) {
 	var table ="<tr><th>Customer</th><td>" + customer + "</td></tr><tr><th>Total Containers</th><td>" + containTotal + "</td></tr><tr><th>Total Bruto Weight</th><td>" + brutoTotal + "</td></tr><tr><th>Total Netto Weight</th><td>" + nettoTotal + "</td></tr>";
 	return table;
 };
+
+function removeTable(tableId){
+	var Parent = document.getElementById(tableId);
+	while(Parent.hasChildNodes()){
+		Parent.removeChild(Parent.firstChild);
+	}
+}
 
 
 //CREATE CHART with 1 data
@@ -455,7 +466,7 @@ function random_rgba() {
 //add employees to authorization database
 function addEmployee() {
 	var http = new XMLHttpRequest();
-	var url = "http://localhost:8080/Project/rest/sql/auth?";
+	var url = URL + "/Project/rest/sql/auth?";
 	var name = $('#name').val();
 	var mail = $('#mail').val();
 	var id = $('#id').val();
@@ -491,12 +502,14 @@ $(document).ready(function() {
 
 //GENERATE GRAPH BELOW THE RESULT AND UPDATE THE TOP 10 CUSTOMER
 	$("#search").click(function() {
+		removeTable('resultTab');
 		  if(dateCorrect()) {
 			  searchIt();
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 			  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-			  $(".resultButtonDiv").removeAttr("style").show();
+			
+			
 			 
 		  }
 		  
@@ -530,7 +543,7 @@ $(document).ready(function() {
 //remove said employees
 function removeEmployee() {
 	var http = new XMLHttpRequest();
-	var url = "http://localhost:8080/Project/rest/sql/auth?";
+	var url = URL + "/Project/rest/sql/auth?";
 	var name = $('#name').val();
 	var mail = $('#mail').val();
 	var id = $('#id').val();
@@ -558,7 +571,7 @@ function removeEmployee() {
 
 function addEnvi() {
 	var http = new XMLHttpRequest();
-	var url = "http://localhost:8080/Project/rest/sql/update?";
+	var url = URL + "/Project/rest/sql/update?";
 	var name = $('#custname').val();
 	var link = $('#httplink').val();
 	alert("a");
