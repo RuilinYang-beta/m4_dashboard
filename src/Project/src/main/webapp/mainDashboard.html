@@ -42,7 +42,22 @@
 </head>
 
 <body id='mainDashboard' onload="getCount">
+<script>
+gapi.load('auth2', function() {
 
+	  gapi.auth2.init({
+
+	    client_id: '1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com',
+
+	  }).then(function(){
+
+	    auth2 = gapi.auth2.getAuthInstance();
+	    console.log(auth2.isSignedIn.get());
+	    if (auth2.isSignedIn.get() == false )
+	    	window.location = "http://localhost:8080/Project/";
+	  });
+	});
+</script>
     <div class='row'> 
 
         <div class="counter">
