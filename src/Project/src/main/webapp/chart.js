@@ -335,6 +335,7 @@ function removeTable(tableId){
 function chart(year, total, canvas, chartName, type, label) {
 	  var x = generateListColor(year, type);
 	  var ctx = document.getElementById(canvas).getContext('2d');
+	  ctx.height = 1;
 	  var myChart = new Chart(ctx, {
 	    type: type,
 	    data: {
@@ -348,10 +349,12 @@ function chart(year, total, canvas, chartName, type, label) {
 	        }]
 	    },
 	    options: {
+	    	maintainAspectRatio: false,
 	        responsive: true,
 	        title: {
 	            display: true,
-	            text: chartName
+	            text: chartName,
+	            fontSize: 30
 	          }
 	    }
 	  });
@@ -402,7 +405,7 @@ function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 			stacked: false,
 			title: {
 				display: true,
-				text: chartName
+				text: chartName,
 			},
 			scales: {
 				yAxes: [{
