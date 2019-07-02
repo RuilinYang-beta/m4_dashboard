@@ -1,172 +1,261 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html>
 
 <head>
-  <title>Cofano</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-  <meta name="google-signin-client_id" content="1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com">
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-  <script src="sql_counter.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <script type="text/javascript" src="chart.js"></script>
-   <!-- geoMap-->
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-  <link rel="stylesheet" href="geoMap.css">
-  <!-- bootstrap js -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  
-  <style>
-  body {
-      margin: 0;
-      padding: 0;
-      /* background-image: url(container.jpg); */
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-attachment: fixed;
+    <title>Cofano</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="style1.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <!-- ETC -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="sql_counter.js"></script>
+
+
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <!-- Chart-->
+    <script type="text/javascript" src="chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <!-- geoMap-->
+    <script type="text/javascript" src="geoMap.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+    <link rel="stylesheet" href="geoMap.css">
+
+    <!-- bootstrap js -->
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <!-- jQuery Custom Scroller CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
+
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+        /* background-image: url(container.jpg); */
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+      }
+
+     .g-signin2 {
+        display: none;
     }
-  
-   .g-signin2 {
-      display: none;
-  }
-  </style>
+    </style>
+
 </head>
 
 <body id='mainDashboard' onload="getCount">
-<script>
-gapi.load('auth2', function() {
 
-	  gapi.auth2.init({
+  <script>
+  gapi.load('auth2', function() {
 
-	    client_id: '1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com',
+  	  gapi.auth2.init({
 
-	  }).then(function(){
+  	    client_id: '1091558818942-rg9l51ago89jkc0lu0en435vpafi3k5o.apps.googleusercontent.com',
 
-	    auth2 = gapi.auth2.getAuthInstance();
-	    console.log(auth2.isSignedIn.get());
-	    if (auth2.isSignedIn.get() == false )
-	    	window.location = "http://localhost:8080/Project/";
-	  });
-	});
-</script>
-    <div class='row'> 
+  	  }).then(function(){
 
-        <div class="counter">
+  	    auth2 = gapi.auth2.getAuthInstance();
+  	    console.log(auth2.isSignedIn.get());
+  	    if (auth2.isSignedIn.get() == false )
+  	    	window.location = "http://localhost:8080/Project/";
+  	  });
+  	});
+  </script>
 
-            <div class="logo">
-                <img src="cofano2.png" height="100">
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div id="dismiss">
+                <i class="fas fa-arrow-left"></i>
             </div>
 
-                <div class="row" onclick="location.href='filterPage.html';">
-                    <div class="counting-sec">
-                        <div class="num" id="numcount">0</div>
-                    </div>
-                </div>
+            <div class="sidebar-header">
+              <div class="logo">
+                <img src="cofano2.png" alt="Cofano" href="mainDashboard.html"width="200">
+              </div>
 
-                <div class="row d-flex justify-content-around">
-                	<!-- graph -->
-                    <div class="col col-11 col-md-5">
-                        <div class="filterGraphs ">
-                            <canvas id="container5"></canvas>
-                        </div>
-                    </div>
-                    <!-- map -->
-                    <div class="col col-11 col-md-5">
-                        <div class="map" id='geoParent'>
-                            <div id="sliderContainer pt-sm-2 pt-md-3 pt-lg-0">
-                                <input id="timeslide" class='slider' type="range" min="0" max="1468" value="0" step="1"/><br>
-                                <span id="range">2013-03-02</span>
-                            </div>
-                            <div id='mapContainer'>
-                            	<svg id='mapHere'></svg>
-                            </div>
-                        </div>
-                    </div>
+              <div class="profileIcon">
+              <a href="index.html">
+            <img id="pic" class="rounded" width="50" height="50"/></a>
+            <p></p>
+            </div>
+              <div class="signOut">
+                  <button onClick="signOut()" class="btn btn-danger text-center">Sign Out</button>
 
-                </div>
+
+              </div>
+            </div>
+
+            <ul class="list-unstyled">
+              <li>
+                <a class="active">Main</a>
+              </li>
+              <li>
+                <a href="filterPage.html">Filters</a>
+              </li>
+              <li>
+                <a href="settings.html" >Settings</a>
+              </li>
+
+
+            </ul>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content" style="padding:0px;" >
+
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div>
+
+              <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="fas fa-align-left"></i>
+
+
+              </button>
+
+            </div>
+          </nav>
+          <div>
+
+              <div class="counter">
+
+                      <div class="row" onclick="location.href='filterPage.html';">
+                          <div class="counting-sec">
+                            <div class="logo" >
+                                <img src="cofano2.png" height="100">
+                            </div>
+                            <div style= "font-size: 8pt;">
+                               click number counter to continue<br /> <b>Total Bookings</b>
+                            </div>
+                              <div class="num" id="numcount">0</div>
+                          </div>
+                      </div>
+
+                      <div class="row d-flex justify-content-around">
+                        <!-- graph -->
+                          <div class="col col-11 col-md-5">
+                              <div class="filterGraphs ">
+                                  <canvas id="container5"></canvas>
+                              </div>
+                          </div>
+                          <!-- map -->
+                          <div class="col col-11 col-md-5">
+                              <div class="map" id='geoParent'>
+                                  <div id="sliderContainer pt-sm-2 pt-md-3 pt-lg-0">
+                                      <input id="timeslide" class='slider' type="range" min="0" max="1468" value="0" step="1"/><br>
+                                      <span id="range">2013-03-02</span>
+                                  </div>
+                                  <div id='mapContainer'>
+                                    <svg id='mapHere'></svg>
+                                  </div>
+                              </div>
+                          </div>
+
+                      </div>
+
+              </div>
+          </div>
+
+
 
         </div>
     </div>
 
-<div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
+    <div class="overlay"></div>
 
-    <script>
-    var FARMURL = "http://farm03.ewi.utwente.nl:7034";
-    var URL = "http://localhost:8080";
 
-    function onSignIn(googleUser) {
-        var profile=googleUser.getBasicProfile();
-        $("#pic").attr('src',profile.getImageUrl());
-        $("#email").text(profile.getEmail());
-        $("#name").text(profile.getName());
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sidebar").mCustomScrollbar({
+                theme: "minimal"
+            });
 
-        var id_token = googleUser.getAuthResponse().id_token;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
-        console.log('Signed in as: ' + xhr.responseText);
-        var json = xhr.responseText;
-        var obj = JSON.parse(json);
-/*        if (obj.hd !== 'student.utwente.nl') {
-        window.location = URL + "/Project/"
-        } */
-        function checkEmployee() {
-    		var http = new XMLHttpRequest();
-    		var url = URL + "/Project/rest/sql/auth?mail=";
-    		var mail = obj.email;
-    		url += mail;
-    		http.onreadystatechange = function() {
-    			if(this.readyState == 4 & this.status == 200) {
-    			var a = this.responseText;
-    			console.log(a);
-    			doThis(a);
-    			}
-    	function doThis(a) {
-    		if (a == "true" && obj.hd !== 'cofano.nl') {
-    			console.log('Hello non-cofano admin');
-    		} else if (a == "true" && obj.hd == 'cofano.nl'){
-    			console.log('Hello cofano admin');
-    	    } else if (a == "false" && obj.hd == 'cofano.nl'){
-    		    console.log('Hello cofano employee.')
-    		} else {
-    	        window.location = URL + "/Project/"
-    		}
-    	}
-    		};
-    		http.open("GET", url);
-    		http.send();
-    	};
-    	checkEmployee();
-        };
-        xhr.send('idtoken=' + id_token);
+            $('#dismiss, .overlay').on('click', function () {
+                $('#sidebar').removeClass('active');
+                $('.overlay').removeClass('active');
+            });
 
-        }
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').addClass('active');
+                $('.overlay').addClass('active');
+                $('.collapse.in').toggleClass('in');
+                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+            });
+        });
+
+
+        function onSignIn(googleUser) {
+            var profile=googleUser.getBasicProfile();
+            $("#pic").attr('src',profile.getImageUrl());
+            $("#email").text(profile.getEmail());
+            $("#name").text(profile.getName());
+
+            var id_token = googleUser.getAuthResponse().id_token;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+            console.log('Signed in as: ' + xhr.responseText);
+            var json = xhr.responseText;
+            var obj = JSON.parse(json);
+    /*        if (obj.hd !== 'student.utwente.nl') {
+            window.location = "http://localhost:8080/Project/"
+            } */
+            function checkEmployee() {
+            var http = new XMLHttpRequest();
+            var url = "http://localhost:8080/Project/rest/sql/auth?mail=";
+            var mail = obj.email;
+            url += mail;
+            http.onreadystatechange = function() {
+              if(this.readyState == 4 & this.status == 200) {
+              var a = this.responseText;
+              console.log(a);
+              doThis(a);
+              }
+          function doThis(a) {
+            if (a == "true" && obj.hd !== 'cofano.nl') {
+              console.log('Hello non-cofano admin');
+            } else if (a == "true" && obj.hd == 'cofano.nl'){
+              console.log('Hello cofano admin');
+              } else if (a == "false" && obj.hd == 'cofano.nl'){
+                console.log('Hello cofano employee.')
+            } else {
+                  window.location = "http://localhost:8080/Project/"
+            }
+          }
+            };
+            http.open("GET", url);
+            http.send();
+          };
+          checkEmployee();
+            };
+            xhr.send('idtoken=' + id_token);
+
+            }
     </script>
 </body>
-
-<script type="text/javascript">
- function countit() {
-  $(".num").counterUp({
-      delay: 30,
-      time: 1000
-    });
-  };
-  $(getCount());
-
-  
-</script>
-
-  <!-- geoMap -->
-  <script type="text/javascript" src="geoMap.js"></script>
 
 </html>
