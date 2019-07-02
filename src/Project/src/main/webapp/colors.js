@@ -11,28 +11,37 @@ var COLOR_HEX_12 = [
 		"#EBC844",
 		"#A2B86C",
 		"#5CA793"];
+var COLOR_HEX_2ND = ["#89493D",
+		"#9D535F",
+		"#A26686",
+		"#947FA9",
+		"#749AC1",
+		"#4DB4C6",
+		"#40CAB8",
+		"#6BDC9D",
+		"#AAE97E",
+		"#EFEE69"];
 
 function getHex(length) {
+	var i = Math.floor(Math.random() * 12);
 	if (length > 12) {
-		return null;
+		return COLOR_HEX_12.slice(i,i+1);
 	} else {
 		return COLOR_HEX_12.slice(0,length);
 	}
 }
 
 function getRGB(length) {
-	if (length > 12) {
-		return null;
-	} else {
-		var temp = getHex(length);
-		var res = [];
-		for (var i = 0; i < length; i ++) {
-			var hex = temp[i];
-			var i1 = parseInt(hex.substring(1,3),16);
-			var i2 = parseInt(hex.substring(3,5),16);
-			var i3 = parseInt(hex.substring(5,7),16);
-			res.push("rgba(" + i1 + "," + i2 + "," + i3 + ")");
-		}
-		return res;
+	var temp = getHex(length);
+	var res = [];
+	var len = 1;
+	if (length <= 12) len = length;
+	for (var i = 0; i < len; i ++) {
+		var hex = temp[i];
+		var i1 = parseInt(hex.substring(1,3),16);
+		var i2 = parseInt(hex.substring(3,5),16);
+		var i3 = parseInt(hex.substring(5,7),16);
+		res.push("rgba(" + i1 + "," + i2 + "," + i3 + ")");
 	}
+	return res;
 }
