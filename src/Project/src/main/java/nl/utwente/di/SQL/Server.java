@@ -3,6 +3,7 @@ package nl.utwente.di.SQL;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.sql.*;
+
 import org.json.*;
 import Utils.SQLUtils;
 
@@ -108,6 +109,7 @@ public class Server{
 		Statistics a = new Statistics();
 		a.connectToDatabase();
 		String message = a.getCount()+ "";
+		try {a.connection.close();}catch(SQLException e) {}
 		return message;
 	}
 	
@@ -126,55 +128,55 @@ public class Server{
 
 	
 	//update database values
-		@GET
-		@Path("/update")
-		public String updateDatabase() {
-			Database d = new Database();
-			d.connectToDatabase();
+	@GET
+	@Path("/update")
+	public String updateDatabase() {
+		Database d = new Database();
+		d.connectToDatabase();
+		try {
+			Statement s = d.connection.createStatement();
+			ResultSet rs = s.executeQuery("SELECT name, id FROM customers");
+			System.out.println("pulling customers");
+			while (rs.next()) {
+				System.out.println(rs.getString(1) + " " + rs.getInt(2));
+				d.update(false, rs.getString("name"));
+			}
+		} catch (SQLException e) {
+			System.err.println("error getting stuff");
+			e.printStackTrace();
+		} finally {
 			try {
-				Statement s = d.connection.createStatement();
-				ResultSet rs = s.executeQuery("SELECT name, id FROM customers");
-				System.out.println("pulling customers");
-				while (rs.next()) {
-					System.out.println(rs.getString(1) + " " + rs.getInt(2));
-					d.update(false, rs.getString("name"));
-				}
+				d.connection.close();
 			} catch (SQLException e) {
-				System.err.println("error getting stuff");
-				e.printStackTrace();
-			} finally {
-				try {
-					d.connection.close();
-				} catch (SQLException e) {
-					
-				}
-			}
-			return "";
-		}
-
-		private class autoUpdate extends Thread {
-			private Server s;
-			private int frequency;
-			
-			//give frequency in seconds between updates
-			public autoUpdate(Server s, int frequency) {
-				this.frequency = frequency;
-				this.s = s; 
-			}
-			
-			public void run() {
-				int i = 0;
 				
-				while (true) {
-					while (i < frequency) {
-						i += 1;
-						try{Thread.sleep(1000);}catch(InterruptedException e) { System.out.println("error thread timer");}
-					}
-					s.updateDatabase();
-					i = 0;
-				}
 			}
 		}
+		return "";
+	}
+
+	private class autoUpdate extends Thread {
+		private Server s;
+		private int frequency;
+		
+		//give frequency in seconds between updates
+		public autoUpdate(Server s, int frequency) {
+			this.frequency = frequency;
+			this.s = s; 
+		}
+		
+		public void run() {
+			int i = 0;
+			
+			while (true) {
+				while (i < frequency) {
+					i += 1;
+					try{Thread.sleep(1000);}catch(InterruptedException e) { System.out.println("error thread timer");}
+				}
+				s.updateDatabase();
+				i = 0;
+			}
+		}
+	}
 
 	public static String parseToStringarray(ResultSet set) {
 		StringBuffer res1 = new StringBuffer();
@@ -221,6 +223,56 @@ public class Server{
 		
 		return res;
 	}
+	public String resultSetToStringArray(ResultSet rs) {
+		String resultString = "";
+		try {
+			while(rs.next()) {
+				if(rs.isLast()) {
+					resultString += rs.getString(1);
+				} else {
+					resultString += rs.getString(1) + ";";
+				}
+				
+			}
+		} catch (SQLException e) {
+			System.out.println("Sorry, it doesn't work");
+			e.printStackTrace();
+		}
+		return resultString;
+	}
+
+	@GET
+	@Path("/getinfo")
+	public String getInfo(@QueryParam("infoType") String infoType) {
+		Statistics a = new Statistics();
+		a.connectToDatabase();
+		PreparedStatement stm = null;
+		ResultSet x = null;
+		
+		if (infoType.equals("customerNames")) {
+			try {
+				stm = a.connection.prepareStatement("SELECT DISTINCT customer FROM bookings WHERE customer <> 'null' AND customer <> '' ORDER BY customer");
+				x = stm.executeQuery();
+			} catch (SQLException e) {
+			}
+		} else if (infoType.equals("shippingCompanyNames")) {
+			try {
+				stm = a.connection.prepareStatement("SELECT DISTINCT shippingCompany FROM bookings WHERE shippingCompany <> 'null' AND shippingCompany <> '' ORDER BY shippingCompany");
+				x = stm.executeQuery();
+			} catch (SQLException e) {
+			}
+		} else if (infoType.equals("customerId")) {
+			try {
+				stm = a.connection.prepareStatement("SELECT DISTINCT id FROM bookings ORDER BY id");
+				x = stm.executeQuery();
+			} catch (SQLException e) {
+			}
+		} else {
+			return "abc";
+		}	
+		return resultSetToStringArray(x);
+	}
+	
 	
 	@GET
 	@Path("/select")
@@ -348,6 +400,8 @@ public class Server{
 		} catch (SQLException e) {
 			System.out.println("SQL error");
 			e.printStackTrace();
+		} finally {
+			try {a.connection.close();}catch(SQLException e) {}
 		}
 		return i + "";
 	}

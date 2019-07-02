@@ -74,7 +74,6 @@ public class Statistics {
 			s.setString(1,  hashString(mail));
 			ResultSet rs = s.executeQuery();
 			while (rs.next()) {
-				System.out.println(rs.getInt(1));
 				if (rs.getInt("c") > 0) {
 					return true;
 				}
