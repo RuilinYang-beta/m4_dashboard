@@ -29,19 +29,24 @@
       margin: 0;
       padding: 0;
       /* background-image: url(container.jpg); */
-      background-size: cover;
+      background-size: 0;
       background-repeat: no-repeat;
       background-position: center center;
       background-attachment: fixed;
     }
   
-   .g-signin2 {
+  .g-signin2 {
       display: none;
-  }
+    }
+  
+  .auth {
+      display: none;
+    }
   </style>
 </head>
 
 <body id='mainDashboard' onload="getCount">
+    <div class="auth">
 <script>
 gapi.load('auth2', function() {
 
@@ -108,6 +113,9 @@ gapi.load('auth2', function() {
         $("#pic").attr('src',profile.getImageUrl());
         $("#email").text(profile.getEmail());
         $("#name").text(profile.getName());
+        $(".auth").css("display","block");
+        $("body").css("background-size","cover");
+
 
         var id_token = googleUser.getAuthResponse().id_token;
         var xhr = new XMLHttpRequest();
@@ -152,6 +160,7 @@ gapi.load('auth2', function() {
 
         }
     </script>
+    </div>
 </body>
 
 <script type="text/javascript">
