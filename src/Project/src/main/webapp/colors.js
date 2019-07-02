@@ -11,7 +11,8 @@ var COLOR_HEX_12 = [
 		"#EBC844",
 		"#A2B86C",
 		"#5CA793"];
-var COLOR_HEX_2ND = ["#89493D",
+var COLOR_HEX_2ND = [
+		"#89493D",
 		"#9D535F",
 		"#A26686",
 		"#947FA9",
@@ -21,11 +22,18 @@ var COLOR_HEX_2ND = ["#89493D",
 		"#6BDC9D",
 		"#AAE97E",
 		"#EFEE69"];
+var COLOR_HEX_COF = [
+		"#f69519",
+		"#D68826",
+		"#B67C32",
+		"#956F3F",
+		"#75634B",
+		"#555658"];
 
 function getHex(length) {
-	var i = Math.floor(Math.random() * 12);
+	var i = Math.floor(Math.random() * 9);
 	if (length > 12) {
-		return COLOR_HEX_12.slice(i,i+1);
+		return COLOR_HEX_COF.slice(i,i+1);
 	} else {
 		return COLOR_HEX_12.slice(0,length);
 	}
