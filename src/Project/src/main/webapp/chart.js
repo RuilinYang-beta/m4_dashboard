@@ -466,7 +466,7 @@ function generateListColor(year, type){
 	var x;
 	var list = [];
 
-	for(x in year){
+	/*for(x in year){
 		if(type == 'doughnut'){
 			if(list.includes(getRandomColor())){
 				getRandomColor();
@@ -481,8 +481,13 @@ function generateListColor(year, type){
 			}
 		}
 
+	}*/
+	if (type == "doughnut") {
+		return getHex(year.length);
+	} else {
+		return getRGB(year.length);
 	}
-	return list;
+	
 }
 /// random color with #
 function getRandomColor() {
