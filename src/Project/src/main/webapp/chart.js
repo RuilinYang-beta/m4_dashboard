@@ -265,7 +265,12 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 				  for(i = 1; i<b.length ; i++){
 					  b[i] = b[i] + b[i-1];
 				  };
-				  chart(a,b,canvasId,graphTitle, type, label);
+				  if (type != "doughnut"){
+					  chart(a,b,canvasId,graphTitle, type, label);
+				  }else{
+					  chartDoughnut(a,b,canvasId,graphTitle, type, label);
+				  }
+				  
 			  }else if(this.readyState == 4 && this.status == 200 & searchType == "2yAxis"){
 				  var temp = this.responseText.split("|");
 				  a = temp[0].split(";");
@@ -335,6 +340,32 @@ function removeTable(tableId){
 function chart(year, total, canvas, chartName, type, label) {
 	  var x = generateListColor(year, type);
 	  var ctx = document.getElementById(canvas).getContext('2d');
+	  var myChart = new Chart(ctx, {
+	    type: type,
+	    data: {
+	        labels: year,
+	        datasets: [{
+	            label: label,
+	            data: total,
+	            backgroundColor: x,
+	            hoverBackgroundColor: x,
+	            borderWidth: 2
+	        }]
+	    },
+	    options: {    
+	        responsive: true,
+	        title: {
+	            display: true,
+	            text: chartName,
+	            fontSize: 30
+	          }
+	    }
+	  });
+};
+
+function chartDoughnut(year, total, canvas, chartName, type, label) {
+	  var x = generateListColor(year, type);
+	  var ctx = document.getElementById(canvas).getContext('2d');
 	  ctx.height = 1;
 	  var myChart = new Chart(ctx, {
 	    type: type,
@@ -359,6 +390,7 @@ function chart(year, total, canvas, chartName, type, label) {
 	    }
 	  });
 };
+
 
 //CREATE CHART WITH 2 DATA
 //parameter:
