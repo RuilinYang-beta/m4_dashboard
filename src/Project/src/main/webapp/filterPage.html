@@ -156,7 +156,9 @@ gapi.load('auth2', function() {
 	              <label id="custom" > Name:
 	              <input id="customFill" class="form-control input-sm" onkeypress="validateEvent(event,/[A-Za-z0-9-() ]|\./)"/>
 	              </label>
-	              <div class="info" style="display:inline; font-size:12px;">*UpperCase Only</div>
+	              <datalist id = 'customNameList'>
+	               </datalist>
+	              <div class="info" style="display:inline; font-size:12px;"></div>
 	            </div>
 	          </div>
 	          <div class="fillIns">
