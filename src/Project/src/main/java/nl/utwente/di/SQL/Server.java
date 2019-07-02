@@ -269,7 +269,10 @@ public class Server{
 			}
 		} else {
 			return "abc";
-		}	
+		}
+		try {
+			a.connection.close();
+		} catch(SQLException e) {}
 		return resultSetToStringArray(x);
 	}
 	

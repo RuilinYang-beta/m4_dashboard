@@ -2,6 +2,7 @@ package nl.utwente.di.SQL;
 
 import java.sql.*;
 import org.apache.commons.codec.digest.DigestUtils;
+import Utils.SQLUtils;
 
 public class Statistics {
 	public Connection connection;
@@ -146,7 +147,9 @@ public class Statistics {
 		Statistics s = new Statistics();
 		s.connectToDatabase();
 		//ResultSet rs = s.execute("SELECT DISTINCT(orderState) as c FROM bookings;");
-		s.parseActions(true, 1);
+		ResultSet rs = s.execute("SELECT * FROM linestops;");
+		SQLUtils.exportToCSV(rs, "linestops.csv");
+//		s.parseActions(true, 1);
 		try {
 			s.connection.close();
 		} catch (SQLException e) {
