@@ -6,26 +6,15 @@ $(document).ready(function() {
   $('#dateToFill').val("");
   $('#teuFill').val("");
   $('#transportFill').val("");
-  dataList('companyNameList');
+  getInfo('customerNames');
+  getInfo('shippingCompanyNames');
+  getInfo('customerId');
 });
 //CHANGE FARM_URL TO URL AND URL TO LOCALURL
 var FARMURL = "http://farm03.ewi.utwente.nl:7034";
 var URL = "http://localhost:8080";
 
-function dataList(datalistName) {
-	var mylist = ['A288','A305','A315','A332','A342','B283','B291','B321','B325','C287','C288','C290','C295','C296','C297','C310','C320','C323','C327','C330','C334','C344','D319','D326','D337','D346','E290','E298','E312','E322',
-		'F289','G318','G339','G350','H291','H293','H299','H300','H301','H302','H322','H328','I292','I294','I303','I324','J328','K295','K304','M285','M286','M293','M294',
-		'M305','M317','M342','M352','M355','N296','N306','N321','N333','N335','N343','O297','O304','O307','O314','O336','O338','P314','P316','P324','S298','S303','S308','S312',
-		'S313','S319','S325','S326','S332','S335','S336','S338','S340','T327','T331','U299','U309','U359','V339','W307','W317','Y300','Y310','Z301','Z311',
-		];
-	var list = document.getElementById(datalistName);
-	var sortedMyList = mylist.sort();
-	sortedMyList.forEach(function(item){
-	   var option = document.createElement('option');
-	   option.value = item;
-	   list.appendChild(option);
-	});
-}
+
 
 
 //Determine the max length of an input
@@ -154,6 +143,45 @@ label: name for certain data on the graph(optional)
 label1: same as label, but for the second data
 */
 
+function getInfo(infoType) {
+	var http = new XMLHttpRequest();
+	var url = "http://localhost:8080/Project/rest/sql/getinfo?infoType=" + infoType;
+	http.onreadystatechange = function(){
+		  if (this.readyState == 4 && this.status == 200) {
+			  var text = this.responseText;
+			  a = text.split(";");
+			  var list;
+			  if (infoType == 'customerNames') {
+				  list = document.getElementById('customNameList');
+				  
+				  a.forEach(function(item){
+					   var option = document.createElement('option');
+					   option.value = item;
+					   list.appendChild(option);
+					});
+			  } else if (infoType == 'shippingCompanyNames') {
+				  list = document.getElementById('companyNameList');
+				  a.forEach(function(item){
+					   var option = document.createElement('option');
+					   option.value = item;
+					   list.appendChild(option);
+					});
+			  } else if (infoType == 'customerId') {
+				  list = document.getElementById('customerFill');
+				  a.forEach(function(item){
+					  if(item != 1 && item != 2) {
+						  var option = document.createElement('option');
+						  option.value = option.text = item;
+						  list.add(option);
+					  }
+					});
+			  }
+		  }
+	}
+	http.open("GET", url);
+	http.send();
+}
+
 
 function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "",label1=""){
 	$(".noResult").removeAttr("style").hide();
@@ -174,7 +202,7 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 	var ordState = $('#orderStateFill').val();
 	var teu = $('#teuFill').val();
 	var shipComp= $('#companyNameFill').val();
-	
+
 	var url = URL + "/Project/rest/sql/select?goal=";
 	if(searchType == "bookings") {
 		url += "bookings";
@@ -201,8 +229,8 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
 	} else if (searchType == "2yAxis") {
 		url += "2yAxis";
-	} 
-	
+	}
+
 	var x;
 	if(table == "table"){
 		url += "&table=true";
@@ -217,28 +245,31 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 		http.onreadystatechange = function(){
 			  if (this.readyState == 4 && this.status == 200) {
 				  if(searchType == "bookings") {
+					  book = 0;
 					  book = this.responseText;
 					  if(book == 0){
 						  $(".noResult").removeAttr("style").show();
-                          
-                          
+
+
                           return 101;
 					  }
 				  } else if(searchType == "brutoWeight") {
+					  bruto = 0;
                       bruto = this.responseText;
                       if(bruto == 0 && book == 0){
                           return false;
                       }
                   } else if(searchType == "nettoWeight") {
+                	  netto = 0;
                       netto = this.responseText;
                       if(netto == 0 && book == 0){
                           return false;
                       }
-                      
+
                       document.getElementById('resultTab').innerHTML = createTable(customerId,book,bruto,netto);
                       $(".graphs").removeAttr("style").show();
-                      
-                    
+
+
                   }
 
 			  }
@@ -270,7 +301,7 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 				  }else{
 					  chartDoughnut(a,b,canvasId,graphTitle, type, label);
 				  }
-				  
+
 			  }else if(this.readyState == 4 && this.status == 200 & searchType == "2yAxis"){
 				  var temp = this.responseText.split("|");
 				  a = temp[0].split(";");
@@ -303,16 +334,16 @@ function searchIt() {
 			}else if(getFilter("table", list[i]) == 101){
 				i = list.length;
 			}
-			
-		}
-		
-		
 
-		getFilter("Graph", "bookings", 'line', "container", "Cumulative Bookings per Month", "# of bookings");
+		}
+
+
+
+		getFilter("Graph", "bookings", 'line', "container", "Cumulative # Containers per Month", "# of containers");
 	//	getFilter("Graph", "brutoWeight", 'line', "container1", "Total Bruto Weight", "Bruto Weight");
 	//	getFilter("Graph", "nettoWeight", 'line', "container2", "Total Netto Weight", "Netto Weight");
 		getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 Customer(weight)", "Amount of weights");
-		getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Books)", "Amount of bookings");
+		getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 Customer(Containers)", "Amount of containers");
 }
 
 ///CREATE A TABLE WHEN SEARCH IS PRESSED
@@ -352,7 +383,7 @@ function chart(year, total, canvas, chartName, type, label) {
 	            borderWidth: 2
 	        }]
 	    },
-	    options: {    
+	    options: {
 	        responsive: true,
 	        title: {
 	            display: true,
@@ -483,6 +514,7 @@ function generateListColor(year, type){
 
 	}
 	return list;
+
 }
 /// random color with #
 function getRandomColor() {
@@ -530,11 +562,11 @@ $(document).ready(function() {
 	 $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 	 $('#container4').replaceWith('<canvas id="container4" ></canvas>');
 	 $(getFilter("Graph", "topCustomerWeight", 'doughnut', "container3", "Top 10 " + " Customer(weight)", "Amount of weights"));
-	 $(getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 " + " Customer(Books)", "Amount of bookings"));
+	 $(getFilter("Graph", "topCustomerBook", 'doughnut', "container4", "Top 10 " + " Customer(Containers)", "Amount of Containers"));
 
 	 $('#container5').replaceWith('<canvas id="container5" ></canvas>');
-	 $(getFilter("Graph", "2yAxis", 'line', "container5", "Total Bookings and Weights", "Amount of books", "Amount of weight"));
-	 
+	 $(getFilter("Graph", "2yAxis", 'line', "container5", "Total Bookings and Weights", "Amount of bookings", "Amount of weight"));
+
 
 //GENERATE GRAPH BELOW THE RESULT AND UPDATE THE TOP 10 CUSTOMER
 	$("#search").click(function() {
@@ -544,13 +576,13 @@ $(document).ready(function() {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 			  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-			
-			
-			 
+
+
+
 		  }
-		  
-		  
-		  
+
+
+
 	 });
 	$("#bookingCountButton").click(function() {
 		  if(dateCorrect()) {
@@ -573,7 +605,7 @@ $(document).ready(function() {
 			  $(".graphs").removeAttr("style").show();
 		  }
 	});
-	
+
 });
 
 //remove said employees
