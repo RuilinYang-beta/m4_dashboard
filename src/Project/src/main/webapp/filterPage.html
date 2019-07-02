@@ -42,6 +42,10 @@
   .pic {
    border-radius: 50%;
   }
+  
+  .auth {
+   display: none;
+  }
 
 
   </style>
@@ -50,6 +54,7 @@
 </head>
 
 <body>
+    <div class="auth">
 <script>
 var FARMURL = "http://farm03.ewi.utwente.nl:7034";
 var URL = "http://localhost:8080";
@@ -151,7 +156,9 @@ gapi.load('auth2', function() {
 	              <label id="custom" > Name:
 	              <input id="customFill" class="form-control input-sm" onkeypress="validateEvent(event,/[A-Za-z0-9-() ]|\./)"/>
 	              </label>
-	              <div class="info" style="display:inline; font-size:12px;">*UpperCase Only</div>
+	              <datalist id = 'customNameList'>
+	               </datalist>
+	              <div class="info" style="display:inline; font-size:12px;"></div>
 	            </div>
 	          </div>
 	          <div class="fillIns">
@@ -163,9 +170,6 @@ gapi.load('auth2', function() {
 	            	</label>
 	            	<div class="info" style="display:inline; font-size:12px;">*Uppercase(except s) then 3 digit, e.g. A288</div>
 			    	<datalist id='companyNameList'>
-	
-					  <option value="s333">s333</option>
-	
 					</datalist>
 	            </div>
 	          </div>
@@ -240,6 +244,8 @@ function onSignIn(googleUser) {
 	$("#pic").attr('src',profile.getImageUrl());
 	$("#email").text(profile.getEmail());
 	$("#name").text(profile.getName());
+	$(".auth").css("display","block");
+
 
 	var id_token = googleUser.getAuthResponse().id_token;
 	var xhr = new XMLHttpRequest();
@@ -293,6 +299,7 @@ function signOut() {
     });
   }
 </script>
+</div>
 </body>
 
 </html>
