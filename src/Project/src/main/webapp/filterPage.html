@@ -245,6 +245,8 @@ function onSignIn(googleUser) {
 	$("#pic").attr('src',profile.getImageUrl());
 	$("#email").text(profile.getEmail());
 	$("#name").text(profile.getName());
+	$(".auth").css("display","block");
+
 
 	var id_token = googleUser.getAuthResponse().id_token;
 	var xhr = new XMLHttpRequest();
