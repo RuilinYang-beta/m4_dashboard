@@ -3,6 +3,7 @@ package nl.utwente.di.SQL;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.sql.*;
+
 import org.json.*;
 import Utils.SQLUtils;
 
@@ -222,6 +223,56 @@ public class Server{
 		
 		return res;
 	}
+	public String resultSetToStringArray(ResultSet rs) {
+		String resultString = "";
+		try {
+			while(rs.next()) {
+				if(rs.isLast()) {
+					resultString += rs.getString(1);
+				} else {
+					resultString += rs.getString(1) + ";";
+				}
+				
+			}
+		} catch (SQLException e) {
+			System.out.println("Sorry, it doesn't work");
+			e.printStackTrace();
+		}
+		return resultString;
+	}
+
+	@GET
+	@Path("/getinfo")
+	public String getInfo(@QueryParam("infoType") String infoType) {
+		Statistics a = new Statistics();
+		a.connectToDatabase();
+		PreparedStatement stm = null;
+		ResultSet x = null;
+		
+		if (infoType.equals("customerNames")) {
+			try {
+				stm = a.connection.prepareStatement("SELECT DISTINCT customer FROM bookings WHERE customer <> 'null' AND customer <> '' ORDER BY customer");
+				x = stm.executeQuery();
+			} catch (SQLException e) {
+			}
+		} else if (infoType.equals("shippingCompanyNames")) {
+			try {
+				stm = a.connection.prepareStatement("SELECT DISTINCT shippingCompany FROM bookings WHERE shippingCompany <> 'null' AND shippingCompany <> '' ORDER BY shippingCompany");
+				x = stm.executeQuery();
+			} catch (SQLException e) {
+			}
+		} else if (infoType.equals("customerId")) {
+			try {
+				stm = a.connection.prepareStatement("SELECT DISTINCT id FROM bookings ORDER BY id");
+				x = stm.executeQuery();
+			} catch (SQLException e) {
+			}
+		} else {
+			return "abc";
+		}	
+		return resultSetToStringArray(x);
+	}
+	
 	
 	@GET
 	@Path("/select")
