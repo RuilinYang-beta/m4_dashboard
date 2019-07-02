@@ -58,14 +58,13 @@ public class Database {
 		if (path.equals("bookings")) {
 			if (RESET) {
 				//createDatabase(SQL_BOOK+OPT_BOOK);
-				createDatabase("DELETE FROM bookings WHERE id=" + customer + "");
+				createDatabase("DELETE FROM bookings WHERE id=" + customer);
 			} else {
 				arg = "?createdAfter=" + offset + "&";
 				i = 0;
 			}
 			int count = 0;
 			SQLThread t = new SQLThread(this, path, customer);
-			System.out.println(link + path + arg + "limit=500&offset=" + i);
 			while ((int) getData(link + path + arg + "limit=500&offset=" + i, t) > 0) {
 				i += 500;
 				count += 500;
@@ -100,6 +99,7 @@ public class Database {
 			}
 			
 			SQLThread t = new SQLThread(this, path, customer);
+			
 			int counter = 0;
 			while ((int) getData(link + path + "?limit=500&offset=" + i, t) > 0) {
 				i += 500;
@@ -150,7 +150,7 @@ public class Database {
 	public static int getCustId(String customer, Connection c) {
 		try {
 			Statement s = c.createStatement();
-			ResultSet rs = s.executeQuery("SELECT id FROM customers WHERE name='" + customer + "'");
+			ResultSet rs = s.executeQuery("SELECT id FROM customers WHERE name=" + customer);
 			while (rs.next()) {
 				return rs.getInt(1);
 			}
@@ -412,9 +412,7 @@ public class Database {
 	
 	public static void main(String args[]) {
 		Database d = new Database();
-		d.connectToDatabase();
-		d.update(true, "module4t2");
-		try {d.connection.close();}catch(SQLException e) {}
+		d.makeTable("actions",false, 479500, 1);
 		//d.createDatabase(SQL_CUST+PUT_CUST1+PUT_CUST2);
 	}
 	
@@ -425,7 +423,6 @@ public class Database {
 		int i = 0;
 		if (i > 0) {
 			int custId = Database.getCustId(customer, connection);
-			System.out.println("CUSTID : " + custId);
 			updateBook(RESET, custId);
 			updateLoc(custId);
 			updateLines(RESET, custId);
@@ -519,7 +516,7 @@ public class Database {
 			
 			makeTable("linestops", RESET, (x.getTime())/1000, customer);	
 		} else {
-			makeTable("linestops", RESET, new Long(0), customer);
+			makeTable("linestops", RESET, 0, customer);
 		}
 		
 	}
@@ -586,6 +583,7 @@ public class Database {
 					i = -1;
 				} else if (data.substring(i+1,i+3).equals(",{")) {
 					//System.out.println(data.substring(1,i+1));
+					System.out.println(data);
 					temp.add(new JSONObject(data.substring(1,i+1)));
 					data = data.substring(0,1) + data.substring(i+2);
 					i = -1;

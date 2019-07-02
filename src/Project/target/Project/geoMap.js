@@ -1,5 +1,6 @@
-var localURL = "http://localhost:8080/Project/rest/sql";
-var baseURL = "http://farm03.ewi.utwente.nl:7034/Project/rest/sql";
+var baseURL = "http://localhost:8080/Project/rest/sql";
+var farmURL = "http://farm03.ewi.utwente.nl:7034/Project/rest/sql";
+
 
 // -- temp --
 var unknowloc = [];
@@ -201,9 +202,9 @@ http.onreadystatechange = function() {
         // ========== draw Map, Circle, activate Slide bar ========== 
         // d3.json("https://www.webuildinternet.com/articles/2015-07-19-geojson-data-of-the-netherlands/townships.geojson", function(data){
         d3.json('./dummyMapData/nl.json', function(data){
-          console.log('inside draw map!')
+          console.log('inside draw nl map!')
           console.log(data[0]);
-            // Draw the map
+            // Draw nl map
             svg.append("g")
                 .selectAll("path")
                 .data(data.features)
@@ -217,28 +218,53 @@ http.onreadystatechange = function() {
                 .style("stroke-width", ".5")
                 .style("stroke-opacity", ".5")
 
-            // Add circles only after draw map is done
-            svg
-              .selectAll("circle")
-              .data(getDataPoint())
-              .enter()
-              .append("circle")
-                .attr("cx", function(d){ return projection([d.longitude, d.latitude])[0] })
-                .attr("cy", function(d){ return projection([d.longitude, d.latitude])[1] })
-                .attr("r", function(d) {
-                              return size(d.count)})
-                .style("fill", "69b3a2")
-                .attr("stroke", "#69b3a2")
-                .attr("stroke-width", 3)
-                .attr("fill-opacity", .4)
-                .on('mouseover', mouseover)
-                .on('mousemove', mousemove)
-                .on('mouseleave', mouseleave)
+            
+            d3.json('./dummyMapData/bg.json', function(data){
+                console.log('inside draw bg map!')
+                console.log(data[0]);
 
-            // Activate slide bar
-            d3.select("#timeslide").on("input", function() {
-                update(+this.value);
-            });
+                // draw bg map
+                svg.append("g")
+                    .selectAll("path")
+                    .data(data.features)
+                    .enter()
+                    .append("path")
+                      .attr("fill", "LightBlue")
+                      .attr("d", d3.geoPath()
+                          .projection(projection)
+                      )
+                    .style("stroke", "white")
+                    .style("stroke-width", ".5")
+                    .style("stroke-opacity", ".5")
+
+
+                    // Add circles only after two map is done
+                    svg
+                      .selectAll("circle")
+                      .data(getDataPoint())
+                      .enter()
+                      .append("circle")
+                        .attr("cx", function(d){ return projection([d.longitude, d.latitude])[0] })
+                        .attr("cy", function(d){ return projection([d.longitude, d.latitude])[1] })
+                        .attr("r", function(d) {
+                                      return size(d.count)})
+                        .style("fill", "69b3a2")
+                        .attr("stroke", "#69b3a2")
+                        .attr("stroke-width", 3)
+                        .attr("fill-opacity", .4)
+                        .on('mouseover', mouseover)
+                        .on('mousemove', mousemove)
+                        .on('mouseleave', mouseleave)
+
+                    // Activate slide bar
+                    d3.select("#timeslide").on("input", function() {
+                        update(+this.value);
+                    });
+
+
+            })
+
+
         })
 }};
 
