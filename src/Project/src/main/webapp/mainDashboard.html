@@ -58,9 +58,9 @@ gapi.load('auth2', function() {
 	  });
 	});
 </script>
-    <div class='row'> 
+    <!-- <div class='row'>  -->
 
-        <div class="counter">
+        <!-- <div class="counter"> -->
 
             <div class="logo">
                 <img src="cofano2.png" height="100">
@@ -82,9 +82,11 @@ gapi.load('auth2', function() {
                     <!-- map -->
                     <div class="col col-11 col-md-5">
                         <div class="map" id='geoParent'>
-                            <div id="sliderContainer pt-sm-2 pt-md-3 pt-lg-0">
+                            <div id="sliderContainer" class="pt-sm-2 pt-md-3 pt-lg-0">
                                 <input id="timeslide" class='slider' type="range" min="0" max="1468" value="0" step="1"/><br>
+                                <span id='hint' > << slide me >> </span>
                                 <span id="range">2013-03-02</span>
+                                
                             </div>
                             <div id='mapContainer'>
                             	<svg id='mapHere'></svg>
@@ -94,8 +96,8 @@ gapi.load('auth2', function() {
 
                 </div>
 
-        </div>
-    </div>
+        <!-- </div> -->
+    <!-- </div> -->
 
 <div class="g-signin2" data-onsuccess="onSignIn" data-width="300" data-height="50" data-longtitle="true"></div>
 
