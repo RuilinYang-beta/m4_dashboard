@@ -31,7 +31,7 @@ var COLOR_HEX_COF = [
 		"#555658"];
 
 function getHex(length) {
-	var i = Math.floor(Math.random() * 6);
+	var i = Math.floor(Math.random() * 9);
 	if (length > 12) {
 		return COLOR_HEX_COF.slice(i,i+1);
 	} else {
