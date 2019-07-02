@@ -61,11 +61,16 @@
    background: #3498db;
    display: inline-block;
    border-radius: 4px;
-}
+  }
+  
+  .auth {
+   display: none;
+  }
     </style>
 </head>
 
 <body>
+    <div class="auth">
 <script>
 var FARMURL = "http://farm03.ewi.utwente.nl:7034";
 var LOCALURL = "http://localhost:8080";
@@ -189,6 +194,8 @@ function onSignIn(googleUser) {
 	$("#pic").attr('src',profile.getImageUrl());
 	$("#email").text(profile.getEmail());
 	$("#name").text(profile.getName());
+	$(".auth").css("display","block");
+
 	
 	var id_token = googleUser.getAuthResponse().id_token;
 	var xhr = new XMLHttpRequest();
@@ -253,6 +260,7 @@ function signOut() {
     });
   }
 </script>
+</div>
 </body>
 
 </html>
