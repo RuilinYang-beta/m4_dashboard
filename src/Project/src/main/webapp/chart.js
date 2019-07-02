@@ -494,24 +494,10 @@ function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 
 // generate random color
 function generateListColor(year, type){
-	var x;
-	var list = [];
-
-	for(x in year){
-		if(type == 'doughnut'){
-			if(list.includes(getRandomColor())){
-				getRandomColor();
-			}else{
-				list.push(getRandomColor());
-			}
-		}else{
-			if(list.includes(random_rgba())){
-				random_rgba();
-			}else{
-				list.push(random_rgba());
-			}
-		}
-
+	if(type == 'doughnut'){
+		return getHex(year.length);
+	}else{
+		return getRGB(year.length);
 	}
 	return list;
 

@@ -116,16 +116,18 @@ public class Database {
 		} else if(path.equals("linestops")) {
 			System.out.println("create table");
 			if (RESET) {
-				createDatabase(SQL_LINE + OPT_LINE);
+				//createDatabase("DELETE FROM linestops WHERE id=" + customer);
 			}
 			
 			Long lower = (Long) offset;
 			if (lower == 0) {
-				lower = new Long(1500000000);
+				lower = new Long(1300000000);
 			}
 			Date date = new Date();
-			long time = date.getTime()/1000;
+			//long time = date.getTime()/1000-500000;
+			long time = new Long(1500000000);
 			List<JSONObject> temp;
+			System.out.println(link + path + "?modality=BARGE&lowerBound=" + lower + "&upperBound=" + time);
 			temp = (List<JSONObject>) getData(link + path + "?modality=BARGE&lowerBound=" + lower + "&upperBound=" + time, null);
 			if (temp.size() != 1) {
 				insertLinestops(temp);
@@ -412,7 +414,8 @@ public class Database {
 	
 	public static void main(String args[]) {
 		Database d = new Database();
-		d.makeTable("actions",false, 479500, 1);
+		d.connectToDatabase();
+		d.updateLines(true, 2);
 		//d.createDatabase(SQL_CUST+PUT_CUST1+PUT_CUST2);
 	}
 	
@@ -495,7 +498,7 @@ public class Database {
 	}
 	private void updateLines(boolean RESET, int customer) {
 		if (!RESET) {
-			String command = "SELECT MAX(sta) AS c FROM linestops";
+			String command = "SELECT MAX(sta) AS c FROM linestops WHERE id=" + customer;
 			Timestamp x = null;
 			try {
 				connectToDatabase();
@@ -516,7 +519,7 @@ public class Database {
 			
 			makeTable("linestops", RESET, (x.getTime())/1000, customer);	
 		} else {
-			makeTable("linestops", RESET, 0, customer);
+			makeTable("linestops", RESET, new Long(0), customer);
 		}
 		
 	}
@@ -583,7 +586,6 @@ public class Database {
 					i = -1;
 				} else if (data.substring(i+1,i+3).equals(",{")) {
 					//System.out.println(data.substring(1,i+1));
-					System.out.println(data);
 					temp.add(new JSONObject(data.substring(1,i+1)));
 					data = data.substring(0,1) + data.substring(i+2);
 					i = -1;
