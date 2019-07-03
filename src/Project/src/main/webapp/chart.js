@@ -120,7 +120,6 @@ function getCount() {
 		  if (this.readyState == 4 && this.status == 200) {
 
 			  document.getElementById("numcount").innerHTML = this.responseText;
-			  countit();
 		  }
 		};
 	http.open("GET", url);
@@ -150,7 +149,7 @@ function getInfo(infoType) {
 		  if (this.readyState == 4 && this.status == 200) {
 			  var text = this.responseText;
 			  a = text.split(";");
-			  var list;
+			  var list = [];
 			  if (infoType == 'customerNames') {
 				  list = document.getElementById('customNameList');
 				  

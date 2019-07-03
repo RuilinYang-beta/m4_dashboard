@@ -31,7 +31,7 @@ var COLOR_HEX_COF = [
 		"#555658"];
 
 function getHex(length) {
-	var i = Math.floor(Math.random() * 9);
+	var i = Math.floor(Math.random() * 6);
 	if (length > 12) {
 		return COLOR_HEX_COF.slice(i,i+1);
 	} else {
@@ -51,5 +51,5 @@ function getRGB(length) {
 		var i3 = parseInt(hex.substring(5,7),16);
 		res.push("rgba(" + i1 + "," + i2 + "," + i3 + ")");
 	}
-	return res;
+	return res[0];
 }
