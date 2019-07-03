@@ -32,7 +32,6 @@
     <script type="text/javascript" src="chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <!-- geoMap-->
-    <script type="text/javascript" src="geoMap.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
@@ -170,6 +169,7 @@
                               <div class="map" id='geoParent'>
                                   <div id="sliderContainer pt-sm-2 pt-md-3 pt-lg-0">
                                       <input id="timeslide" class='slider' type="range" min="0" max="1468" value="0" step="1"/><br>
+                                      <span id='hint' > << slide me >> </span>
                                       <span id="range">2013-03-02</span>
                                   </div>
                                   <div id='mapContainer'>
@@ -260,6 +260,10 @@
 
             }
     </script>
+
+	<!-- geoMap.js is intended to load just before the end of body -->    
+    <script type="text/javascript" src="geoMap.js"></script>
+    
 </body>
 
 </html>
