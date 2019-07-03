@@ -6,7 +6,7 @@ import org.junit.Before;
 import DAO.*;
 import nl.utwente.di.SQL.Statistics;
 
-public class testAuth {
+public class testDAOemployee {
 	Statistics s;
 	@Before
 	public void init() {

@@ -4,11 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import nl.utwente.di.SQL.Database;
 
-public class testInsert {
-	public testInsert() {
-		//INIT
-	}
-	
+public class testParser {
 	@Test
 	public void testParserAction() {
 		//3 json objects with nested values, 1 with array of json objects
