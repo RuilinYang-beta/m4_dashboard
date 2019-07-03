@@ -5,7 +5,7 @@ import javax.ws.rs.core.*;
 import java.sql.*;
 import org.json.*;
 import Utils.SQLUtils;
-
+import DAO.*;
 @Path("/sql")
 public class Server{
 	
@@ -17,16 +17,7 @@ public class Server{
 	@GET
 	@Path("/linestops")
 	public String getLinestops() { 
-		Statistics stat = new Statistics();
-		stat.connectToDatabase();
-		ResultSet rs = stat.execute("SELECT linestopid, locationid, DATE(sta) AS sta_date, DATE(std) AS std_date FROM linestops"); 
-		
-		try {
-			stat.connection.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
+		ResultSet rs = DAOgeneral.execute("SELECT linestopid, locationid, DATE(sta) AS sta_date, DATE(std) AS std_date FROM linestops"); 
 		return parseJSON(rs).toString();
 	}
 	
@@ -36,16 +27,8 @@ public class Server{
 	@GET
 	@Path("/uniquesta")
 	public String getLinestopsUniqueStaDate() { 
-		Statistics stat = new Statistics();
-		stat.connectToDatabase();
 //		ResultSet rs = stat.execute("SELECT DISTINCT sta_date FROM (SELECT DATE(sta) AS sta_date FROM linestops ORDER BY sta_date) AS sub"); 
-		ResultSet rs = stat.execute("SELECT DISTINCT(DATE(sta)) AS sta_date FROM linestops ORDER BY sta_date"); 
-		
-		try {
-			stat.connection.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		ResultSet rs = DAOgeneral.execute("SELECT DISTINCT(DATE(sta)) AS sta_date FROM linestops ORDER BY sta_date"); 
 		
 		return SQLUtils.glueColumnIntoString(rs);
 	}
@@ -66,30 +49,27 @@ public class Server{
 	@GET
 	@Path("/auth")
 	public boolean checkEmployee(@QueryParam("mail") String mail) {
-		Statistics s = new Statistics();
-		return s.checkEmployee(mail);
+		return DAOemployee.checkEmployee(mail);
 	}
 	@POST
 	@Path("/auth")
 	public String addEmployee(@QueryParam("name") String name,
 							@QueryParam("id") int id, 
 							@QueryParam("mail") String mail) {
-		Statistics s = new Statistics();
-		return s.addEmployee(name, id, mail);
+		return DAOemployee.addEmployee(name, id, mail);
 	}
 	@DELETE
 	@Path("/auth")
 	public String deleteEmployee(@QueryParam("name") String name,
 								@QueryParam("id") int id,
 								@QueryParam("mail") String mail) {
-		Statistics s = new Statistics();
 		if (name != null) {
 			if (id != 0) {
 				System.out.println("id given");
-				return s.deleteEmployee(name, id);
+				return DAOemployee.deleteEmployee(name, id);
 			} else if (mail != null) {
 				System.out.println("mail given");
-				return s.deleteEmployee(name, mail);
+				return DAOemployee.deleteEmployee(name, mail);
 			} else {
 				System.out.println("error: nothing given");
 				return "give id or mail plix";
@@ -105,10 +85,7 @@ public class Server{
 	@Path("/count")
 	@Produces(MediaType.TEXT_HTML)
 	public String getCount() {
-		Statistics a = new Statistics();
-		a.connectToDatabase();
-		String message = a.getCount()+ "";
-		try {a.connection.close();}catch(SQLException e) {}
+		String message = Statistics.getCount()+ "";
 		return message;
 	}
 	
@@ -119,9 +96,8 @@ public class Server{
 									@QueryParam("link") String link,
 									@QueryParam("B_L_A_S") String bools) { //b=bookings, L=locations, A=actions, S=linestops t for true
 									//example: bookings and actions: t_f_t_f   every option: t_t_t_t 
-		Database d = new Database();
-		d.insertCustomer(name, link);
-		d.update(true, name, bools);
+		DAOinsert.insertCustomer(name, link);
+		Database.update(true, name, bools);
 		return "";
 	}
 
@@ -130,22 +106,22 @@ public class Server{
 	@GET
 	@Path("/update")
 	public String updateDatabase() {
-		Database d = new Database();
-		d.connectToDatabase();
+		Connection connection = null;
+		connection = DAOgeneral.connectToDatabase(connection);
 		try {
-			Statement s = d.connection.createStatement();
+			Statement s = connection.createStatement();
 			ResultSet rs = s.executeQuery("SELECT name, id FROM customers");
 			System.out.println("pulling customers");
 			while (rs.next()) {
 				System.out.println(rs.getString(1) + " " + rs.getInt(2));
-				d.update(false, rs.getString("name"));
+				Database.update(false, rs.getString("name"));
 			}
 		} catch (SQLException e) {
 			System.err.println("error getting stuff");
 			e.printStackTrace();
 		} finally {
 			try {
-				d.connection.close();
+				connection.close();
 			} catch (SQLException e) {
 				
 			}
@@ -243,32 +219,33 @@ public class Server{
 	@GET
 	@Path("/getinfo")
 	public String getInfo(@QueryParam("infoType") String infoType) {
-		Statistics a = new Statistics();
-		a.connectToDatabase();
+		Connection connection = null;
+		connection = DAOgeneral.connectToDatabase(connection);
 		PreparedStatement stm = null;
 		ResultSet x = null;
 		
 		if (infoType.equals("customerNames")) {
 			try {
-				stm = a.connection.prepareStatement("SELECT DISTINCT customer FROM bookings WHERE customer <> 'null' AND customer <> '' ORDER BY customer");
+				stm = connection.prepareStatement("SELECT DISTINCT customer FROM bookings WHERE customer <> 'null' AND customer <> '' ORDER BY customer");
 				x = stm.executeQuery();
 			} catch (SQLException e) {
 			}
 		} else if (infoType.equals("shippingCompanyNames")) {
 			try {
-				stm = a.connection.prepareStatement("SELECT DISTINCT shippingCompany FROM bookings WHERE shippingCompany <> 'null' AND shippingCompany <> '' ORDER BY shippingCompany");
+				stm = connection.prepareStatement("SELECT DISTINCT shippingCompany FROM bookings WHERE shippingCompany <> 'null' AND shippingCompany <> '' ORDER BY shippingCompany");
 				x = stm.executeQuery();
 			} catch (SQLException e) {
 			}
 		} else if (infoType.equals("customerId")) {
 			try {
-				stm = a.connection.prepareStatement("SELECT DISTINCT id FROM bookings ORDER BY id");
+				stm = connection.prepareStatement("SELECT DISTINCT id FROM bookings ORDER BY id");
 				x = stm.executeQuery();
 			} catch (SQLException e) {
 			}
 		} else {
 			return "abc";
-		}	
+		}
+		try {connection.close();}catch(SQLException e) {}
 		return resultSetToStringArray(x);
 	}
 	
@@ -334,25 +311,25 @@ public class Server{
 	}
 	
 	private String getValue(String command, Object[] inserts, String goal, boolean query) {
-		Statistics a = new Statistics();
-		a.connectToDatabase();
+		Connection connection = null;
+		connection = DAOgeneral.connectToDatabase(connection);
 		int i = -1;
 		try {
 			PreparedStatement stm = null;
 			if (goal == null) {
 				return -2 + "";
 			} else if (((String) goal).equals("bookings")) {
-				stm = a.connection.prepareStatement(SORT_MONTH + "COUNT(*) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
+				stm = connection.prepareStatement(SORT_MONTH + "COUNT(*) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
 			} else if (((String) goal).equals("nettoWeight")) {
-				stm = a.connection.prepareStatement(SORT_MONTH + "SUM(nettoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
+				stm = connection.prepareStatement(SORT_MONTH + "SUM(nettoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
 			} else if (((String) goal).equals("brutoWeight")) { 
-				stm = a.connection.prepareStatement(SORT_MONTH + "SUM(brutoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
+				stm = connection.prepareStatement(SORT_MONTH + "SUM(brutoWeight) FROM bookings " + command + " GROUP BY m_y ORDER BY m_y;");
 			} else if (((String) goal).equals("topCustomerBook")){
-				stm = a.connection.prepareStatement("SELECT customer AS custName, COUNT(bookingId) FROM bookings "  + command + topCustomer);		
+				stm = connection.prepareStatement("SELECT customer AS custName, COUNT(bookingId) FROM bookings "  + command + topCustomer);		
 			} else if (((String) goal).equals("topCustomerWeight")){
-				stm = a.connection.prepareStatement("SELECT customer AS custName, SUM(brutoWeight) + SUM(nettoWeight) FROM bookings " + command + topCustomer);
+				stm = connection.prepareStatement("SELECT customer AS custName, SUM(brutoWeight) + SUM(nettoWeight) FROM bookings " + command + topCustomer);
 			} else if (((String) goal).equals("2yAxis")){
-				stm = a.connection.prepareStatement(SORT_MONTH + "COUNT(bookingId), SUM(brutoWeight) FROM bookings " + command + "AND createdOn IS NOT NULL GROUP BY m_y ORDER BY m_y;");
+				stm = connection.prepareStatement(SORT_MONTH + "COUNT(bookingId), SUM(brutoWeight) FROM bookings " + command + "AND createdOn IS NOT NULL GROUP BY m_y ORDER BY m_y;");
 				
 			}  else {
 				return -2 + ""; 
@@ -399,7 +376,7 @@ public class Server{
 			System.out.println("SQL error");
 			e.printStackTrace();
 		} finally {
-			try {a.connection.close();}catch(SQLException e) {}
+			try {connection.close();}catch(SQLException e) {}
 		}
 		return i + "";
 	}

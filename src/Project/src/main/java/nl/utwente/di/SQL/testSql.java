@@ -1,6 +1,7 @@
 package nl.utwente.di.SQL;
 
 import java.sql.*;
+import DAO.*;
 
 public class testSql {
 	public Connection connection;
@@ -42,7 +43,8 @@ public class testSql {
 	
 	public void Test() {
 		//String command = "SELECT action::json->'tasks'->'location'->'locationGroup'->>'name' FROM actions LIMIT 1;";
-		String command = "SELECT * FROM employees;";
+		
+		String command = "SELECT * FROM employees WHERE name LIKE '%TEST'";
 		try {
 			Statement s = connection.createStatement();
 			ResultSet rs = s.executeQuery(command);

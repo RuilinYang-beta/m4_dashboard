@@ -1,13 +1,12 @@
 package nl.utwente.di.SQL;
 
 import java.util.List;
-
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
+import DAO.*;
+
 public class SQLThread extends Thread {
-	private Database d;
 	private List<String> data;
 	private List<JSONObject> dataJson;
 	private String json = "[";
@@ -15,8 +14,7 @@ public class SQLThread extends Thread {
 	private String goal = "";
 	private int customer = -1;
 	
-	public SQLThread(Database d, String goal, int customer) {
-		this.d = d;
+	public SQLThread(String goal, int customer) {
 		this.data = new ArrayList<String>();
 		this.dataJson = new ArrayList<JSONObject>();
 		this.goal = goal;
@@ -48,12 +46,12 @@ public class SQLThread extends Thread {
 		}
 		if (goal.equals("actions")) {
 			data.addAll(Database.parseActions(json + "]"));
-			d.insertAction(data, customer);
+			DAOinsert.insertAction(data, customer);
 		} else if (goal.equals("bookings")) {
 			dataJson.addAll(Database.parse(json + "]"));
 			String command = "INSERT INTO bookings (id,"+ getLabels(Database.OPT_BOOK) + ") VALUES(" + customer + ",";
 			String opts = Database.OPT_BOOK;
-			d.insertDatabase(dataJson, command, opts);
+			DAOinsert.insertDatabase(dataJson, command, opts);
 		}
 		System.out.println("done");
 	}
