@@ -187,6 +187,20 @@ ul.CTAs a {
 /* ---------------------------------------------------
     MAINDASHBOARD
 ----------------------------------------------------- */
+body{
+  background-image: url(container.jpg);
+  
+}
+.btn-info{
+  color: #4E4D4E;
+  background: #F79158;
+}
+
+#sidebarCollapse:hover{
+  background: #D58311;
+  color: black;
+}
+
 .counter {
   position: absolute;
   width: 100%;
@@ -196,9 +210,8 @@ ul.CTAs a {
   text-align: center;
   width: 100%;
   background: linear-gradient(90deg, #d9d9d9,#737373);
-  margin: 50px 0 50px 0;
+  margin: 0px 0px 10px 0px;
 }
-
 .num {
   font-size: 100px;
   margin: 0px;
