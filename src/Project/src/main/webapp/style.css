@@ -187,13 +187,13 @@ ul.CTAs a {
 /* ---------------------------------------------------
     MAINDASHBOARD
 ----------------------------------------------------- */
-body{
+#mainDashboard{
   background-image: url(container.jpg);
   
 }
-.btn-info{
+#sidebarCollapse{
   color: #4E4D4E;
-  background: #F79158;
+  background: #F79518;
 }
 
 #sidebarCollapse:hover{
