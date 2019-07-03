@@ -29,9 +29,14 @@ var COLOR_HEX_COF = [
 		"#956F3F",
 		"#75634B",
 		"#555658"];
-
+var mem = -1;
 function getHex(length) {
 	var i = Math.floor(Math.random() * 6);
+	if (mem != -1) {
+		while (mem-i >= -2 && i - mem >= -2) {
+			i = (i+1) % 6;
+		}
+	}
 	if (length > 12) {
 		return COLOR_HEX_COF.slice(i,i+1);
 	} else {
