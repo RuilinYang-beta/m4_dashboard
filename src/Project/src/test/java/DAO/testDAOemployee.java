@@ -1,9 +1,8 @@
-package Unit_tests;
+package DAO;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
-import DAO.*;
 import nl.utwente.di.SQL.Statistics;
 
 public class testDAOemployee {

@@ -1,8 +1,7 @@
-package Unit_tests;
+package DAO;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import DAO.*;
 
 public class testDAOcustomer {
 	@Test

@@ -1,4 +1,4 @@
-package Unit_tests;
+package nl.utwente.di.SQL;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
