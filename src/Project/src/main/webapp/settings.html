@@ -10,8 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="chart.js"></script>
 
-    <title>Settings</title>
-    <link rel="icon" type="image/png" href="http://localhost:8080/Project/icon.png" >
+    <title>Cofano</title>
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
@@ -164,7 +163,7 @@ gapi.load('auth2', function() {
 
                   Admin settings</p>
                 <div class="gridDiv">
-                  <div id="boxSettings" class="">
+                  <div id="boxSettings" style="font-size:12pt;">
 	                Customer Name: <br>
 	                <input type="text" name="custname" id="custname" onkeypress="validateEvent(event,/[A-Za-z0-9 ]|\./)" autocomplete="off"><br>
 	                HttpLink: <br>
@@ -172,10 +171,13 @@ gapi.load('auth2', function() {
 	                Add: <br>
 	                <input type="checkbox" id="bookingCheck">
 	                <label for="">Bookings</label>
+	               	<br>
 	                <input type="checkbox" id="locationCheck">
 	                <label for="">Locations</label>
+	                <br>
 	                <input type="checkbox" id="actionCheck">
 	                <label for="">Actions</label>
+	                <br>
 	                <input type="checkbox" id="linestopCheck">
 	                <label for="">Linestops</label> <br>
 
@@ -185,6 +187,7 @@ gapi.load('auth2', function() {
 	                <div id="boxSettings" class="">
 		            <form>
 	                <p style="font-size: 17px;"><i>*Only name and email or name and id required to revoke access.</i></p>
+	                
 	                Employee name: <br>
 	                <input type="text" name="name" id="name" required><br>
 	                Employee id: <br>
