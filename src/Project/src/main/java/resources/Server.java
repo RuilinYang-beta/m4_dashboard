@@ -8,6 +8,7 @@ import Utils.SQLUtils;
 import nl.utwente.di.SQL.Database;
 import nl.utwente.di.SQL.Statistics;
 import DAO.*;
+import models.*;
 @Path("/sql")
 public class Server{
 	public static final String LINK = "http://localhost:8080";
@@ -33,17 +34,16 @@ public class Server{
 		
 		return SQLUtils.glueColumnIntoString(rs);
 	}
+	
 	/**
-	 * 
-	 * Function to update the whole database
-	 * 
+	 * Function to Start the autoupdate
 	 */
 	@GET
 	@Path("/autoupdate")
 	public String setTimer(@QueryParam("time") int time) {
 		int t = 0;
 		if (time <= 0) {
-			t = 360; //1 hr
+			t = 36000; //1 hr
 		}
 		
 		autoUpdate aU = new autoUpdate(this, t+(time*time)/time);
@@ -52,19 +52,17 @@ public class Server{
 	}
 	
 	/**
-	 * 
 	 * Function to return whether the employee valid or not in database
-	 * 
+	 * also used to check if cofano employee has access to Settings page
 	 */
 	@GET
 	@Path("/auth")
 	public boolean checkEmployee(@QueryParam("mail") String mail) {
 		return DAOemployee.checkEmployee(mail);
 	}
+	
 	/**
-	 * 
-	 * Function to return the name,id, and mail of the employee given access
-	 * 
+	 * Function to add the name,id, and mail of the employee given access
 	 */
 	@POST
 	@Path("/auth")
@@ -73,10 +71,9 @@ public class Server{
 							@QueryParam("mail") String mail) {
 		return DAOemployee.addEmployee(name, id, mail);
 	}
+	
 	/**
-	 * 
-	 * Function to return the name,id, and mail of the employee that will be deleted from the database
-	 * 
+	 * Function to delete the name,id, and mail of the employee
 	 */
 	@DELETE
 	@Path("/auth")
@@ -99,24 +96,20 @@ public class Server{
 		}
 	}
 	
-
 	/**
-	 * 
 	 * Function to return the amount of the bookings ever existed
-	 * 
 	 */	
 	@GET
 	@Path("/count")
 	@Produces(MediaType.TEXT_HTML)
 	public String getCount() {
-		String message = Statistics.getCount()+ "";
+		String message = DAOgeneral.getCount()+ "";
 		return message;
 	}
 	
 	/**
-	 * 
-	 * Function to add the customer's customer of cofano by giving the name,link, and the boolean for bookings,locations,actions, and linestops
-	 * 
+	 * Function to add the customer's customer of cofano by giving the name,link, 
+	 * and the boolean for bookings,locations,actions, and linestops
 	 */
 	@POST
 	@Path("/update")
@@ -130,11 +123,9 @@ public class Server{
 	}
 
 	/**
-	 * 
-	 * Function to update the database will be called method autoUpdate
-	 * 
+	 * Function to update the database
+	 * updates all customers' databases
 	 */
-	//update database values
 	@GET
 	@Path("/update")
 	public String updateDatabase() {
@@ -160,10 +151,9 @@ public class Server{
 		}
 		return "";
 	}
+	
 	/**
-	 * 
-	 * Function to run updateDatabase then this function will be called in the parameter /autoUpdate
-	 * 
+	 * autoupdate class runs a multithreaded timer that updates with a given interval
 	 */
 	private class autoUpdate extends Thread {
 		private Server s;
@@ -188,82 +178,9 @@ public class Server{
 			}
 		}
 	}
-	/**
-	 * 
-	 * Function to parse the value of different column with maximum parse until 3 differents columns (sql database)
-	 * 
-	 */
-	public static String parseToStringarray(ResultSet set) {
-		StringBuffer res1 = new StringBuffer();
-		StringBuffer res2 = new StringBuffer();
-		StringBuffer res3 = new StringBuffer();
-		String res = "";
-		ResultSetMetaData rsmd;
-		int col = -1;
-		try {
-			rsmd = set.getMetaData();
-			col = rsmd.getColumnCount();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			while (set.next()) {
-				res1.append(set.getObject(1)+";");
-				res2.append(set.getObject(2)+";"); 
-			
-				if(col == 3) {
-					res3.append(set.getObject(3)+";");
-				}
-				
-			}
-			if (res1.length() != 0 && res2.length() != 0) {
-				res1.setLength(res1.length()-1);
-				res2.setLength(res2.length()-1);
-				if(col == 3 && res3.length() != 0) {
-					res3.setLength(res3.length()-1);
-				}
-				
-				res = res1.toString() + "|" + res2.toString();
-				if(col == 3) {
-					res += "|" + res3.toString();
-				}
-			} else {
-				return "|";
-			}
-			
-			
-		} catch (SQLException e) {
-
-		}
 		
-		return res;
-	}
 	/**
-	 * 
-	 * change the value of the sql into string value as an array
-	 * 
-	 */
-	public String resultSetToStringArray(ResultSet rs) {
-		String resultString = "";
-		try {
-			while(rs.next()) {
-				if(rs.isLast()) {
-					resultString += rs.getString(1);
-				} else {
-					resultString += rs.getString(1) + ";";
-				}
-				
-			}
-		} catch (SQLException e) {
-			System.out.println("Sorry, it doesn't work");
-			e.printStackTrace();
-		}
-		return resultString;
-	}
-	/**
-	 * 
 	 * Function to return the customer names/shipping company names/customer id in a form of string array
-	 * 
 	 */
 	@GET
 	@Path("/getinfo")
@@ -295,13 +212,13 @@ public class Server{
 			return "abc";
 		}
 		try {connection.close();}catch(SQLException e) {}
-		return resultSetToStringArray(x);
+		return ResultSetArray.resultSetToStringArray(x);
 	}
+	
 	/**
-	 * 
-	 * Function to return the value bookings/netto weight/ bruto weight by giving the goal paramater the value filters with dates/order state/customer/teu/shipCompany/ship company Id/ship company scac
+	 * Function to return the value bookings/netto weight/ bruto weight by giving the goal paramater the value filters
+	 * with dates/order state/customer/teu/shipCompany/ship company Id/ship company scac
 	 * value return table or graphs/ customer id
-	 * 
 	 */
 	@GET
 	@Path("/select")
@@ -363,10 +280,11 @@ public class Server{
 		}
 		return getValue(command, inserts, goal, false);	
 	}
+	
 	/**
-	 * 
-	 * Function to return bookings/netto weight/bruto weight/ top customer bookings(doughnut chart)/ top customer weight(doughnut chart)/ and line chart with 2 lines (2yAxis)s
-	 * 
+	 * Function to return bookings/netto weight/bruto weight
+	 * top customer bookings(doughnut chart)/ top customer weight(doughnut chart)
+	 * and line chart with 2 lines (2yAxis)s
 	 */
 	private String getValue(String command, Object[] inserts, String goal, boolean query) {
 		Connection connection = null;
@@ -429,7 +347,7 @@ public class Server{
 				}
 				return tot + "";
 			}
-			return parseToStringarray(x);
+			return ResultSetArray.parseToStringarray(x);
 		} catch (SQLException e) {
 			System.out.println("SQL error");
 			e.printStackTrace();
@@ -438,9 +356,9 @@ public class Server{
 		}
 		return i + "";
 	}
+	
 	/**
-	 * 
-	 * Fucntion to return the value of cofano api in the form of JSON object then it will be change into string by function linestops
+	 * Function to return the value of cofano api in the form of JSON object then it will be change into string by function linestops
 	 */
 	public static JSONArray parseJSON(ResultSet rs) {
 		JSONArray json = new JSONArray();

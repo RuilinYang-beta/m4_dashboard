@@ -10,11 +10,9 @@ $(document).ready(function() {
   getInfo('shippingCompanyNames');
   getInfo('customerId');
 });
-//CHANGE FARM_URL TO URL AND URL TO LOCALURL
+//Change FARMURL to URL and URL to LOCALURL
 var FARMURL = "http://farm03.ewi.utwente.nl:7034";
 var URL = "http://localhost:8080";
-
-
 
 
 //Determine the max length of an input
@@ -43,7 +41,8 @@ function validateEvent(evt,regexValue) {
 	  }
 	}
 
-// Validate on certain input.value.length, e.g, only Uppercase under length 1 and digit above length 1
+// Validate on certain input.value.length
+// e.g, only Uppercase under length 1 and digit above length 1
 function restrictInput(obj, evt, regexA, rangeA, regexB) {
 	if(obj.value.length < rangeA) {
 		validateEvent(evt,regexA);
@@ -62,7 +61,8 @@ function check(divClass, checkboxClass){
 	}
 }
 
-// Checkboxes will show fillins when they are checked. Empty the value in the field and hiding the fillins when they are unchecked
+// Show when checkboxes are checked.
+// Empty the value in the field when they are unchecked.
 function checkWithSelect(divClass, checkboxClass, fillInId){
 	$(checkboxClass).on('change', function (e) {
 		if(this.checked) {
@@ -126,7 +126,7 @@ function getCount() {
 	http.send();
 };
 
-// Filtering functions
+// FILTERING FUNCTIONS
 
 var book = "0";
 var bruto = "0";
@@ -142,13 +142,14 @@ label: name for certain data on the graph(optional)
 label1: same as label, but for the second data
 */
 
+// Function that gets the desired information (e.g list of customers' names, list of shipping companies and your own id).
 function getInfo(infoType) {
 	var http = new XMLHttpRequest();
 	var url = "http://localhost:8080/Project/rest/sql/getinfo?infoType=" + infoType;
 	http.onreadystatechange = function(){
 		  if (this.readyState == 4 && this.status == 200) {
 			  var text = this.responseText;
-			  a = text.split(";");
+			  a = text.split(";"); // splits the response and puts it in the list
 			  var list = [];
 			  if (infoType == 'customerNames') {
 				  list = document.getElementById('customNameList');
@@ -181,13 +182,14 @@ function getInfo(infoType) {
 	http.send();
 }
 
-
+// Function that shows the desired information based on the user's selected options in a table or doughnut chart*
+// *The application does not allowed direct user input.
 function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "",label1=""){
 	$(".noResult").removeAttr("style").hide();
 	$(".graphs").removeAttr("style").hide();
 	var http = new XMLHttpRequest();
 	var customerId = $('#customerFill').val();
-	var dateFrom = new Date($('#dateFromFill').val());
+	var dateFrom = new Date($('#dateFromFill').val()); // filling in the date period 
 	var dateTo = new Date($('#dateToFill').val());
 	var fromD = "";
 	var toD = "";
@@ -196,23 +198,24 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 	}
 	if (dateTo != "Invalid Date") {
 		toD = dateTo.getTime() / 1000;
-	}
+	}// other filtering options
 	var customer = $('#customFill').val();
 	var ordState = $('#orderStateFill').val();
 	var teu = $('#teuFill').val();
 	var shipComp= $('#companyNameFill').val();
 
+	// Querying for the desired data
 	var url = URL + "/Project/rest/sql/select?goal=";
-	if(searchType == "bookings") {
+	if(searchType == "bookings") { // returns the amount of bookings per month 
 		url += "bookings";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
-	} else if (searchType == "brutoWeight") {
+	} else if (searchType == "brutoWeight") { // returns the total bruto weight per month
 		url += "brutoWeight";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
-	} else if (searchType == "nettoWeight") {
+	} else if (searchType == "nettoWeight") { // returns the total netto weight per month
 		url += "nettoWeight";
 		var list = {fromD, toD, customer, ordState, teu, shipComp, customerId};
-	} else if(searchType == "topCustomerBook"){
+	} else if(searchType == "topCustomerBook"){ // returns the top customers and the amount of bookings they made
 		url += "topCustomerBook";
 		customer = "";
 		ordState = "";
@@ -230,6 +233,7 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 		url += "2yAxis";
 	}
 
+	// Fill the table with the asked data 
 	var x;
 	if(table == "table"){
 		url += "&table=true";
@@ -281,16 +285,17 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 			}
 
 		}
-
+		// If the table parameter in the above function is omitted, then a doughnut chart will be created. 
 		http.onreadystatechange = function(){
 			  if (this.readyState == 4 && this.status == 200 & searchType != "2yAxis") {
 				  var temp = this.responseText.split("|");
 
-				  a = temp[0].split(";");
+				  a = temp[0].split(";"); // split the result list into two lists
 				  b = temp[1].split(";").map(function(item) {
 					    return parseInt(item, 10);
 				  });
 
+				  // fills the chart
 				  var i;
 				  for(i = 1; i<b.length ; i++){
 					  b[i] = b[i] + b[i-1];
@@ -312,7 +317,7 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 					    return parseInt(item, 10);
 				  });
 
-				  chart2yAxis(a,canvasId,type,label,label1,b,c,graphTitle);
+				  chart2yAxis(a,canvasId,type,label,label1,b,c,graphTitle); 
 			  }
 		};
 	}
@@ -372,7 +377,7 @@ function chart(year, total, canvas, chartName, type, label) {
 	  var ctx = document.getElementById(canvas).getContext('2d');
 	  var myChart = new Chart(ctx, {
 	    type: type,
-	    data: {
+	    data: { // type of data representation
 	        labels: year,
 	        datasets: [{
 	            label: label,
@@ -393,6 +398,7 @@ function chart(year, total, canvas, chartName, type, label) {
 	  });
 };
 
+// create doughnut chart
 function chartDoughnut(year, total, canvas, chartName, type, label) {
 	  var x = generateListColor(year, type);
 	  var ctx = document.getElementById(canvas).getContext('2d');
@@ -439,7 +445,7 @@ function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 	  var ctx = document.getElementById(canvas).getContext('2d');
 	  var myChart = new Chart(ctx, {
 	    type: type,
-	    data: {
+	    data: { // data representation for both y-axes 
 	        labels: year,
 	        datasets: [{
 	            label: label,
@@ -460,8 +466,8 @@ function chart2yAxis(year,canvas,type,label,label1,total,total1,chartName){
 
 
 	        }]
-	    },
-	    options: {
+	    }, 
+	    options: { // other design options
 			responsive: true,
 			hoverMode: 'index',
 			stacked: false,
@@ -623,6 +629,7 @@ function removeEmployee() {
 
 /////// Settings Page \\\\\\\
 
+// Function that adds/removes new environment (or new customer)
 function addEnvi() {
 	var http = new XMLHttpRequest();
 	var url = URL + "/Project/rest/sql/update?";
@@ -678,7 +685,7 @@ function inputNotEmpty() {
 		return true;
 	}
 }
-
+// button function
 $(document).ready(function() {
 	  $("#addEnviButton").click(function() {
 		  if(inputNotEmpty()) {

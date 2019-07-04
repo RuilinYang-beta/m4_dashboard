@@ -13,14 +13,26 @@ import javax.servlet.*;
 //This code executes when the apache server starts
 public class OnStartup implements javax.servlet.ServletContextListener {
 	private static final int UPDATE_WAIT_TIME = 864000; //time in seconds between updates
+	
+	/**
+	 * if server starts: add thread to start autoUpdate
+	 */
 	public void contextInitialized(final ServletContextEvent event) {
 		updateInitThread t = new updateInitThread();
 		t.start();
     }
 	
+	/**
+	 * upon shutdown: nothing has to happen, since all connections to database are closed immediately after use 
+	 */
 	public void contextDestroyed(final ServletContextEvent event) {
 		System.out.println("server stopped or crashed");
 	}
+	
+	/**
+	 * multithread the starting of the autoUpdate, since it has to wait for http request
+	 * while server is not yet started, giving an error
+	 */
 	private class updateInitThread extends Thread {
 		public void run() {
 			System.out.println("waiting");

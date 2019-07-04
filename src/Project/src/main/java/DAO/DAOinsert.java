@@ -9,8 +9,11 @@ import org.json.JSONObject;
 import nl.utwente.di.SQL.*;
 
 public class DAOinsert {
-	
-	//insertion of actions into SQL
+	/**
+	 * Insert actions and its id to Action table in the database
+	 * @param data List of actions to be inserted
+	 * @param customer Customer Id
+	 */
 	public static void insertAction(List<String> data, int customer) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
@@ -29,7 +32,11 @@ public class DAOinsert {
 		}
 	}
 	
-	//insertion of locations in SQL
+	/**
+	 * Insert location or address values to Location or Address table in the database
+	 * @param data List of Location or Address values to be inserted in form of JSONObject
+	 * @param act Target table of the insertion, String 'loc' to insert to Location else insert to Address
+	 */
 	public static void insertLocation(List<JSONObject> data, String act) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
@@ -39,90 +46,86 @@ public class DAOinsert {
 		PreparedStatement s = null;
 		if (act.contentEquals("loc")) {
 			for (JSONObject item:data) {
-			execute.append("INSERT INTO locations VALUES(");
-			for (int i = 1; i <= options.length; i ++) {
-				boolean done = false;
-				String c = options[i-1].split(" ")[0];
-				try {
-					if (item.getString(c).length() == 0) {
-						execute.append("null" + ",");
-						done = true;
-					} else {
-						execute.append("'" + item.getString(c) + "'" + ",");
-						done = true;
-					}
-				} catch (JSONException z) {
+				execute.append("INSERT INTO locations VALUES(");
+				for (int i = 1; i <= options.length; i ++) {
+					boolean done = false;
+					String c = options[i-1].split(" ")[0];
 					try {
-						if (!done) {
-							execute.append(item.getLong(c) + ",");
+						if (item.getString(c).length() == 0) {
+							execute.append("null" + ",");
+							done = true;
+						} else {
+							execute.append("'" + item.getString(c) + "'" + ",");
 							done = true;
 						}
-						
-					} catch (JSONException e) {
-						if (!done) {
-							execute.append("null" + ",");
+					} catch (JSONException z) {
+						try {
+							if (!done) {
+								execute.append(item.getLong(c) + ",");
+								done = true;
+							}
+						} catch (JSONException e) {
+							if (!done) {
+								execute.append("null" + ",");
+							}
 						}
-						
 					}
 				}
-				
+				execute.setLength(execute.length()-1);
+				execute.append(");");
 			}
-			execute.setLength(execute.length()-1);
-			execute.append(");");
-		}
 		}else {
 			for (JSONObject item:data) {
-			if (!item.get("address").toString().equals("null")) {
-				execute.append("INSERT INTO address VALUES(");
-				execute.append(item.getInt("locationId") + ",");
-				for (int i = 2; i <= addOptions.length; i ++) {
-					String c = addOptions[i-1].split(" ")[0];
-					
-					try {
-						if (item.getJSONObject("address").getString(c).length() > 0) {
-							execute.append("'" + item.getJSONObject("address").getString(c) + "'" + ",");
-						} else if (item.getString(c).length() > 0) {
-							execute.append("'" + item.getJSONObject("address").getString(c) + "'" + ",");
-						} else {
-							execute.append("null" + ",");
-						}
-					} catch (JSONException z) {
+				if (!item.get("address").toString().equals("null")) {
+					execute.append("INSERT INTO address VALUES(");
+					execute.append(item.getInt("locationId") + ",");
+					for (int i = 2; i <= addOptions.length; i ++) {
+						String c = addOptions[i-1].split(" ")[0];
 						try {
-							execute.append(item.getJSONObject("address").getInt(c) + ",");
-						} catch (JSONException e) {
-							execute.append("null" + ",");
+							if (item.getJSONObject("address").getString(c).length() > 0) {
+								execute.append("'" + item.getJSONObject("address").getString(c) + "'" + ",");
+							} else if (item.getString(c).length() > 0) {
+								execute.append("'" + item.getJSONObject("address").getString(c) + "'" + ",");
+							} else {
+								execute.append("null" + ",");
+							}
+						} catch (JSONException z) {
+							try {
+								execute.append(item.getJSONObject("address").getInt(c) + ",");
+							} catch (JSONException e) {
+								execute.append("null" + ",");
+							}
 						}
 					}
-				}
-				execute.setLength(execute.length()-1);
-				execute.append(");");
-			}		
-			if (!item.get("address").toString().equals("null")) {
-				execute.append("INSERT INTO address VALUES(");
-				execute.append(item.getInt("locationId") + ",");
-				for (int i = 2; i <= addOptions.length; i ++) {
-					String c = addOptions[i-1].split(" ")[0];
-					
-					try {
-						if (item.getJSONObject("address").getString(c).length() > 0) {
-							execute.append("'" + item.getJSONObject("address").getString(c) + "'" + ",");
-						} else if (item.getString(c).length() > 0) {
-							execute.append("'" + item.getJSONObject("address").getString(c) + "'" + ",");
-						} else {
-							execute.append("null" + ",");
-						}
-					} catch (JSONException z) {
+					execute.setLength(execute.length()-1);
+					execute.append(");");
+				}		
+				if (!item.get("address").toString().equals("null")) {
+					execute.append("INSERT INTO address VALUES(");
+					execute.append(item.getInt("locationId") + ",");
+					for (int i = 2; i <= addOptions.length; i ++) {
+						String c = addOptions[i-1].split(" ")[0];
+						
 						try {
-							execute.append(item.getJSONObject("address").getInt(c) + ",");
-						} catch (JSONException e) {
-							execute.append("null" + ",");
+							if (item.getJSONObject("address").getString(c).length() > 0) {
+								execute.append("'" + item.getJSONObject("address").getString(c) + "'" + ",");
+							} else if (item.getString(c).length() > 0) {
+								execute.append("'" + item.getJSONObject("address").getString(c) + "'" + ",");
+							} else {
+								execute.append("null" + ",");
+							}
+						} catch (JSONException z) {
+							try {
+								execute.append(item.getJSONObject("address").getInt(c) + ",");
+							} catch (JSONException e) {
+								execute.append("null" + ",");
+							}
 						}
 					}
+					execute.setLength(execute.length()-1);
+					execute.append(");");
 				}
-				execute.setLength(execute.length()-1);
-				execute.append(");");
 			}
-		}
 		}
 		try {
 			System.out.println("Insert into database");
@@ -137,9 +140,12 @@ public class DAOinsert {
 			}
 		}
 		System.out.println("finished");
-		}
+	}
 	
-	//insertion of linestops in SQL
+	/**
+	 * Insert linestop values to the Linestops table in the database
+	 * @param data List of linestop values in form of JSONObject
+	 */
 	public static void insertLinestops(List<JSONObject> data) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
@@ -184,7 +190,12 @@ public class DAOinsert {
 		System.out.println("finished Linestops");
 	}
 	
-	//insertion of bookings in SQL
+	/**
+	 * Insert booking values to the Bookings table in the database
+	 * @param data List of booking values in form of JSONObject
+	 * @param command SQL command to be used
+	 * @param opts Type of the values inside the table (INT,VARCHAR,etc.)
+	 */
 	public static void insertDatabase(List<JSONObject> data, String command, String opts) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
@@ -227,6 +238,12 @@ public class DAOinsert {
 		}
 	}
 	
+	/**
+	 * Insert customer values to Customer table in the database
+	 * @param name Name of the customer
+	 * @param link Link for the customer data
+	 * @return
+	 */
 	public static String insertCustomer(String name, String link) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
@@ -247,8 +264,5 @@ public class DAOinsert {
 			try {connection.close();} catch(SQLException f) {}
 			return e.toString();
 		}
-		
-		
-		
 	}
 }

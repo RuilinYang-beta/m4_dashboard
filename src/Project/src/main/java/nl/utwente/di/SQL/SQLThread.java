@@ -14,6 +14,12 @@ public class SQLThread extends Thread {
 	private String goal = "";
 	private int customer = -1;
 	
+	/**
+	 * Initialization: needs to know what the goal table will be, because it parses data differently
+	 * if it is actions or bookings
+	 * @param goal  the destination table: bookings, actions, linestops or locations
+	 * @param customer  customer id: saved in table for querying purposes
+	 */
 	public SQLThread(String goal, int customer) {
 		this.data = new ArrayList<String>();
 		this.dataJson = new ArrayList<JSONObject>();
@@ -21,6 +27,11 @@ public class SQLThread extends Thread {
 		this.customer = customer;
 	}
 	
+	/**
+	 * puts all options after each other for the creation of a query
+	 * eg INSERT INTO table (getLabels(opts)) values (a,b,c)
+	 * @param opts
+	 */
 	private String getLabels(String opts) {
 		String[] labels = opts.split(",");
 		String res = "";
@@ -30,6 +41,11 @@ public class SQLThread extends Thread {
 		return res.substring(0, res.length()-1);
 	}
 	
+	/**
+	 * locks the miltiThread and saves the given data locally so that when Thread.start() is called
+	 * it can parse all data at once
+	 * @param res
+	 */
 	public void parse(String res) {
 		done = false;
 		if (!json.equals("[")) {
@@ -39,7 +55,10 @@ public class SQLThread extends Thread {
 		done = true;
 	}
 	
-	
+	/**
+	 * first checks if thread is locked (meaning that data is being saved
+	 * if not locked, it starts parsing and inserting in database
+	 */
 	public void run() {
 		while (!done) {
 			try {Thread.sleep(20);}catch(InterruptedException e) {}

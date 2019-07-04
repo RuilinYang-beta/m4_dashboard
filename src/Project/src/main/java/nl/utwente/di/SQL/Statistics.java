@@ -1,12 +1,13 @@
 package nl.utwente.di.SQL;
 
-import java.sql.*;
 import DAO.*;
 
 public class Statistics {
-	//this method parses all actions in our SQL database,
-	//which are saved as JSON object
-	//by extracting the data we want
+	/**
+	 * command Database server to parse all actions which are saved as JSON objects
+	 * @param RESET
+	 * @param customer
+	 */
 	public static void parseActions(boolean RESET, int customer) {
 		if (RESET) {
 			System.out.println("reset");
@@ -40,18 +41,6 @@ public class Statistics {
 		res += " FROM actions WHERE id=" + customer;
 		System.out.println(res);
 		DAOgeneral.execute(res);
-	}
-	
-	public static int getCount() {
-		ResultSet temp = DAOgeneral.execute("SELECT COUNT(*) AS a FROM bookings");
-		try {
-			while  (temp.next()) {
-				return temp.getInt("a");
-			}
-		} catch (SQLException e) {
-			return -1;
-		}
-		return -1;
 	}
 	
 	private static final String SQL_ACTIONS_PARSE = "DROP TABLE IF EXISTS st_actions; CREATE TABLE st_actions (";

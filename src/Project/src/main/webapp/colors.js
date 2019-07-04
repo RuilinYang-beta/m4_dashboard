@@ -30,6 +30,8 @@ var COLOR_HEX_COF = [
 		"#75634B",
 		"#555658"];
 var mem = -1;
+
+// Takes a random hexadecimal number close to the colors above 
 function getHex(length) {
 	var i = Math.floor(Math.random() * 6);
 	if (mem != -1) {
@@ -44,6 +46,7 @@ function getHex(length) {
 	}
 }
 
+// Convert the result from the above function into rgb value. 
 function getRGB(length) {
 	var temp = getHex(length);
 	var res = [];
