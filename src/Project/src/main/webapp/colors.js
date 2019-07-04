@@ -38,6 +38,9 @@ function getHex(length) {
 		while (mem-i >= -2 && i - mem >= -2) {
 			i = (i+1) % 6;
 		}
+		mem = -1;
+	} else {
+		mem = i;
 	}
 	if (length > 12) {
 		return COLOR_HEX_COF.slice(i,i+1);
