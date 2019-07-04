@@ -17,13 +17,15 @@ public class Database {
 	private static final String GET_URL = "https://module4t2-test.cofanostack.com/api/bigbrother/";
 	private static final String AUTH_CODE = "Basic QmlnQnJvdGhlcjpob3R0ZW50b3R0ZW50ZW50ZW50ZW50b29uc3RlbGxpbmc=";
 
-	//Instantiates HTTP request and SQL insertion for the database
-	//requires 4 variables:
-	//path=table, so either "locations", "bookings", "linestops", or "actions"
-	//reset=reset the table, ergo creates a new one
-	//offset=start value, if you dont reset table, we dont need all new info
-	//offset can be either int or Long
-	//customer=customer id to keep table unique
+	/**
+	 * Instantiates HTTP request and SQL insertion for the database
+	 * requires 4 variables:
+	 * @param path=table, so either "locations", "bookings", "linestops", or "actions"
+	 * @param reset=reset the table, ergo creates a new one on TRUE
+	 * @param offset=start value, if you dont reset table, we dont need all new info
+	 * offset can be either int or Long
+	 * @param customer=customer id to keep table unique
+	 */
 	public static void makeTable(String path, boolean RESET, Object offset, int customer) {
 		int i = 0;
 		String link = DAOcustomer.getCustLink(customer);
@@ -118,9 +120,12 @@ public class Database {
 
 	}
 	
-	//initiates all updates.
-	//locations get reset every time
-	//bookings and linestops only get updated normally
+	/**initiates all updates.
+	 * locations get reset every time
+	 * bookings and linestops only get updated normally
+	 * @param RESET
+	 * @param customer defines which customer will be updated (allows for new customers to also work)
+	 */
 	public static void update(boolean RESET, String customer) {
 		int i = 0;
 		if (i > 0) {
@@ -135,6 +140,13 @@ public class Database {
 		
 	}
 	
+	/**
+	 * initiates update for only given customer, needed to add new customer to system
+	 * @param RESET
+	 * @param customer
+	 * @param B_L_A_S determines which tables will be imported from Cofano API
+	 * t for import, f for not import so bookings_not-locations_actions_linestops would be t_f_t_t
+	 */
 	public static void update(boolean RESET, String customer, String B_L_A_S) {
 		if (B_L_A_S == null) {
 			update(RESET, customer);
@@ -160,7 +172,12 @@ public class Database {
 		}
 	}
 	
-	//execute HTTP request and return either Array of JSON objects or String objects
+	/**
+	 * pulls data from Cofano API
+	 * @param path http path to get data from (saved in 'customers' table)
+	 * @param t allows the parsing and saving in database to be multithreaded
+	 * @return either JSON array or String array (String array because we dont parse actions locally)
+	 */
 	public static Object getData(String path, SQLThread t) {
 		URL url;
 		List<JSONObject> o = null;
@@ -199,7 +216,13 @@ public class Database {
 		return o;
 		
 	}
-	//JSON parser, creates list of entities
+	
+	/**
+	 * parses from string to JSON, allowing database inserts for Bookings, Locations and linestops
+	 * @param json  string representation of json array [{JSON},{JSON},{JSON}]
+	 * @return json  array that allows for fastest reading/insertion in database
+	 * uses static strings with all options that are put in database
+	 */
 	public static List<JSONObject> parse(String json) {
 		List<JSONObject> temp = new ArrayList<JSONObject>();
 		String data = json;
@@ -230,7 +253,12 @@ public class Database {
 		} 
 		return temp;
 	}
-	//JSON parser, creates list of entities for ACTIONS
+	
+	/**
+	 * parses from  string to String array, allowing database insert for Actions
+	 * @param json  string representation of json array [{JSON},{JSON},{JSON}]
+	 * @return  String array containing string representation of seperate JSON objects
+	 */
 	public static List<String> parseActions(String json) {
 		List<String> temp = new ArrayList<String>();
 		String data = new String(json);
@@ -269,6 +297,10 @@ public class Database {
 		return temp;
 	}
 	
+	/**
+	 * everything starting with OPT_ are the columns of the respective table, which are also the name of
+	 * the JSON attributes, allowing for database insert to run smoothly
+	 */
 	private static final String SQL_CUST = "DROP TABLE IF EXISTS customers; CREATE SEQUENCE cust_seq; CREATE TABLE customers ("
 			+ "id INT NOT NULL DEFAULT nextval('cust_seq'),"
 			+ "name VARCHAR(50) PRIMARY KEY,"

@@ -4,28 +4,11 @@ import java.sql.*;
 import DAO.*;
 
 public class testSql {
-	public Connection connection;
-	
-	public void connectToDatabase() {
-		try {
-			Class.forName("org.postgresql.Driver");
-		}	catch (ClassNotFoundException cnfe) {
-			System.err.println("Error loading driver: " + cnfe);
-		}
-		String host = "farm03.ewi.utwente.nl";
-		String dbName = "docker";
-		String password = "G6BzWOlT0S";
-		String url = "jdbc:postgresql://"
-		+ host + ":7035/" + dbName;
-		
-		try {
-			connection = DriverManager.getConnection(url, dbName, password);
-		}
-		catch(SQLException sqle) {
-			System.err.println("Error connecting: " + sqle);
-		}
-	}
-	
+	/**
+	 * Allows for some database requests
+	 * Automatically prints the result
+	 * this function is used a lot to check if database insertion/deletion worked
+	 */
 	public static void main(String[] args) {
 		String command = "SELECT * FROM customers";
 		try {
