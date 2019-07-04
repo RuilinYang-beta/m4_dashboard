@@ -162,7 +162,8 @@ gapi.load('auth2', function() {
 	              <p class="title">
 
                   Admin settings</p>
-                  <div >
+                <div class="gridDiv">
+                  <div id="boxSettings" class="">
 	                Customer Name: <br>
 	                <input type="text" name="custname" id="custname" onkeypress="validateEvent(event,/[A-Za-z0-9 ]|\./)" autocomplete="off"><br>
 	                HttpLink: <br>
@@ -178,19 +179,25 @@ gapi.load('auth2', function() {
 	                <label for="">Linestops</label> <br>
 
 	                <button  class="btn btn-secondary text-center" id="addEnviButton">Add</button>
-                 <br><br>
-                <form>
-                <p style="font-size: 17px;"><i>*Only name and email or name and id required to revoke access.</i></p>
-                Employee name: <br>
-                <input type="text" name="name" id="name" required><br>
-                Employee id: <br>
-                <input type="text" name="id" id="id"><br>
-                Employee email: <br>
-                <input type="email" name="mail" id="mail"><br><br>
-                <button onclick="addEmployee()" class="btn btn-primary text-center">Authorize Employee</button>
-                <button onclick="removeEmployee()" class="btn btn-danger text-center">Revoke Access</button>
-                </form>
-               </div>
+	               </div>
+                
+	                <div id="boxSettings" class="">
+		            <form>
+	                <p style="font-size: 17px;"><i>*Only name and email or name and id required to revoke access.</i></p>
+	                Employee name: <br>
+	                <input type="text" name="name" id="name" required><br>
+	                Employee id: <br>
+	                <input type="text" name="id" id="id"><br>
+	                Employee email: <br>
+	                <input type="email" name="mail" id="mail"><br><br>
+	                <button onclick="addEmployee()" class="btn btn-primary text-center">Authorize Employee</button>
+	                <button onclick="removeEmployee()" class="btn btn-danger text-center">Revoke Access</button>
+	                </form>
+	              
+	               </div>
+	              </div>
+             	 
+               
 	            </div>
             
            </div>
