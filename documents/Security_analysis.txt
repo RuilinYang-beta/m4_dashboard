@@ -2,16 +2,17 @@ There are two major security risks with a webapp with database:
 -Cross site scripting
 -SQL injection
 
-XSS (cross site scripting):
-XSS can occur when the input of a user is executed as html without proper checks. This can be prevented in two ways:
-	1 Don't allow user input, which is what we mainly apply, by giving drop menu's to choose from. This is the easiest
-	  way to ensure that the user cant insert malicious code.
-	2 Sanitize all input, which is what we don't do. Any and all input fields are sent to the server without considering
-	  the content. The advantage of this is that the server will see it as a string, not a command, therefore it tries to use
-	  the string to see what to return. Since it doesn't know what to do with this unknown string, it will return a 405 error.
-	  as long as this malicious script is seen as String, it is safe, and we never see it any other way.
 
-SQLi (SQL injection)
+======== XSS (cross site scripting): ========
+Cross Site Scripting results in client browser trusting server. Attacker can achieve it in the following two ways: 
+1. One is to store data with malicious script in the application database, so that when the data is retrieved by client, the malicious script will be executed in the client browser. 
+**This would not happen in our application, we don't allow SQL injection(see the analysis below); user can only choose between the options that we offer, thus attackers have no chance in storing malicious script in our database.** 
+
+2. The other way is attacker can trick user to visit url that contains malicious script, so that the reflected url from server will partly be intepreted as script and get executed. 
+**This would also not happen, because the field related to user input (the filter options) is retrieving data using POST method, even if attacker somehow succeed in tricking the user to visit url with script, the server knows that's not a valid url thus will not reflect the url back to user.**
+
+
+======== SQLi (SQL injection) ========
 This phenomenon occurs when SQL commands are appended by user input, and the user writes malicious queries. Our solution is the 
 same as with XSS: never see user input as command. The webapp handles the input as String and immediately sends it to the server.
 The server will Give this input as a string to a query (a preparedStatement), so that our database knows that it is to be seen as
