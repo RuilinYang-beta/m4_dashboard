@@ -1,14 +1,15 @@
-package nl.utwente.di.SQL;
+package resources;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.sql.*;
 import org.json.*;
 import Utils.SQLUtils;
+import nl.utwente.di.SQL.Database;
+import nl.utwente.di.SQL.Statistics;
 import DAO.*;
 @Path("/sql")
 public class Server{
-	
 	public static final String LINK = "http://localhost:8080";
 	
 	/**

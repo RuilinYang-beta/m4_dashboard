@@ -42,8 +42,13 @@ public class DAOgeneral {
 			ResultSet res =  s.executeQuery();
 			return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			if (e.getMessage().equals("No results were returned by the query.")) {
+				System.err.println("this query has no resultset");
+				return null;
+			} else {
+				e.printStackTrace();
+				return null;
+			}
 		} finally {
 			try {connection.close();}catch(SQLException e) {}
 		}

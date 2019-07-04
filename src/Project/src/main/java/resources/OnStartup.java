@@ -1,4 +1,4 @@
-package nl.utwente.di.SQL;
+package resources;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -12,14 +12,14 @@ import javax.servlet.*;
 
 //This code executes when the apache server starts
 public class OnStartup implements javax.servlet.ServletContextListener {
-	private static final int UPDATE_WAIT_TIME = 3600; //time in seconds between updates
+	private static final int UPDATE_WAIT_TIME = 864000; //time in seconds between updates
 	public void contextInitialized(final ServletContextEvent event) {
 		updateInitThread t = new updateInitThread();
 		t.start();
     }
 	
 	public void contextDestroyed(final ServletContextEvent event) {
-		
+		System.out.println("server stopped or crashed");
 	}
 	private class updateInitThread extends Thread {
 		public void run() {

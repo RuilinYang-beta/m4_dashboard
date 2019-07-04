@@ -14,32 +14,9 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 public class Database {
-	public Connection connection;
 	private static final String GET_URL = "https://module4t2-test.cofanostack.com/api/bigbrother/";
 	private static final String AUTH_CODE = "Basic QmlnQnJvdGhlcjpob3R0ZW50b3R0ZW50ZW50ZW50ZW50b29uc3RlbGxpbmc=";
-	
-	//Standard connection: execute this to open the public variable connection
-	//connects to the SQL database
-	public void connectToDatabase2() {
-		try {
-			Class.forName("org.postgresql.Driver");
-		}	catch (ClassNotFoundException cnfe) {
-			System.err.println("Error loading driver: " + cnfe);
-		}
-		String host = "farm03.ewi.utwente.nl";
-		String dbName = "docker";
-		String password = "G6BzWOlT0S";
-		String url = "jdbc:postgresql://"
-		+ host + ":7035/" + dbName;
-		
-		try {
-			connection = DriverManager.getConnection(url, dbName, password);
-		}
-		catch(SQLException sqle) {
-			System.err.println("Error connecting: " + sqle);
-		}
-	}
-	
+
 	//Instantiates HTTP request and SQL insertion for the database
 	//requires 4 variables:
 	//path=table, so either "locations", "bookings", "linestops", or "actions"

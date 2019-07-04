@@ -27,33 +27,17 @@ public class testSql {
 	}
 	
 	public static void main(String[] args) {
-		testSql d = new testSql();
-		d.connectToDatabase();
-		d.Test();
+		String command = "SELECT * FROM customers";
 		try {
-			d.connection.close();
-		} catch (SQLException e) {
-			
-		}
-//		Statistics s = new Statistics();
-//		s.connectToDatabase();
-//		System.out.println(s.addEmployee("jan", 5, "janneman1997@gmail.com"));
-//		try {s.connection.close();}catch(SQLException e) {}
-	}
-	
-	public void Test() {
-		//String command = "SELECT action::json->'tasks'->'location'->'locationGroup'->>'name' FROM actions LIMIT 1;";
-		
-		String command = "SELECT * FROM employees WHERE name LIKE '%TEST'";
-		try {
-			Statement s = connection.createStatement();
-			ResultSet rs = s.executeQuery(command);
-			ResultSetMetaData rsdm = rs.getMetaData();
-			while (rs.next()) {
-				for (int i = 1; i <= rsdm.getColumnCount(); i ++) {
-					System.out.println(rsdm.getColumnLabel(i) + " " + rs.getString(i));
+			ResultSet rs = DAOgeneral.execute(command);
+			if (rs != null) {
+				ResultSetMetaData rsdm = rs.getMetaData();
+				while (rs.next()) {
+					for (int i = 1; i <= rsdm.getColumnCount(); i ++) {
+						System.out.println(rsdm.getColumnLabel(i) + " " + rs.getString(i));
+					}
+					
 				}
-				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

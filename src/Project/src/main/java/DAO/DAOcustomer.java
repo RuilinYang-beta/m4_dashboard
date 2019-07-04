@@ -27,7 +27,7 @@ public class DAOcustomer {
 		c = DAOgeneral.connectToDatabase(c);
 		try {
 			Statement s = c.createStatement();
-			ResultSet rs = s.executeQuery("SELECT id FROM customers WHERE name=" + customer);
+			ResultSet rs = s.executeQuery("SELECT id FROM customers WHERE name='" + customer + "'");
 			while (rs.next()) {
 				return rs.getInt(1);
 			}

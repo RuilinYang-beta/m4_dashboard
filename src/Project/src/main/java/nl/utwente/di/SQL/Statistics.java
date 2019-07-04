@@ -4,12 +4,6 @@ import java.sql.*;
 import DAO.*;
 
 public class Statistics {
-	
-	public static void main(String[] args) {
-		Statistics s = new Statistics();
-		s.parseActions(true, 1);
-	}
-	
 	//this method parses all actions in our SQL database,
 	//which are saved as JSON object
 	//by extracting the data we want
