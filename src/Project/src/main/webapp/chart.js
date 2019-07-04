@@ -145,7 +145,7 @@ label1: same as label, but for the second data
 // Function that gets the desired information (e.g list of customers' names, list of shipping companies and your own id).
 function getInfo(infoType) {
 	var http = new XMLHttpRequest();
-	var url = "http://localhost:8080/Project/rest/sql/getinfo?infoType=" + infoType;
+	var url = URL + "/Project/rest/sql/getinfo?infoType=" + infoType;
 	http.onreadystatechange = function(){
 		  if (this.readyState == 4 && this.status == 200) {
 			  var text = this.responseText;
@@ -153,7 +153,6 @@ function getInfo(infoType) {
 			  var list = [];
 			  if (infoType == 'customerNames') {
 				  list = document.getElementById('customNameList');
-				  
 				  a.forEach(function(item){
 					   var option = document.createElement('option');
 					   option.value = item;
@@ -187,6 +186,7 @@ function getInfo(infoType) {
 function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "",label1=""){
 	$(".noResult").removeAttr("style").hide();
 	$(".graphs").removeAttr("style").hide();
+	$(".resultButtonDiv").removeAttr("style").hide();
 	var http = new XMLHttpRequest();
 	var customerId = $('#customerFill').val();
 	var dateFrom = new Date($('#dateFromFill').val()); // filling in the date period 
@@ -271,6 +271,7 @@ function getFilter(table, searchType, type, canvasId, graphTitle = "", label = "
 
                       document.getElementById('resultTab').innerHTML = createTable(customerId,book,bruto,netto);
                       $(".graphs").removeAttr("style").show();
+                      $(".resultButtonDiv").removeAttr("style").show();
 
 
                   }
@@ -567,10 +568,7 @@ $(document).ready(function() {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 			  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
-			  $(".resultButtonDiv").removeAttr("style").show();
-
-
-
+			  
 		  }
 
 
@@ -581,6 +579,7 @@ $(document).ready(function() {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  getFilter("Graph", "bookings", 'line', "container", "Cumulative Bookings per Month", "# of bookings");
 			  $(".graphs").removeAttr("style").show();
+			  $(".resultButtonDiv").removeAttr("style").show();
 		  }
 	});
 	$("#totalBrutoButton").click(function() {
@@ -588,6 +587,7 @@ $(document).ready(function() {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  getFilter("Graph", "brutoWeight", 'line', "container", "Cumulative Total Bruto Weight per Month", "Bruto Weight");
 			  $(".graphs").removeAttr("style").show();
+			  $(".resultButtonDiv").removeAttr("style").show();
 		  }
 	});
 	$("#totalNettoButton").click(function() {
@@ -595,6 +595,7 @@ $(document).ready(function() {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  getFilter("Graph", "nettoWeight", 'line', "container", "Cumulative Total Netto Weight per Month", "Netto Weight");
 			  $(".graphs").removeAttr("style").show();
+			  $(".resultButtonDiv").removeAttr("style").show();
 		  }
 	});
 
