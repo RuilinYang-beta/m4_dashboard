@@ -5,7 +5,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
+
 public class DAOcustomer {
+	
+	
+	/**
+	 * Get the link of a customer
+	 * @param customer Id of a customer
+	 * @return String of the link for 'link in database' and 'doesn't exists' for error and empty String for 'link not in database'
+	 */
 	public static String getCustLink(int customer) {
 		Connection c = null;
 		c = DAOgeneral.connectToDatabase(c);
@@ -21,6 +30,13 @@ public class DAOcustomer {
 		
 		return "";
 	}
+
+	
+	/**
+	 * Get the id of a customer
+	 * @param customer The name of customer
+	 * @return Integer id for 'id in database' and -1 for errors and for 'id not in database'
+	 */
 	
 	public static int getCustId(String customer) {
 		Connection c = null;
@@ -36,4 +52,7 @@ public class DAOcustomer {
 		}
 		return -1;
 	}
+
+	
+	
 }
