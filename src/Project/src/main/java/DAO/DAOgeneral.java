@@ -54,4 +54,20 @@ public class DAOgeneral {
 		}
 		
 	}
+	
+	/**
+	 * Get amount of bookings from server
+	 * @return
+	 */
+	public static int getCount() {
+		ResultSet temp = DAOgeneral.execute("SELECT COUNT(*) AS a FROM bookings");
+		try {
+			while  (temp.next()) {
+				return temp.getInt("a");
+			}
+		} catch (SQLException e) {
+			return -1;
+		}
+		return -1;
+	}
 }

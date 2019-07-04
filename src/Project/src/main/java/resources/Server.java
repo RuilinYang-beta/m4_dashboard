@@ -109,7 +109,7 @@ public class Server{
 	@Path("/count")
 	@Produces(MediaType.TEXT_HTML)
 	public String getCount() {
-		String message = Statistics.getCount()+ "";
+		String message = DAOgeneral.getCount()+ "";
 		return message;
 	}
 	
