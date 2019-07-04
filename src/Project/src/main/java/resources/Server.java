@@ -33,7 +33,11 @@ public class Server{
 		
 		return SQLUtils.glueColumnIntoString(rs);
 	}
-	
+	/**
+	 * 
+	 * Function to update the whole database
+	 * 
+	 */
 	@GET
 	@Path("/autoupdate")
 	public String setTimer(@QueryParam("time") int time) {
@@ -47,11 +51,21 @@ public class Server{
 		return "started";
 	}
 	
+	/**
+	 * 
+	 * Function to return whether the employee valid or not in database
+	 * 
+	 */
 	@GET
 	@Path("/auth")
 	public boolean checkEmployee(@QueryParam("mail") String mail) {
 		return DAOemployee.checkEmployee(mail);
 	}
+	/**
+	 * 
+	 * Function to return the name,id, and mail of the employee given access
+	 * 
+	 */
 	@POST
 	@Path("/auth")
 	public String addEmployee(@QueryParam("name") String name,
@@ -59,6 +73,11 @@ public class Server{
 							@QueryParam("mail") String mail) {
 		return DAOemployee.addEmployee(name, id, mail);
 	}
+	/**
+	 * 
+	 * Function to return the name,id, and mail of the employee that will be deleted from the database
+	 * 
+	 */
 	@DELETE
 	@Path("/auth")
 	public String deleteEmployee(@QueryParam("name") String name,
@@ -81,7 +100,11 @@ public class Server{
 	}
 	
 
-		
+	/**
+	 * 
+	 * Function to return the amount of the bookings ever existed
+	 * 
+	 */	
 	@GET
 	@Path("/count")
 	@Produces(MediaType.TEXT_HTML)
@@ -90,7 +113,11 @@ public class Server{
 		return message;
 	}
 	
-
+	/**
+	 * 
+	 * Function to add the customer's customer of cofano by giving the name,link, and the boolean for bookings,locations,actions, and linestops
+	 * 
+	 */
 	@POST
 	@Path("/update")
 	public String addEnvironment(@QueryParam("name") String name,
@@ -102,7 +129,11 @@ public class Server{
 		return "";
 	}
 
-	
+	/**
+	 * 
+	 * Function to update the database will be called method autoUpdate
+	 * 
+	 */
 	//update database values
 	@GET
 	@Path("/update")
@@ -129,7 +160,11 @@ public class Server{
 		}
 		return "";
 	}
-
+	/**
+	 * 
+	 * Function to run updateDatabase then this function will be called in the parameter /autoUpdate
+	 * 
+	 */
 	private class autoUpdate extends Thread {
 		private Server s;
 		private int frequency;
@@ -153,7 +188,11 @@ public class Server{
 			}
 		}
 	}
-
+	/**
+	 * 
+	 * Function to parse the value of different column with maximum parse until 3 differents columns (sql database)
+	 * 
+	 */
 	public static String parseToStringarray(ResultSet set) {
 		StringBuffer res1 = new StringBuffer();
 		StringBuffer res2 = new StringBuffer();
@@ -199,7 +238,11 @@ public class Server{
 		
 		return res;
 	}
-	
+	/**
+	 * 
+	 * change the value of the sql into string value as an array
+	 * 
+	 */
 	public String resultSetToStringArray(ResultSet rs) {
 		String resultString = "";
 		try {
@@ -217,6 +260,11 @@ public class Server{
 		}
 		return resultString;
 	}
+	/**
+	 * 
+	 * Function to return the customer names/shipping company names/customer id in a form of string array
+	 * 
+	 */
 	@GET
 	@Path("/getinfo")
 	public String getInfo(@QueryParam("infoType") String infoType) {
@@ -249,7 +297,12 @@ public class Server{
 		try {connection.close();}catch(SQLException e) {}
 		return resultSetToStringArray(x);
 	}
-	
+	/**
+	 * 
+	 * Function to return the value bookings/netto weight/ bruto weight by giving the goal paramater the value filters with dates/order state/customer/teu/shipCompany/ship company Id/ship company scac
+	 * value return table or graphs/ customer id
+	 * 
+	 */
 	@GET
 	@Path("/select")
 	public String bookingsPerDate(@QueryParam("fromD") Long dateLow,
@@ -310,7 +363,11 @@ public class Server{
 		}
 		return getValue(command, inserts, goal, false);	
 	}
-	
+	/**
+	 * 
+	 * Function to return bookings/netto weight/bruto weight/ top customer bookings(doughnut chart)/ top customer weight(doughnut chart)/ and line chart with 2 lines (2yAxis)s
+	 * 
+	 */
 	private String getValue(String command, Object[] inserts, String goal, boolean query) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
@@ -381,7 +438,10 @@ public class Server{
 		}
 		return i + "";
 	}
-	
+	/**
+	 * 
+	 * Fucntion to return the value of cofano api in the form of JSON object then it will be change into string by function linestops
+	 */
 	public static JSONArray parseJSON(ResultSet rs) {
 		JSONArray json = new JSONArray();
 		try {
@@ -400,6 +460,7 @@ public class Server{
 		}
 		return json;
 	}
+	
 	private static final String SORT_MONTH = "SELECT CONCAT(cast(EXTRACT(year FROM createdOn) AS VARCHAR(4))"
 			+ ",'_', RIGHT(CONCAT('0',cast(EXTRACT(month FROM createdOn) AS VARCHAR(2))), 2)) AS m_y, ";
 	private static final String topCustomer =  " AND brutoWeight IS NOT NULL AND customer IS NOT NULL GROUP BY custName ORDER BY (SUM(brutoWeight) + COUNT(bookingId)*1000) DESC LIMIT 10";
