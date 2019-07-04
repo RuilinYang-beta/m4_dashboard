@@ -10,6 +10,11 @@ import nl.utwente.di.SQL.*;
 
 public class DAOinsert {
 	
+	/**
+	 * Insert actions and its id to Action table in the database
+	 * @param data List of actions to be inserted
+	 * @param customer Customer Id
+	 */
 	//insertion of actions into SQL
 	public static void insertAction(List<String> data, int customer) {
 		Connection connection = null;
@@ -29,7 +34,11 @@ public class DAOinsert {
 		}
 	}
 	
-	//insertion of locations in SQL
+	/**
+	 * Insert location or address values to Location or Address table in the database
+	 * @param data List of Location or Address values to be inserted in form of JSONObject
+	 * @param act Target table of the insertion, String 'loc' to insert to Location else insert to Address
+	 */
 	public static void insertLocation(List<JSONObject> data, String act) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
@@ -139,7 +148,11 @@ public class DAOinsert {
 		System.out.println("finished");
 		}
 	
-	//insertion of linestops in SQL
+	
+	/**
+	 * Insert linestop values to the Linestops table in the database
+	 * @param data List of linestop values in form of JSONObject
+	 */
 	public static void insertLinestops(List<JSONObject> data) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
@@ -183,8 +196,12 @@ public class DAOinsert {
 		}
 		System.out.println("finished Linestops");
 	}
-	
-	//insertion of bookings in SQL
+	/**
+	 * Insert booking values to the Bookings table in the database
+	 * @param data List of booking values in form of JSONObject
+	 * @param command SQL command to be used
+	 * @param opts Type of the values inside the table (INT,VARCHAR,etc.)
+	 */
 	public static void insertDatabase(List<JSONObject> data, String command, String opts) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
@@ -227,6 +244,12 @@ public class DAOinsert {
 		}
 	}
 	
+	/**
+	 * Insert customer values to Customer table in the database
+	 * @param name Name of the customer
+	 * @param link Link for the customer data
+	 * @return
+	 */
 	public static String insertCustomer(String name, String link) {
 		Connection connection = null;
 		connection = DAOgeneral.connectToDatabase(connection);
