@@ -561,6 +561,7 @@ $(document).ready(function() {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
 			  $('#container3').replaceWith('<canvas id="container3" ></canvas>');
 			  $('#container4').replaceWith('<canvas id="container4" ></canvas>');
+			  $(".resultButtonDiv").removeAttr("style").show();
 
 
 
@@ -579,14 +580,14 @@ $(document).ready(function() {
 	$("#totalBrutoButton").click(function() {
 		  if(dateCorrect()) {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
-			  getFilter("Graph", "brutoWeight", 'line', "container", "Total Bruto Weight", "Bruto Weight");
+			  getFilter("Graph", "brutoWeight", 'line', "container", "Cumulative Total Bruto Weight per Month", "Bruto Weight");
 			  $(".graphs").removeAttr("style").show();
 		  }
 	});
 	$("#totalNettoButton").click(function() {
 		  if(dateCorrect()) {
 			  $('#container').replaceWith('<canvas id="container" ></canvas>');
-			  getFilter("Graph", "nettoWeight", 'line', "container", "Total Netto Weight", "Netto Weight");
+			  getFilter("Graph", "nettoWeight", 'line', "container", "Cumulative Total Netto Weight per Month", "Netto Weight");
 			  $(".graphs").removeAttr("style").show();
 		  }
 	});

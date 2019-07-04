@@ -247,7 +247,7 @@ ul.CTAs a {
 }
 
 .filters {
-  margin: 25px 0 50px 30px;
+  margin: 20px 10px 20px 10px;
   border: 1px solid #dddddd;
   display:block;
   vertical-align: top;
@@ -258,7 +258,7 @@ ul.CTAs a {
 }
 
 .filterGraphs {
-  margin: 20px 0 0 30px;
+  margin: 20px 10px 0 10px;
   border: 1px solid #dddddd;
   vertical-align: top;
   background-color: #F9E7D0;
@@ -308,7 +308,7 @@ div.noResult {
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 70%;
+  width: 95%;
   margin-top: 20px;
   margin-bottom:20px;
   font-size:13px;

@@ -211,20 +211,7 @@ gapi.load('auth2', function() {
 	          <div style="padding-left:30px; padding-top:15px; padding-bottom: 30px;">
 	            <button onclick="" class="btn btn-secondary text-center" id="search">Search</button>
 	          </div>
-	        </div>
-        </div>
-         <div class="gridDiv">
-	        <div class="filters" >
-	          <div class="fillIns" >Results:
-	          	<div class="noResult" style="display:none;font-size:30px;">
-	          	Bookings do not exist!
-	          	</div>
-	          	<div class="table">
-	          		<table class ="resultTable" id="resultTab" ></table>
-	          	</div>
-
-	          	<div class="graphs">
-		          	<div class="resultButtonDiv">
+	          <div class="resultButtonDiv" style="display:none;">
 		          		<div class="resultButton">
 		          			<button onclick="" class="btn btn-secondary text-center" id="bookingCountButton">Bookings</button>
 		          		</div>
@@ -234,13 +221,27 @@ gapi.load('auth2', function() {
 		          		<div class="resultButton">
 		          			<button onclick="" class="btn btn-secondary text-center" id="totalNettoButton">Netto</button>
 		          		</div>
-		          	</div>
+		       </div>
+	        </div>
+	        <div class="filters" >
+	          <div class="fillIns" >Results:
+	          	<div class="noResult" style="display:none;font-size:30px;">
+	          	Bookings do not exist!
+	          	</div>
+	          	<div class="table" style="float:center;">
+	          		<table class ="resultTable" id="resultTab" ></table>
+	          	</div>
+
+	          	<div class="graphs">
 	          	  	<canvas id="container"></canvas>
 	          	</div>
 
 	          </div>
 	        </div>
-	     </div>
+        </div>
+ 
+	        
+
       </div>
     </div>
   </div>
