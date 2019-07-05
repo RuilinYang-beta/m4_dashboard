@@ -11,7 +11,8 @@ import DAO.*;
 import models.*;
 @Path("/sql")
 public class Server{
-	public static final String LINK = "http://localhost:8080";
+	public static final String LINK = "http://farm03.ewi.utwente.nl:7034";
+	public static final String LINKS = "http://localhost:8080";
 	
 	/**
 	 * Function to return the data used in geo map.

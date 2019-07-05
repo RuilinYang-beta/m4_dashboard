@@ -11,8 +11,8 @@ $(document).ready(function() {
   getInfo('customerId');
 });
 //Change FARMURL to URL and URL to LOCALURL
-var FARMURL = "http://farm03.ewi.utwente.nl:7034";
-var URL = "http://localhost:8080";
+var URL = "http://farm03.ewi.utwente.nl:7034";
+var FARMURL = "http://localhost:8080";
 
 
 //Determine the max length of an input
@@ -636,7 +636,6 @@ function addEnvi() {
 	var url = URL + "/Project/rest/sql/update?";
 	var name = $('#custname').val();
 	var link = $('#httplink').val();
-	alert("a");
 	var B_L_A_S;
 	var bookCheck = $("#bookingCheck").is(':checked');
 	var locationCheck = $("#locationCheck").is(':checked');
@@ -666,7 +665,6 @@ function addEnvi() {
 		}
 	}
 	var newUrl = url.substring(0, url.length-1);
-	alert(newUrl);
 	http.open("POST", newUrl);
 	http.send();
 }
