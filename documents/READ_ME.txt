@@ -1,6 +1,4 @@
-
 The map on the dashboard took quite some time and code, so we are pretty proud of that.
-
 
 To test the system, you can browse to http://farm03.ewi.utwente.nl/Project/
 Another option is to run it locally on a tomcat server and browse to http://localhost:8080/Project/
@@ -11,7 +9,7 @@ Another option is to run it locally on a tomcat server and browse to http://loca
 	((OR if ran locally:) http://localhost:8080/Project/rest/sql/auth?name={name}&id={id}&mail={emailaddress})
 	IMPORTANT: These should be a POST request, not get
 	PLEASE NOTE: the name doesn't really matter, the ID should be unique in the Database, so taking a large random
-	integer assures that it wont be in the database. emailaddress will be saved in database as sha256 hash, so are completely private.
+	integer assures that it wont be in the database. emailaddresses will be saved in database as sha256 hash, so are completely private.
 	The email address should also be unique in the database, but if its already there, you can already access the webpage.
 	After that, you are authorized, so you can log in through using Google on our main page (or any other page).
 2 Accessing webapp:
