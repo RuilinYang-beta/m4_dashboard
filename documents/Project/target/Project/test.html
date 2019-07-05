@@ -1,0 +1,15 @@
+<head>
+</head>
+<body>
+<input type="text" name="fname"><br>
+<input type="submit" value="Submit" onclick="find">
+<div id="contain"></div>
+
+<script src="color.js"></script>
+<script>
+function find() {
+	var list = getHex(fname.value);
+	document.getElementById("contain").innerHTML(list);
+}
+</script>
+</body>

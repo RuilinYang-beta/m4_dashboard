@@ -1,0 +1,114 @@
+#mapContainer {
+    position: relative;
+    height: 0;
+    width: 100%;
+    padding: 0;
+    /* padding-bottom will be overwritten by JavaScript later */
+    /*padding-bottom: 100%;*/
+}
+
+#mapContainer > svg {
+  /* border: 2px solid lightgrey; */
+/*   height: 100%;
+  width: 100%;  */
+  display:block;
+}
+
+.circle:hover{
+ 	stroke: black;
+	stroke-width: 4px;
+}
+
+
+
+#mapid { 
+	height: 400px; 
+}
+
+/* slide bar & date text container */
+.slideContainer {
+  width: 100%;
+  position:relative;
+}
+
+/* slide bar */
+.slider {
+  position:relative;
+  z-index: 10;
+  -webkit-appearance: none;
+  width: 100%;
+  background: #d3d3d3;
+  border: 1px solid #525252;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+  height: 25px;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+/* slide button */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  z-index:100;
+  position:relative;
+  width: 25px;
+  height: 25px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;  
+  background: #4CAF50;
+  cursor: pointer;
+  
+}
+
+/* text */
+#hint{
+    position: absolute;
+    z-index: 1;
+    top: 2%;
+    left: 33%;
+    font-family: "Helvetica Neue", Helvetica, sans;
+    font-size: 18px;
+    color: black;
+    cursor: default;  
+
+    -webkit-user-select: none;
+    /* semitransparent gradient mask to animate over the text */
+/*    -webkit-mask-image: -webkit-gradient(
+        linear,
+        left top,
+        right top,
+        color-stop(0, rgba(0,0,0,0.3)),
+        color-stop(0.45, rgba(0,0,0,0.3)),
+        color-stop(0.5, rgba(0,0,0,1)),
+        color-stop(0.55, rgba(0,0,0,0.3)),
+        color-stop(1, rgba(0,0,0,0.3))
+    );
+    -webkit-mask-size: 1000px;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation: text-spotlight 4s infinite;*/
+}
+
+/*.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  cursor: pointer;
+}*/
+
+/* animate the webkit-mark over the text */
+@-webkit-keyframes text-spotlight {
+  0% {
+    -webkit-mask-position: -800px;
+  }
+  
+  100% {
+    -webkit-mask-position: 0px;
+  }
+}
